@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('doctors', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('specialization_id');
+            $table->uuid('admin_id')->nullable();
+
             $table->string('doctor_number')->unique();
             $table->string('name');
             $table->string('front_title');
@@ -20,6 +23,9 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->string('address');
             $table->string('photo');
+
+            $table->foreign('specialization_id')->references('id')->on('specializations')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
             $table->timestamps();
         });
     }

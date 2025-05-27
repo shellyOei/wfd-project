@@ -20,9 +20,9 @@ class Doctor extends Model
         'photo',
     ];
 
-    public function specializations()
+    public function specialization()
     {
-        return $this->belongsToMany(Specialization::class);
+        return $this->hasOnea(Specialization::class);
     }
 
     public function schedules()
