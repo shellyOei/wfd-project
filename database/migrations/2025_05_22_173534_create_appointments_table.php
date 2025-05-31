@@ -16,12 +16,14 @@ return new class extends Migration
             $table->uuid('patient_id'); 
             $table->uuid('schedule_id')->unique();
 
+            $table->integer('queue_number');
             $table->longText('subjective');
             $table->longText('objective');
             $table->longText('assessment');
             $table->longText('plan');
             $table->string('type'); 
             $table->boolean('is_bpjs')->default(false);
+            $table->longText('notes')->nullable();
 
             $table->timestamps();
 
