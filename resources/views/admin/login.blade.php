@@ -2,8 +2,8 @@
 
 @section('content')
     <div class="container">
-        <h1>User Login</h1>
-        <form action="{{ route('user.login') }}" method="POST">
+        <h1>Admin Login</h1>
+        <form action="{{ route('admin.login.post') }}" method="POST">
             @csrf
             <div class="form-group">
                 <label for="email">Email:</label>

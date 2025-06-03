@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
-class Admin extends Model
+class Admin extends Authenticatable
 {
     use HasUuids;
 
@@ -13,11 +14,19 @@ class Admin extends Model
         'name',
         'email',
         'password',
+        'doctor_id',
     ];
 
     protected $hidden = [
         'password',
     ];
+
+     protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
 
     public function getAuthPassword()
     {
@@ -27,5 +36,11 @@ class Admin extends Model
     public function doctor()
     {
         return $this->hasOne(Doctor::class);
+    }
+
+    // for role checking 
+    public function isDoctor() : bool
+    {
+        return $this->doctor()->exists();
     }
 }
