@@ -19,6 +19,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['admin'])->group(function () {
         // protected routes for admin
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+        Route::get('/patients', [AdminController::class, 'patients'])->name('patients');
+        Route::put('/patients/{patient}', [AdminController::class, 'updatePatient'])->name('patients.update');
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
     });
 });

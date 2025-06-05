@@ -5,14 +5,16 @@
 
 @section('content')
     <!-- Dashboard Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <!-- Total Doctors -->
         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition duration-200">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Total Doctors</p>
-                    <p class="text-3xl font-bold text-gray-900">24</p>
-                    <p class="text-sm text-green-600 mt-1">
+                    <p class="text-3xl font-bold text-gray-900">{{ $totalDoctors }}</p>
+                    <p class="text-sm text-blue-600 mt-1">
+                        <i class="fas fa-stethoscope mr-1"></i>Active doctors
+                    </p>
                 </div>
                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                     <i class="fas fa-user-md text-blue-600 text-xl"></i>
@@ -25,7 +27,10 @@
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-sm font-medium text-gray-600">Total Patients</p>
-                    <p class="text-3xl font-bold text-gray-900">1,247</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ number_format($totalPatients) }}</p>
+                    <p class="text-sm text-green-600 mt-1">
+                        <i class="fas fa-user-plus mr-1"></i>Registered patients
+                    </p>
                 </div>
                 <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                     <i class="fas fa-users text-green-600 text-xl"></i>
@@ -37,12 +42,30 @@
         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition duration-200">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-600">Monthly's Appointments</p>
-                    <p class="text-3xl font-bold text-gray-900">32</p>
+                    <p class="text-sm font-medium text-gray-600">Today's Appointments</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ $todayAppointments }}</p>
                     <p class="text-sm text-orange-600 mt-1">
+                        <i class="fas fa-clock mr-1"></i>{{ $pendingAppointments }} pending
+                    </p>
                 </div>
                 <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
                     <i class="fas fa-calendar-check text-orange-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Revenue -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100 hover:shadow-md transition duration-200">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-600">Monthly Revenue</p>
+                    <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($monthlyRevenue, 0, ',', '.') }}</p>
+                    <p class="text-sm text-green-600 mt-1">
+                        <i class="fas fa-chart-line mr-1"></i>This month
+                    </p>
+                </div>
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-money-bill-wave text-purple-600 text-xl"></i>
                 </div>
             </div>
         </div>
@@ -100,140 +123,49 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
-                        <!-- Appointment Row 1 -->
-                        <tr class="hover:bg-gray-50 transition duration-200">
-                            <td class="py-4 px-2">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-user text-blue-600 text-sm"></i>
+                        @forelse($recentAppointments as $index => $appointment)
+                            @php
+                                $colors = ['blue', 'pink', 'green', 'purple', 'orange'];
+                                $color = $colors[$index % count($colors)];
+                            @endphp
+                            <tr class="hover:bg-gray-50 transition duration-200">
+                                <td class="py-4 px-2">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-{{ $color }}-100 rounded-full flex items-center justify-center mr-3">
+                                            <i class="fas fa-user text-{{ $color }}-600 text-sm"></i>
+                                        </div>
+                                        <span class="font-medium text-gray-900">{{ $appointment->patient->name }}</span>
                                     </div>
-                                    <span class="font-medium text-gray-900">John Doe</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-2 text-gray-700">Dr. Smith</td>
-                            <td class="py-4 px-2 text-gray-700">Dec 15, 2024 - 10:00 AM</td>
-                            <td class="py-4 px-2">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition duration-200" title="View Details">
-                                        <i class="fas fa-eye text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition duration-200" title="Edit">
-                                        <i class="fas fa-edit text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200" title="Cancel">
-                                        <i class="fas fa-times text-sm"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-    
-                        <!-- Appointment Row 2 -->
-                        <tr class="hover:bg-gray-50 transition duration-200">
-                            <td class="py-4 px-2">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 bg-pink-100 rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-user text-pink-600 text-sm"></i>
+                                </td>
+                                <td class="py-4 px-2 text-gray-700">
+                                    {{ $appointment->schedule->doctor->front_title }} {{ $appointment->schedule->doctor->name }} {{ $appointment->schedule->doctor->back_title }}
+                                </td>
+                                <td class="py-4 px-2 text-gray-700">
+                                    {{ \Carbon\Carbon::parse($appointment->schedule->Datetime)->format('M d, Y - g:i A') }}
+                                </td>
+                                <td class="py-4 px-2">
+                                    <div class="flex items-center justify-center space-x-2">
+                                        <button class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition duration-200" title="View Details">
+                                            <i class="fas fa-eye text-sm"></i>
+                                        </button>
+                                        <button class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition duration-200" title="Edit">
+                                            <i class="fas fa-edit text-sm"></i>
+                                        </button>
+                                        <button class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200" title="Cancel">
+                                            <i class="fas fa-times text-sm"></i>
+                                        </button>
                                     </div>
-                                    <span class="font-medium text-gray-900">Jane Wilson</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-2 text-gray-700">Dr. Johnson</td>
-                            <td class="py-4 px-2 text-gray-700">Dec 15, 2024 - 2:30 PM</td>
-                            <td class="py-4 px-2">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition duration-200" title="View Details">
-                                        <i class="fas fa-eye text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition duration-200" title="Edit">
-                                        <i class="fas fa-edit text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200" title="Cancel">
-                                        <i class="fas fa-times text-sm"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-    
-                        <!-- Appointment Row 3 -->
-                        <tr class="hover:bg-gray-50 transition duration-200">
-                            <td class="py-4 px-2">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-user text-green-600 text-sm"></i>
-                                    </div>
-                                    <span class="font-medium text-gray-900">Mike Brown</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-2 text-gray-700">Dr. Davis</td>
-                            <td class="py-4 px-2 text-gray-700">Dec 15, 2024 - 4:00 PM</td>
-                            <td class="py-4 px-2">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition duration-200" title="View Details">
-                                        <i class="fas fa-eye text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition duration-200" title="Edit">
-                                        <i class="fas fa-edit text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200" title="Cancel">
-                                        <i class="fas fa-times text-sm"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-    
-                        <!-- Appointment Row 4 -->
-                        <tr class="hover:bg-gray-50 transition duration-200">
-                            <td class="py-4 px-2">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-user text-purple-600 text-sm"></i>
-                                    </div>
-                                    <span class="font-medium text-gray-900">Sarah Connor</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-2 text-gray-700">Dr. Williams</td>
-                            <td class="py-4 px-2 text-gray-700">Dec 16, 2024 - 9:00 AM</td>
-                            <td class="py-4 px-2">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition duration-200" title="View Details">
-                                        <i class="fas fa-eye text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition duration-200" title="Edit">
-                                        <i class="fas fa-edit text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200" title="Cancel">
-                                        <i class="fas fa-times text-sm"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-    
-                        <!-- Appointment Row 5 -->
-                        <tr class="hover:bg-gray-50 transition duration-200">
-                            <td class="py-4 px-2">
-                                <div class="flex items-center">
-                                    <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center mr-3">
-                                        <i class="fas fa-user text-orange-600 text-sm"></i>
-                                    </div>
-                                    <span class="font-medium text-gray-900">Robert Lee</span>
-                                </div>
-                            </td>
-                            <td class="py-4 px-2 text-gray-700">Dr. Anderson</td>
-                            <td class="py-4 px-2 text-gray-700">Dec 16, 2024 - 11:30 AM</td>
-                            <td class="py-4 px-2">
-                                <div class="flex items-center justify-center space-x-2">
-                                    <button class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition duration-200" title="View Details">
-                                        <i class="fas fa-eye text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition duration-200" title="Edit">
-                                        <i class="fas fa-edit text-sm"></i>
-                                    </button>
-                                    <button class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200" title="Cancel">
-                                        <i class="fas fa-times text-sm"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="4" class="py-8 px-2 text-center text-gray-500">
+                                    <i class="fas fa-calendar-times text-4xl mb-4 text-gray-300"></i>
+                                    <p class="text-lg font-medium">No appointments found</p>
+                                    <p class="text-sm">Recent appointments will appear here</p>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
