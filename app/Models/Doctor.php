@@ -23,7 +23,7 @@ class Doctor extends Model
 
     public function specialization()
     {
-        return $this->hasOnea(Specialization::class);
+        return $this->belongsTo(Specialization::class);
     }
 
     public function schedules()
