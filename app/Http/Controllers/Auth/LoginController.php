@@ -15,16 +15,16 @@ class LoginController extends Controller
         $this->authService = $authService;
     }
 
-    public function showAdminLogin()    
+    public function showAdminLogin()
     {
         return view('admin.login');
     }
 
-    public function showUserLogin()    
+    public function showUserLogin()
     {
         return view('auth.login');
     }
-    
+
     public function loginAsUser(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -39,8 +39,14 @@ class LoginController extends Controller
     public function loginAsAdmin(Request $request)
     {
         $credentials = $request->only('email', 'password');
-
         if ($this->authService->login($credentials, 'admin')) {
+            // Get the authenticated admin user
+            $admin = auth()->guard('admin')->user();
+
+            // Store admin information in session
+            session()->put('name', $admin->name);
+            session()->put('email', $admin->email);
+
             return redirect()->route('admin.dashboard');
         }
 
