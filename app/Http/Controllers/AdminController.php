@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Appointment;
@@ -46,32 +45,5 @@ class AdminController extends Controller
         ));
     }
 
-    public function patients()
-    {
-        $patients = Patient::with(['profiles.user', 'appointments'])
-                          ->orderBy('created_at', 'desc')
-                          ->get();
 
-        return view('admin.patients', compact('patients'));
-    }
-
-    public function updatePatient(Request $request, Patient $patient)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'sex' => 'required|in:male,female',
-            'date_of_birth' => 'required|date',
-            'address' => 'required|string',
-            'occupation' => 'required|string|max:255',
-            'blood_type' => 'nullable|string|max:5',
-            'rhesus_factor' => 'nullable|string|max:5',
-            'id_card_number' => 'required|string|max:20',
-            'BPJS_number' => 'nullable|string|max:20',
-        ]);
-
-        $patient->update($request->all());
-
-        return redirect()->route('admin.patients')->with('success', 'Patient updated successfully!');
-    }
 }
