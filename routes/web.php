@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +20,15 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['admin'])->group(function () {
         // protected routes for admin
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
-        Route::get('/patients', [AdminController::class, 'patients'])->name('patients');
-        Route::put('/patients/{patient}', [AdminController::class, 'updatePatient'])->name('patients.update');
+
+        // Patient routes
+        Route::get('/patients', [PatientController::class, 'index'])->name('patients');
+        Route::post('/patients', [PatientController::class, 'store'])->name('patients.store');
+        Route::get('/patients/{patient}', [PatientController::class, 'show'])->name('patients.show');
+        Route::put('/patients/{patient}', [PatientController::class, 'update'])->name('patients.update');
+        Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
+        Route::get('/patients/{patient}/medical-history', [PatientController::class, 'getMedicalHistory'])->name('patients.medical-history');
+
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
     });
 });
