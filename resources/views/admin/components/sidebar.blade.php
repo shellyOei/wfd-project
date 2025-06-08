@@ -19,7 +19,7 @@
         <ul class="space-y-2">
             <!-- Dashboard -->
             <li>
-                <a href="" 
+                <a href="{{ route('admin.dashboard') ?? '#' }}" 
                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-tachometer-alt text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Dashboard</span>

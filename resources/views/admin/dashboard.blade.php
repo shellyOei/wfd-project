@@ -77,31 +77,60 @@
         <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
             <div class="flex items-center justify-between mb-6">
                 <h3 class="text-lg font-semibold text-gray-900">Appointments Overview</h3>
-                <select class="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option>Last 7 days</option>
-                    <option>Last 30 days</option>
-                    <option>Last 3 months</option>
-                </select>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-calendar-check text-blue-600"></i>
+                    <span class="text-sm text-gray-600">Last 30 days</span>
+                </div>
             </div>
-            <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                <p class="text-gray-500">Chart will be displayed here</p>
-            </div>
-        </div>
-        {{-- Patients by Department --}}
-        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
-            <div class="flex items-center justify-between mb-6">
-                <h3 class="text-lg font-semibold text-gray-900">Patients by Department</h3>
-                <select class="text-sm border border-gray-300 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    <option>Last 7 days</option>
-                    <option>Last 30 days</option>
-                    <option>Last 3 months</option>
-                </select>
-            </div>
-            <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                <p class="text-gray-500">Chart will be displayed here</p>
+            <div class="h-64">
+                <canvas id="appointmentsChart"></canvas>
             </div>
         </div>
 
+        <!-- Patients by Department -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Patients by Department</h3>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-chart-pie text-green-600"></i>
+                    <span class="text-sm text-gray-600">All time</span>
+                </div>
+            </div>
+            <div class="h-64">
+                <canvas id="patientsByDepartmentChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Revenue Chart -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Monthly Revenue</h3>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-chart-bar text-purple-600"></i>
+                    <span class="text-sm text-gray-600">Last 6 months</span>
+                </div>
+            </div>
+            <div class="h-64">
+                <canvas id="revenueChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Patient Registration Trends -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-semibold text-gray-900">Patient Registrations</h3>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-chart-line text-orange-600"></i>
+                    <span class="text-sm text-gray-600">Last 6 months</span>
+                </div>
+            </div>
+            <div class="h-64">
+                <canvas id="patientRegistrationChart"></canvas>
+            </div>
+        </div>
     </div>
     <div class="gap-6 mb-8 flex flex-col">
         <!-- Recent Appointments -->
@@ -197,4 +226,257 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section('script')
+<script>
+    // Chart.js configuration
+    Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+    Chart.defaults.color = '#6B7280';
+
+    // 1. Appointments Overview Chart (Line Chart)
+    const appointmentsCtx = document.getElementById('appointmentsChart').getContext('2d');
+    const appointmentsChart = new Chart(appointmentsCtx, {
+        type: 'line',
+        data: {
+            labels: @json($appointmentsChartData['labels']),
+            datasets: [{
+                label: 'Appointments',
+                data: @json($appointmentsChartData['data']),
+                borderColor: '#3B82F6',
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#3B82F6',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 6,
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: '#3B82F6',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    displayColors: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            },
+            elements: {
+                point: {
+                    hoverBackgroundColor: '#3B82F6'
+                }
+            }
+        }
+    });
+
+    // 2. Patients by Department Chart (Doughnut Chart)
+    const patientsByDepartmentCtx = document.getElementById('patientsByDepartmentChart').getContext('2d');
+    const patientsByDepartmentChart = new Chart(patientsByDepartmentCtx, {
+        type: 'doughnut',
+        data: {
+            labels: @json($patientsByDepartmentData['labels']),
+            datasets: [{
+                data: @json($patientsByDepartmentData['data']),
+                backgroundColor: @json($patientsByDepartmentData['colors']),
+                borderWidth: 0,
+                hoverBorderWidth: 2,
+                hoverBorderColor: '#ffffff'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        padding: 20,
+                        usePointStyle: true,
+                        pointStyle: 'circle'
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: '#10B981',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                            const percentage = ((context.parsed / total) * 100).toFixed(1);
+                            return context.label + ': ' + context.parsed + ' patients (' + percentage + '%)';
+                        }
+                    }
+                }
+            },
+            cutout: '60%'
+        }
+    });
+
+    // 3. Revenue Chart (Bar Chart)
+    const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+    const revenueChart = new Chart(revenueCtx, {
+        type: 'bar',
+        data: {
+            labels: @json($revenueChartData['labels']),
+            datasets: [{
+                label: 'Revenue (Rp)',
+                data: @json($revenueChartData['data']),
+                backgroundColor: 'rgba(139, 92, 246, 0.8)',
+                borderColor: '#8B5CF6',
+                borderWidth: 1,
+                borderRadius: 6,
+                borderSkipped: false,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: '#8B5CF6',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    displayColors: false,
+                    callbacks: {
+                        label: function(context) {
+                            return 'Revenue: Rp ' + new Intl.NumberFormat('id-ID').format(context.parsed.y);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return 'Rp ' + new Intl.NumberFormat('id-ID', {
+                                notation: 'compact',
+                                compactDisplay: 'short'
+                            }).format(value);
+                        }
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // 4. Patient Registration Chart (Line Chart)
+    const patientRegistrationCtx = document.getElementById('patientRegistrationChart').getContext('2d');
+    const patientRegistrationChart = new Chart(patientRegistrationCtx, {
+        type: 'line',
+        data: {
+            labels: @json($patientRegistrationData['labels']),
+            datasets: [{
+                label: 'New Patients',
+                data: @json($patientRegistrationData['data']),
+                borderColor: '#F59E0B',
+                backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#F59E0B',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 6,
+                pointHoverRadius: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleColor: '#ffffff',
+                    bodyColor: '#ffffff',
+                    borderColor: '#F59E0B',
+                    borderWidth: 1,
+                    cornerRadius: 8,
+                    displayColors: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false
+                    }
+                }
+            }
+        }
+    });
+
+    // Add animation and interactivity
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add hover effects to chart containers
+        const chartContainers = document.querySelectorAll('.bg-white.rounded-xl');
+        chartContainers.forEach(container => {
+            container.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+                this.style.boxShadow = '0 10px 25px rgba(0, 0, 0, 0.1)';
+                this.style.transition = 'all 0.3s ease';
+            });
+
+            container.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+            });
+        });
+    });
+</script>
 @endsection
