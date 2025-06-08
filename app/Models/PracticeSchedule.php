@@ -23,4 +23,9 @@ class PracticeSchedule extends Model
     {
         return $this->hasOne(Appointment::class, 'schedule_id');
     }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, 'schedule_id');
+    }
 }

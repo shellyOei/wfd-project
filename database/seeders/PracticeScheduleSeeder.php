@@ -24,7 +24,7 @@ class PracticeScheduleSeeder extends Seeder
         // Create 10 practice schedules
         for ($i = 0; $i < 10; $i++) {
             $doctor = $doctors->random();
-            $baseDate = Carbon::now()->addDays(rand(0, 30));
+            $baseDate = Carbon::now()->addDays(rand(2, 10));
             
             // Generate different time slots
             $timeSlots = [
