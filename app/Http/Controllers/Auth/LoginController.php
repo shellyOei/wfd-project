@@ -28,8 +28,13 @@ class LoginController extends Controller
     public function loginAsUser(Request $request)
     {
         $credentials = $request->only('email', 'password');
+        $user = \App\Models\User::withTrashed()->where('email', $credentials['email'])->first();
 
         if ($this->authService->login($credentials, 'user')) {
+            if ($user->trashed()) {
+                $user->deleted_at = null;
+                $user->save();
+            }
             return redirect()->route('user.dashboard');
         }
 

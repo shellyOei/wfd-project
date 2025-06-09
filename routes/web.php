@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // user
@@ -29,6 +30,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
         Route::get('/patients/{patient}/medical-history', [PatientController::class, 'getMedicalHistory'])->name('patients.medical-history');
 
+
+        Route::get('/users', [UserController::class, 'index'])->name('users');
+        Route::put('/users/{user}', [UserController::class,'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserController::class,'destroy'])->name('users.destroy');
+        Route::delete('/users/{user}/deactivate', [UserController::class,'deactivate'])->name('users.destroy');
+        Route::put('/users/{user}/activate', [UserController::class,'activate'])->name('users.activate');
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
     });
 });
