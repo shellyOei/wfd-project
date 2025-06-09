@@ -6,6 +6,7 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Repositories\UserRepository;
 use App\UserRepositoryInterface;
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class UserController extends Controller
 {
@@ -18,12 +19,12 @@ class UserController extends Controller
 
     public function showRegist()
     {
-        return view('auth.register'); 
+        return view('auth.register');
     }
 
     public function showLogin()
     {
-        return view('auth.login'); 
+        return view('auth.login');
     }
 
     public function registerAccount(RegisterUserRequest $request)
@@ -34,5 +35,80 @@ class UserController extends Controller
         // auth()->login($user);
 
         return redirect()->route('user.dashboard')->with('success', 'Berhasil registrasi akun!');
+    }
+
+    public function index()
+    {
+        $users = $this->userRepo->withTrashed()->get()
+            ->load('profiles.patient');
+            // ->loadCount([
+            //     'profiles as patients_count' => function ($query) {
+            //         $query->whereNotNull('patient_id');
+            //     }
+            // ]);
+
+        return view('admin.users', compact('users'));
+    }
+    public function activate($id)
+    {
+        try {
+            $user = User::withTrashed()->findOrFail($id);
+            $user->restore(); // undo soft delete
+            return response()->json([
+                'success' => true,
+                'message' => 'User account activated successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to activate user: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function deactivate(User $user)
+    {
+        try {
+            $user->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'User deleted successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the user: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function destroy(User $user)
+    {
+        try {
+            $user->forceDelete();
+            return response()->json([
+                'success' => true,
+                'message' => 'User deleted successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the user: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'email' => 'email|unique:users,email,'
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $user->email = $request->email;
+        $user->save();
+
+        return response()->json([
+                'success' => true,
+                'message' => 'Email updated successfully!'
+        ]);
     }
 }

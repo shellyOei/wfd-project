@@ -39,4 +39,9 @@ class UserRepository implements UserRepositoryInterface
         $user = User::findOrFail($id);
         return $user->delete();
     }
+    public function withTrashed()
+    {
+        return User::withTrashed();
+    }
+
 }

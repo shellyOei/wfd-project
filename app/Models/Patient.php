@@ -33,6 +33,10 @@ class Patient extends Model
     {
         return $this->hasMany(Profile::class);
     }
+     public function users()
+    {
+        return $this->belongsToMany(User::class, 'profiles', 'patient_id', 'user_id');
+    }
 
     public function appointments()
     {
