@@ -37,6 +37,7 @@
             --blueGradien2: #1618B9; 
             --yellowGradien1: #FBEB8C;
             --yellowGradien2: #F9863A;
+            --background: #F4F4FD;
         }
 
         * {
@@ -75,7 +76,7 @@
 
 </head>
 
-<body>
+<body class="bg-[var(--background)]">
     @include('partials.user-nav')
 
     @if (session()->has('error'))
