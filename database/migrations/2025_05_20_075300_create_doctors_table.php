@@ -25,7 +25,6 @@ return new class extends Migration
             $table->string('photo');
 
             $table->foreign('specialization_id')->references('id')->on('specializations')->onDelete('cascade');
-            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
             $table->timestamps();
         });
     }
