@@ -28,15 +28,20 @@
     {{-- FontAwesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    {{-- font inter --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+
     <style>
         :root {
             --blue1: #4980ff; 
             --gray-inactive: #AAAAAA; 
             --gray1: #D9D9D9;
-            --blueGradien1: #4DD7E2;
-            --blueGradien2: #1618B9; 
-            --yellowGradien1: #FBEB8C;
-            --yellowGradien2: #F9863A;
+            --blueGradient1: #4DD7E2;
+            --blueGradient2: #1618B9; 
+            --yellowGradient1: #FBEB8C;
+            --yellowGradient2: #F9863A;
             --background: #F4F4FD;
         }
 
@@ -44,6 +49,10 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
         }
 
         .swal2-confirm {
