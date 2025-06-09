@@ -33,7 +33,7 @@ class LoginController extends Controller
             return redirect()->route('user.dashboard');
         }
 
-        return back()->withErrors(['email' => 'Invalid credentials or role']);
+        return back()->with('error', 'Invalid credentials!');
     }
 
     public function loginAsAdmin(Request $request)
