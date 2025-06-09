@@ -18,6 +18,10 @@ Route::middleware(['user'])->group(function () {
     // protected routes for user
     Route::get('/dashboard', [AdminController::class, 'index'])->name('user.dashboard');
 });
+Route::get('/', function () {
+    return view('user.profile.index');
+});
+
 
 // admin
 Route::prefix('admin')->name('admin.')->group(function () {
