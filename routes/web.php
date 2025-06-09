@@ -2,14 +2,19 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
-// user
-Route::get('/login', [LoginController::class, 'showUserLogin'])->name('user.login');
-Route::post('/login', [LoginController::class, 'loginAsUser'])->name('user.login.post');
+// user login
+Route::get('/login', [LoginController::class, 'showUserLogin'])->name('login');
+Route::post('/login', [LoginController::class, 'loginAsUser'])->name('login.post');
+// user registration
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
+Route::post('/register', [RegisterController::class, 'registerUser'])->name('register.post');
+
 Route::middleware(['user'])->group(function () {
     // protected routes for user
-    // Route::get('/dashboard', [AdminController::class, 'index'])->name('user.dashboard');
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('user.dashboard');
 });
 
 // admin

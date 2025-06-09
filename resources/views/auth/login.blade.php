@@ -5,14 +5,14 @@
 @endsection
 
 @section('content')
-    <div class="flex flex-col max-h-screen h-screen w-screen overflow-x-hidden items-center pt-20 text-black">
+    <div class="flex flex-col max-h-screen h-screen w-screen overflow-x-hidden items-center pt-5 text-black">
         {{-- logo --}}
+        <img class="w-[35%]" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
 
-        <img class="w-[40%]" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
-        <form class="w-[85%] space-y-5" action="{{ route('user.login') }}" method="POST">
+        <form class="w-[85%] space-y-4" action="{{ route('login') }}" method="POST">
             @csrf
              <div class="form-group w-full max-w-md mx-auto flex flex-col space-y-1">
-                <label class="font-semibold text-lg" for="email">Email</label>
+                <label class="font-semibold text-md" for="email">Email</label>
                 <div class="relative">
                     <input
                         type="email"
@@ -25,7 +25,7 @@
                 </div>
             </div>
             <div class="form-group w-full max-w-md mx-auto flex flex-col">
-                <label class="font-semibold text-lg" for="password">Password</label>
+                <label class="font-semibold text-md" for="password">Password</label>
                 <div class="relative">
                     <input
                         type="password"
