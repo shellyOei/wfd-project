@@ -64,6 +64,7 @@
             background: #ec0143 !important;
         }
     </style>
+    @yield('style')
 
     <script>
         tailwind.config = {
