@@ -26,9 +26,19 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     {{-- FontAwesome --}}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <style>
+        :root {
+            --blue1: #4980ff; 
+            --gray-inactive: #AAAAAA; 
+            --gray1: #D9D9D9;
+            --blueGradien1: #4DD7E2;
+            --blueGradien2: #1618B9; 
+            --yellowGradien1: #FBEB8C;
+            --yellowGradien2: #F9863A;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -99,6 +109,7 @@
     @include('partials.footer')
 
     @yield('script')
+    @stack('script')
 
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/js/tw-elements.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>
