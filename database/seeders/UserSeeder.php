@@ -15,10 +15,12 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
+                'name' => 'Test User 1',
                 'email' => 'tesuser1@gmail.com',
                 'password' => 'password',
             ],
             [
+                'name' => 'Test User 2',
                 'email' => 'tesuser2@gmail.com',
                 'password' => 'password',
             ],
