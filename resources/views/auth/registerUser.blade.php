@@ -5,7 +5,7 @@
     {{-- logo --}}
         <img class="w-[35%]" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
 
-        <form class="w-[85%] space-y-4" action="/register" method="POST">
+        <form class="w-[85%] space-y-4" action="{{ route('register.post')}}" method="POST">
             @csrf 
             @if ($errors->any())
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
@@ -122,7 +122,7 @@
             </button>
         </form>
 
-        <p class="mt-5">Sudah punya akun? <a href="/login" class="text-[var(--blue1)] underline">Login disini</a></p>
+        <p class="mt-5">Sudah punya akun? <a href="{{ route('login')}}" class="text-[var(--blue1)] underline">Login disini</a></p>
     </div>
 @endsection
 

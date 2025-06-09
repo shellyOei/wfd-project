@@ -50,7 +50,7 @@
         </form>
         <div class="w-[80%] bg-black h-[0.75px] my-6"></div>
 
-        <p>Belum punya akun? <span class="text-[var(--blue1)] underline">Daftar disini</span></p>
+        <p>Belum punya akun? <a href="{{ route('register.index')}}"><span class="text-[var(--blue1)] underline">Daftar disini</span></a></p>
     <div>
 @endsection
                         
