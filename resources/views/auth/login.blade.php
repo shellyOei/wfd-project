@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="flex flex-col h-screen w-screen overflow-x-hidden items-center mt-20 text-black">
+    <div class="flex flex-col max-h-screen h-screen w-screen overflow-x-hidden items-center pt-20 text-black">
         {{-- logo --}}
 
         <img class="w-[40%]" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
