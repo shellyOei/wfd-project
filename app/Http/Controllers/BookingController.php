@@ -40,12 +40,5 @@ public function uploadFile()
 
 }
 
-public function filterDokter()
-{
-
-    
-    return view('appointment.filter'); 
-
-}
 
 }
