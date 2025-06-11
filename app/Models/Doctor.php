@@ -18,6 +18,7 @@ class Doctor extends Model
         'phone',
         'address',
         'photo',
+        'description',
         'specialization_id',
     ];
 
@@ -30,4 +31,6 @@ class Doctor extends Model
     {
         return $this->hasMany(PracticeSchedule::class);
     }
+
+    
 }
