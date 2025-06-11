@@ -24,7 +24,9 @@ class RegisterUserRequest extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed',
+            'phone' => 'required|string|max:20',
+            'password' => 'required|string|min:8|confirmed',
+            'terms' => 'required|accepted'
         ];
     }
 
@@ -35,9 +37,12 @@ class RegisterUserRequest extends FormRequest
             'email.required' => 'Email wajib diisi.',
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah digunakan.',
+            'phone.required' => 'Nomor telepon wajib diisi.',
             'password.required' => 'Password harus diisi.',
-            'password.min' => 'Password minimal 6 karakter.',
+            'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'terms.required' => 'Anda harus menyetujui Syarat Layanan dan Kebijakan Privasi.',
+            'terms.accepted' => 'Anda harus menyetujui Syarat Layanan dan Kebijakan Privasi.', 
         ];
     }
 }

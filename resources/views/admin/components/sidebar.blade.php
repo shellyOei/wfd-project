@@ -6,7 +6,7 @@
             <div class="w-8 h-8 bg-white rounded-lg flex items-center justify-center mr-3">
                 <i class="fas fa-hospital text-indigo-600 text-lg"></i>
             </div>
-            <h1 class="text-xl font-bold text-white">WFD Admin</h1>
+            <h1 class="text-xl font-bold text-white">Admin</h1>
         </div>
         <!-- Mobile close button -->
         <button class="lg:hidden text-white hover:text-gray-300" onclick="toggleSidebar()">
@@ -19,7 +19,7 @@
         <ul class="space-y-2">
             <!-- Dashboard -->
             <li>
-                <a href="" 
+                <a href="{{ route('admin.dashboard') ?? '#' }}" 
                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-tachometer-alt text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Dashboard</span>
@@ -37,7 +37,7 @@
 
             <!-- Patients -->
             <li>
-                <a href=""
+                <a href="{{ route('admin.patients') ?? '#' }}"
                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.patients*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-users text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Patients</span>
