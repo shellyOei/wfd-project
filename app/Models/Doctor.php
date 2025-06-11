@@ -26,11 +26,10 @@ class Doctor extends Model
     {
         return $this->belongsTo(Specialization::class);
     }
-
-    public function schedules()
+    
+    public function dayAvailables()
     {
-        return $this->hasMany(PracticeSchedule::class);
+        return $this->hasMany(DayAvailable::class);
     }
-
     
 }

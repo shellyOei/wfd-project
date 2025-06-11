@@ -3,9 +3,9 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DokterController;
-use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 // user login

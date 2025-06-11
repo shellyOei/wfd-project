@@ -14,9 +14,9 @@ class PracticeSchedule extends Model
         'Datetime',
     ];
 
-    public function doctor()
+    public function dayAvailable()
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(DayAvailable::class);
     }
 
     public function appointment()
