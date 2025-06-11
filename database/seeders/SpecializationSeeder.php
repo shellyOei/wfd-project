@@ -62,6 +62,7 @@ class SpecializationSeeder extends Seeder
             Specialization::create([
                 'name' => $specialization['name'],
                 'icon' => $specialization['icon'],
+
             ]);
         }
     }

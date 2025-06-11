@@ -2,43 +2,83 @@
 
 namespace App\Http\Controllers;
 
-
 use Illuminate\Http\Request;
 use App\Models\Specialization;
 use App\Models\Doctor;
 
 class DokterController extends Controller
 {
-     /**
-     * Display the page with a list of all specializations to filter by.
+    /**
+     * Display a page for users to choose a specialization.
+     * This is the entry point for filtering.
      */
     public function showSpecializations()
     {
-        // Fetch all specializations from the database
         $specializations = Specialization::orderBy('name')->get();
-        // dd($specializations);
-
-        // Return the view and pass the specializations data to it
         return view('doctors.filter', ['specializations' => $specializations]);
-        
     }
 
     /**
-     * Display a list of doctors for a given specialization.
-     *
-     * @param  \App\Models\Specialization  $specialization
-     * @return \Illuminate\Http\Response
+     * Display a listing of ALL doctors.
+     * Corresponds to route('doctors.index')
      */
-    public function showDoctorsBySpecialization(Specialization $specialization)
+    public function index(Request $request)
     {
-        // Thanks to Route Model Binding, Laravel automatically finds the specialization.
-        // Now, we load the doctors related to this specialization using the relationship we defined.
-        $doctors = $specialization->doctors()->get();
+        $query = Doctor::query()->with('specialization');
 
-        // Return the view and pass both the selected specialization and the list of doctors
-        return view('doctors.index', [
-            'specialization' => $specialization,
-            'doctors' => $doctors
-        ]);
+        // Apply search filter if present
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('front_title', 'like', '%' . $search . '%')
+                  ->orWhere('back_title', 'like', '%' . $search . '%');
+            });
+        }
+
+        $doctors = $query->latest()->get();
+
+        // Pass the '$doctors' collection. The view's @isset($specialization) will handle
+        // the $specialization variable not being set.
+        return view('doctors.list', compact('doctors'));
+    }
+
+    /**
+     * Display a listing of doctors filtered by a specific specialization.
+     * Corresponds to route('doctors.by_specialization', $specialization->id)
+     */
+    public function doctorsBySpecialization(Request $request, Specialization $specialization)
+    {
+        // Start query from the specialization's doctors relationship
+        $query = $specialization->doctors();
+
+        // Apply search filter if present
+        if ($search = $request->input('search')) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                  ->orWhere('front_title', 'like', '%' . $search . '%')
+                  ->orWhere('back_title', 'like', '%' . $search . '%');
+            });
+        }
+
+        // We don't need with('specialization') here since all doctors
+        // belong to the $specialization object we already have, but it doesn't hurt.
+        $doctors = $query->get();
+
+        // Pass both the filtered doctors and the specialization to the view
+        return view('doctors.list', compact('doctors', 'specialization'));
+    }
+
+    /**
+     * Display the detail page for a single doctor.
+     * Corresponds to route('doctors.show', $doctor->id)
+     */
+    public function show(Doctor $doctor)
+    {
+        // Eager load the relationship for efficiency
+        $doctor->load('specialization');
+        // dd($doctor);
+
+        // IMPORTANT: Return a DETAIL view, not the list view.
+        return view('doctors.detail', compact('doctor'));
     }
 }

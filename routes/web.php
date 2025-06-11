@@ -31,10 +31,16 @@ Route::get('/detaildokter', [BookingController::class, 'detailDokter'])->name('d
 Route::get('/booking', [BookingController::class, 'booking'])->name('appointment.booking');
 Route::get('/uploadfile', [BookingController::class, 'uploadFile'])->name('uploadfile');
 
-// backend
-// Route to display the page with all specializations
+
+
+// Route to the page where users can pick a specialization
 Route::get('/doctors/filter', [DokterController::class, 'showSpecializations'])->name('doctors.filter');
 
-// Route to display doctors of a specific specialization
-// We use Route Model Binding here by type-hinting {specialization}
-Route::get('/doctors/specialization/{specialization}', [DokterController::class, 'showDoctorsBySpecialization'])->name('doctors.by_specialization');
+// Route for the main list of all doctors
+Route::get('/doctors', [DokterController::class, 'index'])->name('doctors.index');
+
+// Route for the list of doctors filtered by a specialization
+Route::get('/specializations/{specialization}/doctors', [DokterController::class, 'doctorsBySpecialization'])->name('doctors.by_specialization');
+
+// Route for a single doctor's detail page
+Route::get('/doctors/{doctor}', [DokterController::class, 'show'])->name('doctors.show');

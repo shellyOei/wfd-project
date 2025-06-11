@@ -23,6 +23,10 @@
             </div>
             @endforeach
         </div>
+
+        <p class="text-sm text-gray-500 mt-4 ">
+              <strong class="text-red-400"> Booking hanya tersedia untuk 5 hari ke depan.</strong> 
+            </p>
     </div>
 
     <div class="bg-white p-4 rounded-xl shadow-md mb-8">

@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('head')
-    {{-- Anda bisa menambahkan meta tag atau link CSS spesifik di sini jika diperlukan untuk halaman ini --}}
+    {{-- You can add specific meta tags or CSS links here if needed for this page --}}
 @endsection
 
 @section('content')
@@ -13,24 +13,24 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </a>
-        <h1 class="text-2xl font-bold text-gray-800 flex-1 text-center">Dokter</h1>
+        <h1 class="text-2xl font-bold text-gray-800 flex-1 text-center">Profil Dokter</h1>
         <div class="w-7"></div> {{-- Spacer untuk simetri --}}
     </div>
 
-    <div class="relative w-full h-48  flex items-center justify-center -mt-1 shadow-inner">
-        {{-- Div ini membuat latar belakang berwarna di belakang gambar --}}
+    <div class="relative w-full h-48 bg-blue-500 flex items-center justify-center -mt-1 shadow-inner">
+        {{-- You can make this background dynamic based on doctor data or leave it static. --}}
     </div>
 
-    <div class="relative z-10 -mt-24 mb-6"> {{-- Margin negatif disesuaikan untuk tumpang tindih yang lebih baik --}}
-        <img src="{{ asset('appointment/doctor.png') }}" alt="Dr. Andrew S.pd" class="w-36 h-36 object-cover rounded-full border-4 border-white shadow-xl">
+    <div class="relative z-10 -mt-24 "> 
+        <img src="{{ asset($doctor->photo ?? 'appointment/doctor_placeholder.png') }}" alt="Dr. {{ $doctor->name }}" class="w-48 h-48 object-cover rounded-full border-4 border-white shadow-xl">
     </div>
 
     <div class="bg-gradient-to-r from-[#40ACD8] via-[#4980FF] to-[#2244C2] text-white w-[92%] rounded-2xl p-6 shadow-xl -mt-16 pt-24 text-center">
-        <h2 class="text-2xl font-extrabold mb-1">Dr. Andrew S.pd</h2>
-        <p class="text-md font-semibold mb-3">Spesialis Jantung, Spesialis Ortho</p>
-        <hr class="border-gray-300 my-4 opacity-50"> {{-- Garis pemisah disesuaikan agar cocok dengan latar belakang gelap --}}
+        <h2 class="text-2xl font-extrabold mb-1">{{ $doctor->front_title }} {{ $doctor->name }} {{ $doctor->back_title }}</h2>
+        <p class="text-md font-semibold mb-3">{{ $doctor->specialization->name ?? 'Tidak Ada Spesialisasi' }}</p>
+        <hr class="border-gray-300 my-4 opacity-50">
         <p class="text-sm leading-relaxed mb-6 px-2">
-            Saya adalah seorang dokter gigi berpengalaman dengan lebih dari 10 tahun praktik. Saya mengkhususkan diri dalam kedokteran gigi umum dan menawarkan berbagai layanan untuk kesehatan gigi Anda.
+            {{ $doctor->description ?? 'Tidak ada deskripsi untuk dokter ini.' }}
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
@@ -52,26 +52,41 @@
         </div>
     </div>
 
-    {{-- Opsional: Tambahkan bagian di bawah kartu utama untuk detail lebih lanjut --}}
-    <div class="w-[92%] mt-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
-        <h3 class="text-xl font-semibold text-gray-700 mb-4">Lokasi & Jadwal</h3>
+    {{-- <div class="w-[92%] mt-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Informasi Kontak & Lokasi</h3>
         <p class="text-gray-600 mb-2">
-            <strong class="text-gray-800">Klinik Sehat Selalu</strong><br>
-            Jl. Raya Kesehatan No. 123, Surabaya, Jawa Timur
+            <strong class="text-gray-800">No. Telepon:</strong> {{ $doctor->phone ?? 'Tidak Tersedia' }}<br>
         </p>
         <p class="text-gray-600 mb-2">
-            <strong class="text-gray-800">Senin - Jumat:</strong> 09:00 - 17:00 WIB
+            <strong class="text-gray-800">Alamat:</strong> {{ $doctor->address ?? 'Tidak Tersedia' }}
         </p>
-        <p class="text-gray-600">
-            <strong class="text-gray-800">Sabtu:</strong> 09:00 - 13:00 WIB
-        </p>
-        {{-- Anda mungkin ingin menambahkan komponen peta di sini --}}
-    </div>
+    </div> --}}
 
+    {{-- <div class="w-[92%] mt-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Jadwal Praktik</h3>
+        @forelse ($doctor->schedules as $schedule)
+            <div class="mb-2 p-3 bg-gray-50 rounded-lg border border-gray-100">
+                <p class="font-semibold text-gray-800">{{ $schedule->day ?? 'Hari Tidak Diketahui' }}:</p>
+                <p class="text-sm text-gray-700 ml-2">
+                    {{ $schedule->start_time ?? '00:00' }} - {{ $schedule->end_time ?? '00:00' }}
+                    @if ($schedule->clinic_name)
+                        <span class="text-gray-600">({{ $schedule->clinic_name }})</span>
+                    @endif
+                </p>
+                @if ($schedule->location)
+                    <p class="text-xs text-gray-500 ml-2">{{ $schedule->location }}</p>
+                @endif
+            </div>
+        @empty
+            <p class="text-center text-gray-600">Tidak ada jadwal praktik yang tersedia.</p>
+        @endforelse
+    </div> --}}
+
+    {{-- You can add real patient reviews if you have them in your database --}}
     <div class="w-[92%] mt-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
         <h3 class="text-xl font-semibold text-gray-700 mb-4">Ulasan Pasien</h3>
         <div class="flex items-center mb-4">
-            <div class="text-3xl font-bold text-blue-600 mr-2">4.9</div>
+            <div class="text-3xl font-bold text-blue-600 mr-2">4.9</div> {{-- Static for now, replace with dynamic data --}}
             <div class="flex text-yellow-400">
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
@@ -79,19 +94,20 @@
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
             </div>
-            <span class="text-gray-600 ml-2">(250 Ulasan)</span>
+            <span class="text-gray-600 ml-2">(250 Ulasan)</span> {{-- Static for now, replace with dynamic data --}}
         </div>
-        {{-- Contoh ulasan --}}
+        {{-- Example review - replace with dynamic data from database --}}
         <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
             <p class="font-semibold text-gray-800">Bagus sekali!</p>
-            <p class="text-sm text-gray-600 mt-1">"Pelayanan Dr. Andrew sangat ramah dan profesional. Sangat merekomendasikan!"</p>
-            <p class="text-xs text-gray-500 mt-2 text-right">- Pasien A.K., 5 Juni 2025</p>
+            <p class="text-sm text-gray-600 mt-1">"Pelayanan Dr. {{ $doctor->name }} sangat ramah dan profesional. Sangat merekomendasikan!"</p>
+            <p class="text-xs text-gray-500 mt-2 text-right">- Pasien Anonim, {{ date('d F Y') }}</p>
         </div>
+        {{-- You would loop through actual reviews here if available --}}
     </div>
 
 </div>
 @endsection
 
 @section('script')
-    {{-- Anda bisa menambahkan JavaScript khusus halaman di sini jika diperlukan --}}
+    {{-- You can add page-specific JavaScript here if needed --}}
 @endsection
