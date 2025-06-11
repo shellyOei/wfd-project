@@ -15,13 +15,43 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'name' => 'Test User 1',
-                'email' => 'tesuser1@gmail.com',
+                'email' => 'testuser1@gmail.com',
                 'password' => 'password',
             ],
             [
-                'name' => 'Test User 2',
-                'email' => 'tesuser2@gmail.com',
+                'email' => 'testuser2@gmail.com',
+                'password' => 'password',
+            ],
+            [
+                'email' => 'testuser3@gmail.com',
+                'password' => 'password',
+            ],
+            [
+                'email' => 'testuser4@gmail.com',
+                'password' => 'password',
+            ],
+            [
+                'email' => 'testuser5@gmail.com',
+                'password' => 'password',
+            ],
+            [
+                'email' => 'testuser6@gmail.com',
+                'password' => 'password',
+            ],
+            [
+                'email' => 'testuser7@gmail.com',
+                'password' => 'password',
+            ],
+            [
+                'email' => 'testuser8@gmail.com',
+                'password' => 'password',
+            ],
+            [
+                'email' => 'testuser9@gmail.com',
+                'password' => 'password',
+            ],
+            [
+                'email' => 'testuser10@gmail.com',
                 'password' => 'password',
             ],
         ];
