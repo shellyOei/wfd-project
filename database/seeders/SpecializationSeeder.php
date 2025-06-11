@@ -14,20 +14,56 @@ class SpecializationSeeder extends Seeder
     public function run(): void
     {
         $specializations = [
-            'Umum',
-            'Penyakit Dalam',
-            'Anak',
-            'Kandungan',
-            'Saraf',
-            'Bedah',
-            'Gigi',
-            'Mata',
-            'THT',
-            'Kulit dan Kelamin',
+            [
+                'name' => 'Umum',
+                'icon' => 'icons/stethoscope.png'
+            ],
+            [
+                'name' => 'Penyakit Dalam',
+                'icon' => 'icons/pulse.png'
+            ],
+             [
+                'name' => 'Anak',
+                'icon' => 'icons/teddy-bear.png'
+            ],
+            [
+                'name' => 'Kandungan',
+                'icon' => 'icons/pregnant.png'
+            ],
+            [
+                'name' => 'Saraf',
+                'icon' => 'icons/nerve.png'
+            ],
+             [
+                'name' => 'Bedah',
+                'icon' => 'icons/scalpel.png'
+            ],
+            [
+                'name' => 'Gigi',
+                'icon' => 'icons/tooth.png'
+            ],
+            
+            [
+                'name' => 'Mata',
+                'icon' => 'icons/eye.png'
+            ],
+            [
+                'name' => 'THT',
+                'icon' => 'icons/ear.png'
+            ],
+            [
+                'name' => 'Kulit dan Kelamin',
+                'icon' => 'icons/skin.png'
+            ],
         ];
 
-        foreach ($specializations as $special) {
-            Specialization::create(['name' => $special]);
+
+         foreach ($specializations as $specialization) {
+            Specialization::create([
+                'name' => $specialization['name'],
+                'icon' => $specialization['icon'],
+
+            ]);
         }
     }
 }

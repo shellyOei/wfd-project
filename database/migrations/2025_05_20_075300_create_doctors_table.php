@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('back_title');
             $table->string('phone')->unique();
             $table->string('address');
+            $table->text('description')->nullable();
             $table->string('photo');
 
             $table->foreign('specialization_id')->references('id')->on('specializations')->onDelete('cascade');

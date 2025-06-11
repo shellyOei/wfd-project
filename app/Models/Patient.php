@@ -25,8 +25,8 @@ class Patient extends Model
     ];
 
     protected $hidden = [
-        'id_card_number',
-        'BPJS_number',
+        // 'id_card_number',
+        // 'BPJS_number',
     ];
 
     protected static function boot()
@@ -44,7 +44,7 @@ class Patient extends Model
 
     public function profiles()
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(Profile::class);
     }
 
     public function appointments()

@@ -13,10 +13,11 @@ class Specialization extends Model
     protected $fillable = [
         'id',
         'name',
+        'icon',
     ];
 
     public function doctors()
     {
-        return $this->belongsToMany(Doctor::class);
+        return $this->hasMany(Doctor::class);
     }
 }

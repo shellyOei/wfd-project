@@ -14,13 +14,18 @@ class PracticeSchedule extends Model
         'Datetime',
     ];
 
-    public function doctor()
+    public function dayAvailable()
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->belongsTo(DayAvailable::class);
     }
 
     public function appointment()
     {
-        return $this->hasOne(Appointment::class);
+        return $this->hasOne(Appointment::class, 'schedule_id');
+    }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class, 'schedule_id');
     }
 }
