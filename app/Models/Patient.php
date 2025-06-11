@@ -29,6 +29,19 @@ class Patient extends Model
         'BPJS_number',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+        static::creating(function ($patient) {
+            // Generate a unique patient number.
+            // Loop until a truly unique number is found to avoid collisions.
+            do {
+                $patientNumber = rand(100000, 999999);
+            } while (self::where('patient_number', $patientNumber)->exists());
+            $patient->patient_number = $patientNumber;
+        });
+    }
+
     public function profiles()
     {
         return $this->belongsToMany(User::class);

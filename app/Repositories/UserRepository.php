@@ -3,9 +3,11 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use App\UserRepositoryInterface;
+use App\Repositories\Contracts\BaseRepositoryInterface; 
+use App\Repositories\Contracts\UserRepositoryInterface;
+use Illuminate\Support\Facades\Hash;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository implements UserRepositoryInterface // Implementasi interface spesifik
 {
     public function all()
     {
@@ -14,20 +16,23 @@ class UserRepository implements UserRepositoryInterface
 
     public function find($id)
     {
-        return User::findOrFail($id);
+        return User::find($id); 
     }
 
-    public function allBy($filter)
+    public function findOrFail($id)
     {
-        // return User::where('name', 'like', "%$filter%")->get();
+        return User::findOrFail($id); 
     }
 
-    public function create(array $data)
+    public function create(array $data): User 
     {
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        }
         return User::create($data);
     }
 
-    public function update($id, array $data)
+    public function update($id, array $data): User 
     {
         $user = User::findOrFail($id);
         $user->update($data);
@@ -38,5 +43,16 @@ class UserRepository implements UserRepositoryInterface
     {
         $user = User::findOrFail($id);
         return $user->delete();
+    }
+
+    // implentation of user-specific methods examples
+    public function findByEmail(string $email)
+    {
+        return User::where('email', $email)->first();
+    }
+
+    public function getActiveUsers()
+    {
+        return User::where('is_active', true)->get();
     }
 }
