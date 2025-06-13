@@ -39,7 +39,7 @@
                     class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 flex items-center">
                     <i class="fas fa-plus mr-2"></i>Add New Patient
                 </button>
-                <button
+                <button onclick="exportPatients()"
                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 flex items-center">
                     <i class="fas fa-download mr-2"></i>Export
                 </button>
@@ -612,6 +612,42 @@
                     });
                 }
             });
+        }
+
+        // Export Patients Function
+        function exportPatients() {
+            // Show loading state
+            Swal.fire({
+                title: 'Exporting...',
+                text: 'Please wait while we prepare your file.',
+                icon: 'info',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // Create a temporary link to download the file
+            const link = document.createElement('a');
+            link.href = '/admin/patients-export';
+            link.target = '_blank';
+
+            // Trigger download
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Close loading and show success
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Export Complete!',
+                    text: 'Your patients data has been exported successfully.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }, 1500);
         }
 
         // View Patient Details

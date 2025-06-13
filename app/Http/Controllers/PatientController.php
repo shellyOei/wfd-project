@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Exports\PatientsExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PatientController extends Controller
 {
@@ -182,5 +184,101 @@ class PatientController extends Controller
             'appointments' => $patient->appointments,
             'lab_results' => $patient->labResults ?? []
         ]);
+    }
+
+    /**
+     * Export patients to Excel/CSV
+     */
+    public function export()
+    {
+        try {
+            // Try Excel export first
+            if (class_exists('Maatwebsite\Excel\Facades\Excel')) {
+                $fileName = 'patients_' . now()->format('Y-m-d_H-i-s') . '.xlsx';
+                return Excel::download(new PatientsExport, $fileName);
+            } else {
+                // Fallback to CSV export
+                return $this->exportCSV();
+            }
+        } catch (\Exception) {
+            // Fallback to CSV if Excel fails
+            return $this->exportCSV();
+        }
+    }
+
+    /**
+     * Export patients to CSV (fallback method)
+     */
+    private function exportCSV()
+    {
+        $patients = Patient::with(['profiles.user', 'appointments'])
+                          ->orderBy('created_at', 'desc')
+                          ->get();
+
+        $fileName = 'patients_' . now()->format('Y-m-d_H-i-s') . '.csv';
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+
+        $callback = function() use ($patients) {
+            $file = fopen('php://output', 'w');
+
+            // Add CSV headers
+            fputcsv($file, [
+                'Patient Number',
+                'Full Name',
+                'Phone Number',
+                'Gender',
+                'Date of Birth',
+                'Age',
+                'Blood Type',
+                'Rhesus Factor',
+                'Occupation',
+                'Address',
+                'ID Card Number',
+                'BPJS Number',
+                'Linked Users',
+                'Total Appointments',
+                'Status',
+                'Registration Date'
+            ]);
+
+            // Add patient data
+            foreach ($patients as $patient) {
+                $age = \Carbon\Carbon::parse($patient->date_of_birth)->age;
+                $linkedUsers = $patient->profiles->pluck('user.email')->filter()->implode(', ');
+                if (empty($linkedUsers)) {
+                    $linkedUsers = 'No linked users';
+                }
+                $totalAppointments = $patient->appointments->count();
+                $hasRecentAppointment = $patient->appointments->where('created_at', '>=', now()->subMonths(6))->count() > 0;
+                $status = $hasRecentAppointment ? 'Active' : 'Inactive';
+
+                fputcsv($file, [
+                    $patient->patient_number,
+                    $patient->name,
+                    $patient->phone,
+                    ucfirst($patient->sex),
+                    \Carbon\Carbon::parse($patient->date_of_birth)->format('Y-m-d'),
+                    $age . ' years',
+                    $patient->blood_type ?? 'N/A',
+                    $patient->rhesus_factor ?? 'N/A',
+                    $patient->occupation,
+                    $patient->address,
+                    $patient->id_card_number,
+                    $patient->BPJS_number ?? 'Not registered',
+                    $linkedUsers,
+                    $totalAppointments,
+                    $status,
+                    $patient->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

@@ -35,6 +35,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/patients/{patient}', [PatientController::class, 'update'])->name('patients.update');
         Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
         Route::get('/patients/{patient}/medical-history', [PatientController::class, 'getMedicalHistory'])->name('patients.medical-history');
+        Route::get('/patients-export', [PatientController::class, 'export'])->name('patients.export');
 
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
     });

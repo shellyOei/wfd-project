@@ -14,6 +14,11 @@ class PracticeSchedule extends Model
         'Datetime',
     ];
 
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class);
+    }
+
     public function dayAvailable()
     {
         return $this->belongsTo(DayAvailable::class);
