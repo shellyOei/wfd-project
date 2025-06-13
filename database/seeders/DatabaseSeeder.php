@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             MedicineSeeder::class,
             PracticeScheduleSeeder::class, // depends on doctors
+            DayAvailableSeeder::class, 
         ]);
 
         // Appointments and related data (depends on patients and schedules)

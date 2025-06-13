@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('head')
-    {{-- You can add specific meta tags or CSS links here if needed for this page --}}
+
 @endsection
 
 @section('content')
@@ -14,14 +14,14 @@
             </svg>
         </a>
         <h1 class="text-2xl font-bold text-gray-800 flex-1 text-center">Profil Dokter</h1>
-        <div class="w-7"></div> {{-- Spacer untuk simetri --}}
+        <div class="w-7"></div> 
     </div>
 
     <div class="relative w-full h-48 bg-blue-500 flex items-center justify-center -mt-1 shadow-inner">
-        {{-- You can make this background dynamic based on doctor data or leave it static. --}}
+
     </div>
 
-    <div class="relative z-10 -mt-24 "> 
+    <div class="relative z-10 -mt-24 ">
         <img src="{{ asset($doctor->photo ?? 'appointment/doctor_placeholder.png') }}" alt="Dr. {{ $doctor->name }}" class="w-48 h-48 object-cover rounded-full border-4 border-white shadow-xl">
     </div>
 
@@ -34,9 +34,10 @@
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
-            <a href="#" class="w-full sm:w-auto bg-white text-blue-700 font-semibold px-6 py-3 rounded-full text-base hover:bg-gray-100 transition duration-300 ease-in-out shadow-lg transform hover:scale-105">
+            <a href="{{ route('booking.show', $doctor->id) }}" class="w-full sm:w-auto bg-white text-blue-700 font-semibold px-6 py-3 rounded-full text-base hover:bg-gray-100 transition duration-300 ease-in-out shadow-lg transform hover:scale-105">
                 Buat Janji Temu
             </a>
+
             <div class="flex gap-3 mt-3 sm:mt-0">
                 <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-md border border-gray-200 hover:bg-gray-100 transition duration-300 ease-in-out">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -82,11 +83,11 @@
         @endforelse
     </div> --}}
 
-    {{-- You can add real patient reviews if you have them in your database --}}
+    {{-- ulasan hardcoded --}}
     <div class="w-[92%] mt-6 bg-white p-6 rounded-2xl shadow-xl border border-gray-100">
         <h3 class="text-xl font-semibold text-gray-700 mb-4">Ulasan Pasien</h3>
         <div class="flex items-center mb-4">
-            <div class="text-3xl font-bold text-blue-600 mr-2">4.9</div> {{-- Static for now, replace with dynamic data --}}
+            <div class="text-3xl font-bold text-blue-600 mr-2">4.9</div>
             <div class="flex text-yellow-400">
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
@@ -94,20 +95,20 @@
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
                 <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
             </div>
-            <span class="text-gray-600 ml-2">(250 Ulasan)</span> {{-- Static for now, replace with dynamic data --}}
+            <span class="text-gray-600 ml-2">(250 Ulasan)</span> 
         </div>
-        {{-- Example review - replace with dynamic data from database --}}
+
         <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
             <p class="font-semibold text-gray-800">Bagus sekali!</p>
             <p class="text-sm text-gray-600 mt-1">"Pelayanan Dr. {{ $doctor->name }} sangat ramah dan profesional. Sangat merekomendasikan!"</p>
             <p class="text-xs text-gray-500 mt-2 text-right">- Pasien Anonim, {{ date('d F Y') }}</p>
         </div>
-        {{-- You would loop through actual reviews here if available --}}
+
     </div>
 
 </div>
 @endsection
 
 @section('script')
-    {{-- You can add page-specific JavaScript here if needed --}}
+
 @endsection

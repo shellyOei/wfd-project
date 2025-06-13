@@ -5,7 +5,7 @@ use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\DokterController;
+use App\Http\Controllers\DoctorController;
 use Illuminate\Support\Facades\Route;
 
 // user login
@@ -40,22 +40,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-// Route::get('/filterdokter', [BookingController::class, 'filterDokter'])->name('filterdokter');
-Route::get('/listdokter', [BookingController::class, 'listDokter'])->name('listdokter');
-Route::get('/detaildokter', [BookingController::class, 'detailDokter'])->name('detaildokter');
-Route::get('/booking', [BookingController::class, 'booking'])->name('appointment.booking');
-Route::get('/uploadfile', [BookingController::class, 'uploadFile'])->name('uploadfile');
+
+// filter.blade.php
+Route::get('/doctors/filter', [DoctorController::class, 'showSpecializations'])->name('doctors.filter');
+Route::get('/api/doctor-suggestions', [DoctorController::class, 'getDoctorSuggestions'])->name('api.doctor_suggestions');
 
 
 
-// Route to the page where users can pick a specialization
-Route::get('/doctors/filter', [DokterController::class, 'showSpecializations'])->name('doctors.filter');
+// list.blade.php
+Route::get('/specializations/{specialization}/doctors', [DoctorController::class, 'doctorsBySpecialization'])->name('doctors.by_specialization');
+Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
+Route::get('/api/doctors-search', [DoctorController::class, 'searchDoctorsAjax'])->name('api.doctors.search');
 
-// Route for the main list of all doctors
-Route::get('/doctors', [DokterController::class, 'index'])->name('doctors.index');
+// detail.blade.php
+Route::get('/doctors/{doctor}', [DoctorController::class, 'show'])->name('doctors.show');
 
-// Route for the list of doctors filtered by a specialization
-Route::get('/specializations/{specialization}/doctors', [DokterController::class, 'doctorsBySpecialization'])->name('doctors.by_specialization');
+// form.blade.php
+Route::get('/doctor/{doctor}/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
 
-// Route for a single doctor's detail page
-Route::get('/doctors/{doctor}', [DokterController::class, 'show'])->name('doctors.show');
+
+
