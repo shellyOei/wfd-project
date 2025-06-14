@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Doctor;
 
 class PracticeSchedule extends Model
 {
@@ -27,5 +28,10 @@ class PracticeSchedule extends Model
     public function appointments()
     {
         return $this->hasMany(Appointment::class, 'schedule_id');
+    }
+
+    public function doctor() 
+    {
+        return $this->belongsTo(Doctor::class);
     }
 }
