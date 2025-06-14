@@ -30,9 +30,67 @@ class UserController extends Controller
 
     public function index()
     {
-        return view('user.dashboard'); 
+        return view('user.dashboard');
     }
 
+
+    public function showEditAccount()
+    {
+        $user = auth()->guard('user')->user();
+        return view('user.profile.editAccount', ['user' => $user]);
+
+    }
+    public function updateSelf(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:100',
+            'email' => 'required|email|max:100|unique:users,email,' . auth()->guard('user')->id(),
+        ]);
+
+        $user = auth()->guard('user')->user();
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        $user->save();
+        auth()->guard('user')->setUser($user);
+
+        return response()->json(['message' => 'Akun berhasil diperbarui.']);
+    }
+    public function deactivateSelf(Request $request)
+    {
+        try {
+            $user = auth()->guard('user')->user();
+            $user->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'User berhasil dinonaktifkan.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menonaktifkan akun: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function destroySelf(Request $request)
+    {
+        try {
+            $user = auth()->guard('user')->user();
+            $user->forceDelete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Akun berhasil dihapus.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus akun: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    // Admin functions
     public function registerAccount(RegisterUserRequest $request)
     {
         $validated = $request->validated();
@@ -44,15 +102,15 @@ class UserController extends Controller
         return redirect()->route('user.dashboard')->with('success', 'Berhasil registrasi akun!');
     }
 
-    public function index()
+    public function users()
     {
         $users = $this->userRepo->withTrashed()->get()
             ->load('profiles.patient');
-            // ->loadCount([
-            //     'profiles as patients_count' => function ($query) {
-            //         $query->whereNotNull('patient_id');
-            //     }
-            // ]);
+        // ->loadCount([
+        //     'profiles as patients_count' => function ($query) {
+        //         $query->whereNotNull('patient_id');
+        //     }
+        // ]);
 
         return view('admin.users', compact('users'));
     }
@@ -63,12 +121,12 @@ class UserController extends Controller
             $user->restore(); // undo soft delete
             return response()->json([
                 'success' => true,
-                'message' => 'User account activated successfully.'
+                'message' => 'Akun berhasil diaktifkan.'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to activate user: ' . $e->getMessage()
+                'message' => 'Gagal mengaktifkan akun: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -78,12 +136,12 @@ class UserController extends Controller
             $user->delete();
             return response()->json([
                 'success' => true,
-                'message' => 'User deactivated successfully!'
+                'message' => 'User berhasil dinonaktifkan.'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while deactivating the user: ' . $e->getMessage()
+                'message' => 'Gagal menonaktifkan akun: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -93,12 +151,12 @@ class UserController extends Controller
             $user->forceDelete();
             return response()->json([
                 'success' => true,
-                'message' => 'User deleted successfully!'
+                'message' => 'Akun berhasil dihapus.'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while deleting the user: ' . $e->getMessage()
+                'message' => 'Gagal menghapus akun: ' . $e->getMessage()
             ], 500);
         }
     }
@@ -114,8 +172,8 @@ class UserController extends Controller
         $user->save();
 
         return response()->json([
-                'success' => true,
-                'message' => 'Email updated successfully!'
+            'success' => true,
+            'message' => 'Email updated successfully!'
         ]);
     }
 }

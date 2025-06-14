@@ -30,15 +30,21 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         $user = \App\Models\User::withTrashed()->where('email', $credentials['email'])->first();
 
+        // Activate user klo sebelumnya inactive
+        if ($user->trashed()) {
+            $user->restore();
+        }
         if ($this->authService->login($credentials, 'user')) {
-            if ($user->trashed()) {
-                $user->deleted_at = null;
-                $user->save();
-            }
+
             return redirect()->route('user.dashboard');
         }
 
         return back()->with('error', 'Invalid credentials!');
+    }
+    public function logoutAsUser(Request $request)
+    {
+        $this->authService->logout();
+        return redirect()->route('login')->with('success', 'Logged out successfully!');
     }
 
     public function loginAsAdmin(Request $request)

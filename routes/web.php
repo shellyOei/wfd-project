@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DokterController;
@@ -22,10 +23,31 @@ Route::middleware(['user'])->prefix('user')->name('user.')->group(function () {
     // patient registration
     Route::post('/register-patient', [PatientController::class, 'registerPatient'])->name('register.patient.post');
     Route::get('/register-patient', [PatientController::class, 'showPatientRegistrationForm'])->name('register.patient');
+    Route::post('/link-patient', [ProfileController::class, 'linkPatient'])->name('link-patient.post');
+    Route::get('/link-patient', [PatientController::class, 'showExistingPatientRegistrationForm'])->name('link-patient');
+
+
+    // Profile Nav
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::get('/account/edit', [UserController::class, 'showEditAccount'])->name('update');
+    Route::put('/account/edit', [UserController::class, 'updateSelf'])->name('update.post');
+    Route::put('/account/deactivate', [UserController::class, 'deactivateSelf'])->name('deactivate');
+    Route::delete('/account/delete', [UserController::class, 'destroySelf'])->name('delete');
+    Route::get('/patients', [ProfileController::class, 'showEditPatient'])->name('patients');
+    Route::get('/patients/{id}/edit', [PatientController::class, 'edit'])->name('patients.edit.form');
+
+    Route::put('/patients/{id}', [PatientController::class, 'update'])->name('patients.update');
+
+    Route::delete('/patients/{id}/disconnect', [ProfileController::class, 'disconnect'])->name('patients.disconnect');
+
+    Route::get('/history', [ProfileController::class, 'miniHistory'])->name('miniHistory');
+    Route::get('/history/data/{patientId}', [PatientController::class, 'getAppointments'])->name('miniHistory.data');
 });
-// Route::get('/', function () {
-//     return view('user.profile.index');
-// });
+Route::post('/logout', [LoginController::class, 'logoutAsUser'])->name('logout');
+
+Route::get('/', function () {
+    return view('user.profile.index');
+});
 
 
 // admin
@@ -45,18 +67,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/patients/{patient}/medical-history', [PatientController::class, 'getMedicalHistory'])->name('patients.medical-history');
 
 
-        Route::get('/users', [UserController::class, 'index'])->name('users');
-        Route::put('/users/{user}', [UserController::class,'update'])->name('users.update');
-        Route::delete('/users/{user}', [UserController::class,'destroy'])->name('users.destroy');
-        Route::delete('/users/{user}/deactivate', [UserController::class,'deactivate'])->name('users.destroy');
-        Route::put('/users/{user}/activate', [UserController::class,'activate'])->name('users.activate');
+        Route::get('/users', [UserController::class, 'users'])->name('users');
+        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        Route::delete('/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('users.destroy');
+        Route::put('/users/{user}/activate', [UserController::class, 'activate'])->name('users.activate');
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
         Route::get('/manage', [AdminController::class, 'manageAdmins'])->name('manage');
         Route::get('/manage/store', [AdminController::class, 'manageAdmins'])->name('manage.store');
-        Route::delete('/manage/{admin}/deactivate', [AdminController::class,'deactivate'])->name('manage.destroy');
-        Route::put('/manage/{admin}/activate', [AdminController::class,'activate'])->name('manage.activate');
-        Route::delete('/manage/{admin}', [AdminController::class,'destroy'])->name('manage.destroy');
+        Route::delete('/manage/{admin}/deactivate', [AdminController::class, 'deactivate'])->name('manage.destroy');
+        Route::put('/manage/{admin}/activate', [AdminController::class, 'activate'])->name('manage.activate');
+        Route::delete('/manage/{admin}', [AdminController::class, 'destroy'])->name('manage.destroy');
         Route::get('/doctors/search', [AdminController::class, 'manageAdmins'])->name('doctors.search');
 
     });

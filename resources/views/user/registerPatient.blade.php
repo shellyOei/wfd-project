@@ -91,7 +91,7 @@
             </div>
         </div>
 
-        <form class="w-[85%] max-w-md space-y-4" action="{{ Route('register.patient.post')}}" method="POST" id="patientRegistrationForm">
+        <form class="w-[85%] max-w-md space-y-4" action="{{ Route('user.register.patient.post')}}" method="POST" id="patientRegistrationForm">
             @csrf
             <div id="error-container" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative" role="alert">
                 <strong class="font-bold">Whoops!</strong>

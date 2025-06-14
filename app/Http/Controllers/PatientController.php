@@ -190,6 +190,11 @@ class PatientController extends Controller
     {
         return view('user.registerPatient');
     }
+    public function showExistingPatientRegistrationForm()
+    {
+        return view('user.profile.linkPatient');
+    }
+
 
     public function registerPatient(RegisterPatientRequest $r)
     {
@@ -203,5 +208,39 @@ class PatientController extends Controller
         // $patient = $this->patientRepository->create($valid);
 
         return redirect()->route('user.dashboard')->with('success', 'Patient registration successful!');
+    }
+
+    public function getAppointments($patientId)
+    {
+        $patient = Patient::with(['appointments.schedule.doctor.specialization'])->findOrFail($patientId);
+
+        $activeAppointments = collect();
+        $historyAppointments = collect();
+
+        foreach ($patient->appointments as $appointment) {
+            $schedule = $appointment->schedule;
+            if (!$schedule || !$schedule->Datetime)
+                continue;
+
+            $datetime = \Carbon\Carbon::parse($schedule->Datetime);
+            $info = [
+                'date' => $datetime->translatedFormat('d F Y'),
+                'time' => $datetime->format('H:i'),
+                'title' => $appointment->type,
+                'doctor_name' => $schedule->doctor->name ?? '-',
+                'specialization' => $schedule->doctor->specialization->name ?? '-', // pakai relasi jika foreign key
+            ];
+
+            if ($datetime->isToday() || $datetime->isFuture()) {
+                $activeAppointments->push($info);
+            } else {
+                $historyAppointments->push($info);
+            }
+        }
+
+        return response()->json([
+            'activeAppointments' => $activeAppointments->sortBy('date')->values(),
+            'historyAppointments' => $historyAppointments->sortByDesc('date')->values(),
+        ]);
     }
 }
