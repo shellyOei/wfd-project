@@ -10,7 +10,7 @@
                 <!-- Header -->
                 <div class="flex items-center justify-between mb-5">
                     <div class="flex items-center">
-                        <button onclick="history.back()"
+                        <button onclick="goBackWithReload()"
                             class="w-8 h-8 bg-[#f4f4fd] rounded-full flex items-center justify-center mr-4">
                             <i class="fas fa-arrow-left text-sm"></i>
                         </button>
@@ -20,6 +20,8 @@
 
                 <!-- Pasien List -->
                 <div class="space-y-4 mb-4 md:grid md:grid-cols-1 md:gap-4 md:space-y-0">
+                    <h2 class="text-xl md:text-3xl font-semibold">Pasien Terhubung</h2>
+
                     @forelse ($patients as $patient)
                         <div class="flex items-center bg-white rounded-2xl p-4 md:p-6 transition-shadow">
                             @php
@@ -34,24 +36,23 @@
 
                             <div class="flex-grow">
                                 <h3 class="text-xl md:text-xl font-bold">{{ $patient->name }}</h3>
-                                <div class="flex items-center gap-2 mt-1 mb-2">
+                                <div class="flex flex-wrap items-center gap-2 mt-1 mb-2">
                                     <span
                                         class="bg-gray-100 text-gray-600 text-xs font-medium md:px-4 md:py-1 px-2 py-1 rounded-full">
-                                        {{ Str::title($patient->sex) }}
+                                        {{ $patient->sex === 'male' ? 'Laki-laki' : 'Perempuan' }}
                                     </span>
-                                    <span
-                                        class="bg-gray-100 text-gray-600 text-xs font-medium md:px-4 md:py-1 px-2 py-1 rounded-full">
-                                        {{ $umur }} tahun
-                                    </span>
+                                    <!-- <span
+                                                        class="bg-gray-100 text-gray-600 text-xs font-medium md:px-4 md:py-1 px-2 py-1 rounded-full">
+                                                        {{ $umur }} tahun
+                                                    </span> -->
                                 </div>
 
-                                <!-- BLM Action buttons -->
-                                 <!-- Kurang buat edit sama disconnect -->
                                 <div class="flex gap-3 mt-2">
-                                    <a href="{{ route('user.patients', $patient->id) }}"
+                                    <a href="{{ route('user.patients.edit.form', $patient->id) }}"
                                         class="text-sm font-semibold text-blue-600 hover:underline">Ubah</a>
 
-                                    <button onclick="disconnectPatient({{ $patient->id }})"
+                                    <button
+                                        onclick="disconnectPatient('{{ $patient->id }}', '{{ e($patient->name) }}', '{{ route('user.patients.disconnect', ['id' => $patient->id]) }}')"
                                         class="text-sm font-semibold text-red-600 hover:underline">
                                         Putuskan
                                     </button>
@@ -59,7 +60,9 @@
                             </div>
                         </div>
                     @empty
-                        <p class="text-center text-[#a9a9a9] italic py-4 min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">Belum ada pasien terhubung.</p>
+                        <p
+                            class="text-center text-[#a9a9a9] italic py-4 min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
+                            Belum ada pasien terhubung.</p>
                     @endforelse
                 </div>
             </section>
@@ -71,9 +74,17 @@
 
 @push('scripts')
     <script>
-        function disconnectPatient(id) {
+        function goBackWithReload() {
+            const previous = document.referrer;
+            if (previous) {
+                window.location.href = previous; // Ini akan ke halaman sebelumnya dan melakukan reload penuh
+            } else {
+                window.history.back(); // fallback kalau referrer kosong (langsung akses halaman ini)
+            }
+        }
+        function disconnectPatient(id, name, url) {
             Swal.fire({
-                title: 'Putuskan pasien ini?',
+                title: `Putuskan pasien ${name}?`,
                 text: "Pasien akan dihapus dari daftar Anda.",
                 icon: 'warning',
                 showCancelButton: true,
@@ -82,7 +93,7 @@
                 confirmButtonText: 'Ya, Putuskan'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    fetch(`/patients/${id}/disconnect`, {
+                    fetch(url, {
                         method: 'DELETE',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -100,5 +111,6 @@
                 }
             });
         }
+
     </script>
 @endpush

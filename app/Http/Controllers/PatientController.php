@@ -15,8 +15,8 @@ class PatientController extends Controller
     public function index()
     {
         $patients = Patient::with(['profiles.user', 'appointments'])
-                          ->orderBy('created_at', 'desc')
-                          ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('admin.patients', compact('patients'));
     }
@@ -89,7 +89,7 @@ class PatientController extends Controller
     public function show(Patient $patient)
     {
         $patient->load(['profiles.user', 'appointments.schedule.doctor']);
-        
+
         return response()->json([
             'success' => true,
             'patient' => $patient
@@ -150,7 +150,7 @@ class PatientController extends Controller
 
             // Delete related profiles first
             $patient->profiles()->delete();
-            
+
             // Delete the patient
             $patient->delete();
 
@@ -194,12 +194,17 @@ class PatientController extends Controller
     {
         return view('user.profile.linkPatient');
     }
+    public function showEditForm($id)
+    {
+        $patient = Patient::findOrFail($id); // Kalau tidak ketemu, langsung 404
+        return view('user.registerPatient', compact('patient'));
+    }
 
 
     public function registerPatient(RegisterPatientRequest $r)
     {
         $valid = $r->validated();
-        
+
         try {
             Patient::create($valid);
         } catch (\Exception $e) {

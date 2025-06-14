@@ -8,28 +8,28 @@
     <div class="min-h-screen bg-[#f4f4fd]">
         <!-- Header - Mobile Only -->
         <!-- <header class="fixed top-0 left-0 right-0 h-[63px] bg-[#f4f4fd] z-10 md:hidden">
-                                        <div class="flex justify-between items-center px-7 pt-6">
-                                            <div class="flex gap-1">
-                                                <i class="fas fa-signal text-[22px]"></i>
-                                                <i class="fas fa-wifi text-[22px]"></i>
-                                                <i class="fas fa-battery-full text-[22px]"></i>
+                                            <div class="flex justify-between items-center px-7 pt-6">
+                                                <div class="flex gap-1">
+                                                    <i class="fas fa-signal text-[22px]"></i>
+                                                    <i class="fas fa-wifi text-[22px]"></i>
+                                                    <i class="fas fa-battery-full text-[22px]"></i>
+                                                </div>
+                                                <time class="font-semibold text-base">12:45</time>
                                             </div>
-                                            <time class="font-semibold text-base">12:45</time>
-                                        </div>
-                                    </header> -->
+                                        </header> -->
 
         <!-- Main Content -->
         <main class="max-w-[440px] md:max-w-7xl mx-auto md:pt-8 pb-[61px] md:pb-8">
             <!-- Desktop Header -->
             <!-- <div class="hidden md:block mb-8">
-                                            <div class="flex items-center justify-between">
-                                                <h1 class="text-4xl font-bold text-gray-800">Dashboard</h1>
-                                                <div class="flex items-center space-x-4">
-                                                    <span class="text-gray-600">Welcome back, Angel</span>
-                                                    <img class="w-10 h-10 rounded-full" src="img/mask-group.png" alt="User avatar" />
+                                                <div class="flex items-center justify-between">
+                                                    <h1 class="text-4xl font-bold text-gray-800">Dashboard</h1>
+                                                    <div class="flex items-center space-x-4">
+                                                        <span class="text-gray-600">Welcome back, Angel</span>
+                                                        <img class="w-10 h-10 rounded-full" src="img/mask-group.png" alt="User avatar" />
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </div> -->
+                                            </div> -->
 
             <!-- Desktop Grid Layout -->
             <div class="md:grid md:grid-cols-12 md:gap-8">
@@ -76,18 +76,19 @@
                                         <div class="flex-grow">
                                             <h3 class="text-xl md:text-xl font-bold">{{ $profile->patient->name }}</h3>
                                             <!-- <p class="text-[#7a7a7a] md:text-base">Profil Utama</p> -->
-                                            <div class="flex items-center gap-2 mt-1 mb-2">
+                                            <div class="flex flex-wrap items-center gap-2 mt-1 mb-2">
                                                 <span
                                                     class="bg-gray-100 text-gray-600 text-xs font-medium md:px-4 md:py-1 px-2 py-1 rounded-full">
-                                                    {{ Str::title($profile->patient->sex) }}
+                                                    {{ $profile->patient->sex === 'male' ? 'Laki-laki' : 'Perempuan' }}
                                                 </span>
-                                                @php
-                                                    $umur = Carbon\Carbon::parse($profile->patient->date_of_birth)->age;
-                                                @endphp
-                                                <span
-                                                    class="bg-gray-100 text-gray-600 text-xs font-medium px-4 py-1 md:py-1 px-2 py-1 rounded-full">
-                                                    {{ $umur }} tahun
-                                                </span>
+
+                                                <!-- @php
+                                                                $umur = Carbon\Carbon::parse($profile->patient->date_of_birth)->age;
+                                                            @endphp
+                                                            <span
+                                                                class="bg-gray-100 text-gray-600 text-xs font-medium px-4 py-1 md:py-1 px-2 py-1 rounded-full">
+                                                                {{ $umur }} tahun
+                                                            </span> -->
                                             </div>
                                         </div>
                                     </div>
@@ -95,21 +96,25 @@
                             @endforeach
 
                             <!-- <div class="flex items-center bg-white rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow">
-                                                            <img class="w-[88px] h-[87px] md:w-20 md:h-20 rounded-full mr-4 md:mr-6" src="img/image.png" alt="User avatar" />
-                                                            <div class="flex-grow">
-                                                                <h3 class="text-xl md:text-xl font-bold">Chris Parker</h3>
-                                                                <p class="text-[#7a7a7a] md:text-base">Pasangan</p>
-                                                                <div class="hidden md:block mt-2 text-sm text-gray-500">
-                                                                    Last visit: 1 week ago
+                                                                <img class="w-[88px] h-[87px] md:w-20 md:h-20 rounded-full mr-4 md:mr-6" src="img/image.png" alt="User avatar" />
+                                                                <div class="flex-grow">
+                                                                    <h3 class="text-xl md:text-xl font-bold">Chris Parker</h3>
+                                                                    <p class="text-[#7a7a7a] md:text-base">Pasangan</p>
+                                                                    <div class="hidden md:block mt-2 text-sm text-gray-500">
+                                                                        Last visit: 1 week ago
+                                                                    </div>
                                                                 </div>
-                                                            </div>
 
-                                                        </div> -->
+                                                            </div> -->
                         </div>
+
+                        @php
+                            $jumlah_terhubung = $user->profiles->count();
+                        @endphp
 
                         <button id="patient-modal-btn"
                             class="w-full gradient-bg bg-gradient-to-r hover:bg-gradient-to-bl transition duration-200 ease-in-out transform hover:scale-105 md:hover:scale-102 from-[#4ADEDE] via-[#1CA7EC] to-[#1F2F98] text-white rounded-xl py-2.5 md:py-3 text-xl font-bold shadow-md">
-                            <i class="fas fa-plus mr-2"></i>Tambah (2/5)
+                            <i class="fas fa-plus mr-2"></i>Tambah ({{ $jumlah_terhubung }}/5)
                         </button>
                     </section>
                 </div>

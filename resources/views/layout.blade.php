@@ -86,7 +86,7 @@
     @stack('head')
 
 </head>
-
+@stack('scripts')
 <body class="bg-[var(--background)]">
     @include('partials.user-nav')
 

@@ -29,17 +29,20 @@ Route::middleware(['user'])->prefix('user')->name('user.')->group(function () {
 
     // Profile Nav
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+
+    // Edit Akun
     Route::get('/account/edit', [UserController::class, 'showEditAccount'])->name('update');
     Route::put('/account/edit', [UserController::class, 'updateSelf'])->name('update.post');
     Route::put('/account/deactivate', [UserController::class, 'deactivateSelf'])->name('deactivate');
     Route::delete('/account/delete', [UserController::class, 'destroySelf'])->name('delete');
+
+    // List patient yang terkonek
     Route::get('/patients', [ProfileController::class, 'showEditPatient'])->name('patients');
-    Route::get('/patients/{id}/edit', [PatientController::class, 'edit'])->name('patients.edit.form');
-
-    Route::put('/patients/{id}', [PatientController::class, 'update'])->name('patients.update');
-
+    Route::get('/patients/{patient}/edit', [PatientController::class, 'showEditForm'])->name('patients.edit.form');
+    Route::put('/patients/{patient}', [PatientController::class, 'update'])->name('patients.update');
     Route::delete('/patients/{id}/disconnect', [ProfileController::class, 'disconnect'])->name('patients.disconnect');
 
+    // Mini History
     Route::get('/history', [ProfileController::class, 'miniHistory'])->name('miniHistory');
     Route::get('/history/data/{patientId}', [PatientController::class, 'getAppointments'])->name('miniHistory.data');
 });

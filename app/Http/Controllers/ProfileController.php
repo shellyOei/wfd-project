@@ -104,9 +104,13 @@ class ProfileController extends Controller
     public function disconnect($id)
     {
         $user = auth()->guard('user')->user();
-        $user->patients()->detach($id);
+        $patient = Patient::findOrFail($id);
+        $user->profiles()->where('patient_id', $patient->id)->delete();
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Pasien telah diputus.'
+        ]);
     }
     public function showEditPatient()
     {
