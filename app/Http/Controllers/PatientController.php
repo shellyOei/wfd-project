@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterPatientRequest;
 use App\Models\Patient;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -182,5 +183,25 @@ class PatientController extends Controller
             'appointments' => $patient->appointments,
             'lab_results' => $patient->labResults ?? []
         ]);
+    }
+
+    // --- register patient ---
+    public function showPatientRegistrationForm()
+    {
+        return view('user.registerPatient');
+    }
+
+    public function registerPatient(RegisterPatientRequest $r)
+    {
+        $valid = $r->validated();
+        
+        try {
+            Patient::create($valid);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to register patient: ' . $e->getMessage()]);
+        }
+        // $patient = $this->patientRepository->create($valid);
+
+        return redirect()->route('user.dashboard')->with('success', 'Patient registration successful!');
     }
 }

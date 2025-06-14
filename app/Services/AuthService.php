@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthService
 {
-    public function login(array $credentials, string $guard = 'web'): bool
+    public function login(array $credentials, string $guard = 'user'): bool
     {
         if (Auth::guard($guard)->attempt($credentials)) {
             return true;

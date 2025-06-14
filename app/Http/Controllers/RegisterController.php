@@ -4,11 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
+use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\UserRepository;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
+    // protected $userRepository;
+
+    // public function __construct(UserRepositoryInterface $userRepository)
+    // {
+    //     $this->userRepository = $userRepository;
+    // }
+
+    // --- register account for user ---
     public function showRegistrationForm()
     {
         return view('auth.registerUser');
@@ -18,12 +28,7 @@ class RegisterController extends Controller
     {
         $valid = $r->validated();
 
-         $user = User::create([
-            'name' => $valid['name'], 
-            'email' => $valid['email'], 
-            'phone' => $valid['phone'], 
-            'password' => Hash::make($valid['password']), 
-        ]);
+        $user = User::create($valid);
 
         // Log the user in
         auth()->guard('user')->login($user);
