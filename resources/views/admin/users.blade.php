@@ -70,7 +70,10 @@
                                     <div class="w-10 h-10 bg-indigo-100 rounded-full flex items-center justify-center mr-4">
                                         <i class="fas fa-user text-indigo-600"></i>
                                     </div>
-                                    <p class="font-semibold text-gray-900">{{ $user->email }}</p>
+                                    <div>
+                                        <p class="font-semibold text-gray-900">{{ $user->name }}</p>
+                                        <p class="text-gray-600 text-sm">{{ $user->email }}</p>
+                                    </div>
                                 </div>
                             </td>
 
@@ -105,7 +108,7 @@
                                         <i class="fas fa-edit text-sm"></i>
                                     </button>
                                     <button class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200"
-                                        title="Delete User" onclick="deleteUser('{{ $user->id }}', '{{ $user->email }}')">
+                                        title="Delete User" onclick="deleteUser('{{ $user->id }}', '{{ $user->name }}')">
                                         <i class="fas fa-trash text-sm"></i>
                                     </button>
                                 </div>

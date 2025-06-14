@@ -71,12 +71,12 @@ class UserController extends Controller
             $user->delete();
             return response()->json([
                 'success' => true,
-                'message' => 'User deleted successfully!'
+                'message' => 'User deactivated successfully!'
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while deleting the user: ' . $e->getMessage()
+                'message' => 'An error occurred while deactivating the user: ' . $e->getMessage()
             ], 500);
         }
     }

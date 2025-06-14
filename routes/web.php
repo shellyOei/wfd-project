@@ -18,9 +18,9 @@ Route::middleware(['user'])->group(function () {
     // protected routes for user
     Route::get('/dashboard', [AdminController::class, 'index'])->name('user.dashboard');
 });
-Route::get('/', function () {
-    return view('user.profile.index');
-});
+// Route::get('/', function () {
+//     return view('user.profile.index');
+// });
 
 
 // admin
@@ -46,5 +46,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/users/{user}/deactivate', [UserController::class,'deactivate'])->name('users.destroy');
         Route::put('/users/{user}/activate', [UserController::class,'activate'])->name('users.activate');
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+
+        Route::get('/manage', [AdminController::class, 'manageAdmins'])->name('manage');
+        Route::get('/manage/store', [AdminController::class, 'manageAdmins'])->name('manage.store');
+        Route::delete('/manage/{admin}/deactivate', [AdminController::class,'deactivate'])->name('manage.destroy');
+        Route::put('/manage/{admin}/activate', [AdminController::class,'activate'])->name('manage.activate');
+        Route::delete('/manage/{admin}', [AdminController::class,'destroy'])->name('manage.destroy');
+        Route::get('/doctors/search', [AdminController::class, 'manageAdmins'])->name('doctors.search');
+
     });
 });

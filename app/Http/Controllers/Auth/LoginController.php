@@ -51,6 +51,7 @@ class LoginController extends Controller
             // Store admin information in session
             session()->put('name', $admin->name);
             session()->put('email', $admin->email);
+            session()->put('doctor_id', $admin->doctor_id);
 
             return redirect()->route('admin.dashboard');
         }
