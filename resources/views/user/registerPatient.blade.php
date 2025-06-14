@@ -84,9 +84,10 @@
                 <div class="stepper-circle active" id="circle-1">1</div>
                 <div class="stepper-label active" id="label-1">Informasi Pribadi</div>
             </div>
+            <div class=""></div>
             <div class="stepper-item" id="stepper-step-2">
                 <div class="stepper-circle" id="circle-2">2</div>
-                <div class="stepper-label" id="label-2">Detail Medis & Lainnya</div>
+                <div class="stepper-label" id="label-2">Detail Medis</div>
             </div>
         </div>
 
@@ -106,7 +107,7 @@
 
                 <!-- Nama Lengkap Input Field -->
                 <div class="form-group w-full flex flex-col space-y-1">
-                    <label class="font-semibold text-md" for="name">Nama Lengkap</label>
+                    <label class="font-semibold wetext-md" for="name">Nama Lengkap</label>
                     <div class="relative">
                         <input
                             type="text" class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
@@ -139,8 +140,8 @@
                         <select name="sex" id="sex" required
                                 class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Jenis Kelamin</option>
-                            <option value="Male">Laki-laki</option>
-                            <option value="Female">Perempuan</option>
+                            <option value="male">Laki-laki</option>
+                            <option value="female">Perempuan</option>
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-venus-mars text-gray-400"></i>

@@ -10,7 +10,6 @@ class PracticeSchedule extends Model
     use HasUuids;
 
     protected $fillable = [
-        'doctor_id',
         'Datetime',
     ];
 
