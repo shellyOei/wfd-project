@@ -18,9 +18,12 @@ Route::post('/login', [LoginController::class, 'loginAsUser'])->name('login.post
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
 Route::post('/register', [RegisterController::class, 'registerUser'])->name('register.post');
 
-Route::middleware(['user'])->group(function () {
-    // protected routes for user
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('user.dashboard');
+Route::middleware(['user'])->prefix('user')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+
+    // patient registration
+    Route::post('/register-patient', [PatientController::class, 'registerPatient'])->name('register.patient.post');
+    Route::get('/register-patient', [PatientController::class, 'showPatientRegistrationForm'])->name('register.patient');
 });
 
 // admin

@@ -27,7 +27,7 @@
         </div>
 
         {{-- container search--}}
-        <div id="suggestionsBox" class="absolute z-10 w-full bg-white border border-gray-200 rounded-xl shadow-lg mt-2 hidden
+        <div id="suggestionsBox" class="absolute z-10 w-full bg-white border border-gray-200 rounded-xl shadow-lg mt-2 hidden">
         </div>
     </div>
 
