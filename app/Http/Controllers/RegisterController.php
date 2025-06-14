@@ -6,8 +6,11 @@ use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\UserRepository;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
@@ -26,13 +29,23 @@ class RegisterController extends Controller
 
     public function registerUser(RegisterUserRequest $r)
     {
-        $valid = $r->validated();
+        try {
+            $valid = $r->validated();
+            $user = User::create($valid);
 
-        $user = User::create($valid);
+            auth()->login($user);
+            return response()->json(['success' => true, 'message' => 'Registrasi akun berhasil', 'redirect' => route('user.dashboard')]);
 
-        // Log the user in
-        auth()->guard('user')->login($user);
+        } catch (ValidationException $e) {
 
-        return redirect()->route('login')->with('success', 'Registration successful!');
+            return response()->json(['success' => false, 'message' => 'Validasi gagal.', 'errors' => $e->errors()], 422); 
+        } catch (\Exception $e) {
+            
+            Log::error('Registrasi akun gagal: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal melakukan registrasi akun: ' . $e->getMessage()
+            ], 500); 
+        }
     }
 }

@@ -5,19 +5,16 @@
     {{-- logo --}}
         <img class="w-[35%]" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
 
-        <form class="w-[85%] space-y-4" action="{{ route('register.post')}}" method="POST">
-            @csrf 
-            @if ($errors->any())
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                    <strong class="font-bold">Whoops!</strong>
-                    <span class="block sm:inline">There were some problems with your input.</span>
-                    <ul class="mt-3 list-disc list-inside">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+        <form class="w-[85%] space-y-4" action="{{ route('register.post')}}" method="POST" id="registerForm">
+            @csrf
+            {{-- This general error div is no longer needed for AJAX validation errors but kept for conventional Laravel redirects if desired --}}
+            <div id="initial-error-container" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Whoops!</strong>
+                <span class="block sm:inline">There were some problems with your input.</span>
+                <ul id="initial-error-list" class="mt-3 list-disc list-inside">
+                    {{-- Errors will be populated here by Laravel Blade if the page reloads with validation errors --}}
+                </ul>
+            </div>
 
             {{-- Name Input Field --}}
             <div class="form-group w-full max-w-md mx-auto flex flex-col space-y-1">
@@ -32,6 +29,7 @@
                         <i class="fa-solid fa-user text-gray-400"></i>
                     </div>
                 </div>
+                <span class="error-message text-red-500 text-sm mt-1" id="name-error"></span>
             </div>
 
             {{-- Email Input Field --}}
@@ -47,9 +45,7 @@
                         <i class="fa-solid fa-envelope text-gray-400"></i>
                     </div>
                 </div>
-                @error('email')
-                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                @enderror
+                <span class="error-message text-red-500 text-sm mt-1" id="email-error"></span>
             </div>
 
             {{-- Phone Number Input Field --}}
@@ -65,6 +61,7 @@
                         <i class="fa-solid fa-phone text-gray-400"></i>
                     </div>
                 </div>
+                <span class="error-message text-red-500 text-sm mt-1" id="phone-error"></span>
             </div>
 
             {{-- Password Input Field --}}
@@ -80,6 +77,7 @@
                         <i class="fa-solid fa-eye-slash text-gray-400"></i>
                     </div>
                 </div>
+                <span class="error-message text-red-500 text-sm mt-1" id="password-error"></span>
             </div>
 
             {{-- Confirm Password Input Field --}}
@@ -95,6 +93,7 @@
                         <i class="fa-solid fa-eye-slash text-gray-400"></i>
                     </div>
                 </div>
+                <span class="error-message text-red-500 text-sm mt-1" id="password_confirmation-error"></span>
             </div>
 
             <div class="form-group w-full max-w-md mx-auto flex items-start space-x-2">
@@ -102,8 +101,8 @@
                     type="checkbox"
                     name="terms"
                     id="terms"
-                    class="mt-1 w-4 h-4 rounded border-[var(--blue1)] text-[var(--blue1)] focus:ring-[var(--blue1)] @error('terms') border-red-500 @enderror"
-                    {{ old('terms') ? 'checked' : '' }} {{-- Retain state --}}
+                    class="mt-1 w-4 h-4 rounded border-[var(--blue1)] text-[var(--blue1)] focus:ring-[var(--blue1)]"
+                    {{ old('terms') ? 'checked' : '' }}
                     required>
                 <label for="terms" class="text-gray-700">
                     Saya menyetujui
@@ -112,7 +111,8 @@
                     <a href="/privacy-policy" class="text-[var(--blue1)] underline hover:text-blue-700">Kebijakan Privasi</a>
                 </label>
             </div>
-           
+            <span class="error-message text-red-500 text-sm mt-1" id="terms-error"></span>
+
             <button type="submit" class="btn text-center w-full py-3 rounded-lg text-white font-semibold shadow-lg
                 bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)]
                 hover:from-purple-600 hover:to-indigo-700
@@ -127,45 +127,187 @@
 @endsection
 
 @push('script')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            @if ($errors->any())
-                let errorMessage = "Registrasi akun tidak berhasil. Please check your input.";
-                // @foreach ($errors->all() as $error)
-                //     errorMessage += "\n- {{ $error }}";
-                // @endforeach
-
+            // Check for success message from session (for initial page load, if redirected conventionally)
+            const successMessage = "{{ session('success') }}";
+            if (successMessage.trim() !== '') {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Validation Error!',
-                    text: errorMessage,
+                    icon: 'success',
+                    title: 'Registrasi Berhasil!',
+                    text: successMessage,
+                    showConfirmButton: false,
+                    timer: 3000
                 });
-            @endif
-            
-            // toggle password visibility
+            }
+
+            // Function to clear all error highlights and messages from inputs
+            function clearErrorState() {
+                document.querySelectorAll('input, select, textarea').forEach(el => {
+                    el.classList.remove('border-red-500');
+                });
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.textContent = ''; // Clear error messages
+                });
+            }
+
+            // --- AJAX Form Submission Logic ---
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) {
+                registerForm.addEventListener('submit', async function(event) {
+                    event.preventDefault(); // Prevent default form submission
+
+                    clearErrorState(); // Clear all error states on new submission
+
+                    Swal.fire({
+                        title: 'Mohon Tunggu...',
+                        html: 'Sedang memproses registrasi Anda.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    try {
+                        const formData = new FormData(registerForm);
+                        const response = await fetch(registerForm.action, {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest', // Identify as AJAX request for Laravel
+                                'Accept': 'application/json' // Explicitly tell Laravel we expect JSON
+                            }
+                        });
+
+                        const data = await response.json(); // Always expect JSON response from server
+
+                        Swal.close(); // Close loading indicator immediately
+
+                        if (response.ok) { // HTTP status 200-299 (success)
+                            if (data.success) {
+                                // Show success alert and wait for it to close/timer to finish
+                                await Swal.fire({
+                                    icon: 'success',
+                                    title: 'Registrasi Berhasil!',
+                                    text: data.message,
+                                    showConfirmButton: false,
+                                    timer: 3000
+                                });
+                                // Then redirect after the SweetAlert is shown
+                                if (data.redirect) {
+                                    window.location.href = data.redirect;
+                                }
+                            } else {
+                                // This case for specific non-validation errors returned with 200 status
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Terjadi Kesalahan!',
+                                    text: data.message || 'Registrasi akun tidak berhasil. Silakan coba lagi.',
+                                    showConfirmButton: true,
+                                });
+                            }
+                        } else { // HTTP status 4xx, 5xx (errors like 422 for validation, 500 for server error)
+                            if (response.status === 422 && data.errors) {
+                                // Handle validation errors directly under fields
+                                for (const field in data.errors) {
+                                    const inputField = document.getElementById(field);
+                                    const errorSpan = document.getElementById(`${field}-error`);
+                                    if (inputField) {
+                                        inputField.classList.add('border-red-500');
+                                    }
+                                    if (errorSpan) {
+                                        // Display only the first error message for the field
+                                        errorSpan.textContent = data.errors[field][0];
+                                    }
+                                }
+                                // Optionally show a general "Validation Failed" SweetAlert without listing all errors
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Validasi Gagal!',
+                                    text: 'Mohon periksa kembali input Anda yang ditandai.',
+                                    showConfirmButton: true,
+                                });
+                            } else {
+                                // Fallback for general server errors (e.g., 500)
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Terjadi Kesalahan!',
+                                    text: data.message || 'Registrasi akun tidak berhasil. Silakan coba lagi.',
+                                    showConfirmButton: true,
+                                });
+                            }
+                        }
+
+                    } catch (error) {
+                        Swal.close(); // Close loading indicator on network/parsing error
+                        console.error('Error during registration:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Network Error!',
+                            text: 'Terjadi masalah koneksi atau server. Silakan coba lagi.',
+                            showConfirmButton: true,
+                        });
+                    }
+                });
+            }
+
+            // --- Password Visibility Toggle Logic ---
             const togglePassword = document.getElementById('togglePassword');
             const passwordInput = document.getElementById('password');
             const toggleConfirmPassword = document.getElementById('toggleConfirmPassword');
             const confirmPasswordInput = document.getElementById('password_confirmation');
 
-            // Function to toggle password visibility for a given input and toggle element
             function setupPasswordToggle(inputElement, toggleElement) {
                 if (toggleElement && inputElement) {
                     toggleElement.addEventListener('click', function () {
-                        // Toggle the type attribute
                         const type = inputElement.getAttribute('type') === 'password' ? 'text' : 'password';
                         inputElement.setAttribute('type', type);
-
-                        // Toggle the eye icon
                         this.querySelector('i').classList.toggle('fa-eye');
                         this.querySelector('i').classList.toggle('fa-eye-slash');
                     });
                 }
             }
-
-            // Setup toggles for both password fields
             setupPasswordToggle(passwordInput, togglePassword);
             setupPasswordToggle(confirmPasswordInput, toggleConfirmPassword);
+
+            // --- Initial Page Load Error Handling (for conventional redirects) ---
+            @if ($errors->any())
+                clearErrorState(); // Clear any previous AJAX error states if page reloaded
+
+                const initialErrorContainer = document.getElementById('initial-error-container');
+                const initialErrorList = document.getElementById('initial-error-list');
+                initialErrorContainer.classList.remove('hidden');
+                initialErrorList.innerHTML = '';
+
+                // Populate initial error list in the dedicated container (if still desired)
+                @foreach ($errors->all() as $error)
+                    const li = document.createElement('li');
+                    li.textContent = "{{ $error }}";
+                    initialErrorList.appendChild(li);
+                @endforeach
+
+                // Highlight fields that have errors on initial load and display messages
+                @foreach ($errors->keys() as $field)
+                    const errorField = document.getElementById('{{ $field }}');
+                    const errorSpan = document.getElementById('{{ $field }}-error');
+                    if (errorField) {
+                        errorField.classList.add('border-red-500');
+                    }
+                    if (errorSpan) {
+                        // Display the error message directly from Laravel's error bag
+                        errorSpan.textContent = "{{ $errors->first($field) }}";
+                    }
+                @endforeach
+
+                // You can still show a general SweetAlert on initial load if there are ANY errors
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Pendaftaran Gagal!',
+                    html: 'Terdapat masalah dengan input Anda. Silakan periksa kembali formulir.',
+                    confirmButtonColor: '#EF4444'
+                });
+            @endif
         });
     </script>
 @endpush

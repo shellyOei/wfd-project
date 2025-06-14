@@ -195,7 +195,11 @@ class PatientController extends Controller
     {
         $valid = $r->validated();
         
-        Patient::create($valid);
+        try {
+            Patient::create($valid);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to register patient: ' . $e->getMessage()]);
+        }
         // $patient = $this->patientRepository->create($valid);
 
         return redirect()->route('user.dashboard')->with('success', 'Patient registration successful!');
