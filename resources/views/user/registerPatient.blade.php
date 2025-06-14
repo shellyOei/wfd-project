@@ -109,7 +109,7 @@
                     <label class="font-semibold text-md" for="name">Nama Lengkap</label>
                     <div class="relative">
                         <input
-                            type="text"
+                            type="text" class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             placeholder="Contoh: Budi Santoso"
                             name="name" id="name" value="" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -123,7 +123,7 @@
                     <label class="font-semibold text-md" for="phone">Nomor Telepon</label>
                     <div class="relative">
                         <input
-                            type="tel"
+                            type="tel" class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             placeholder="Contoh: 081234567890"
                             name="phone" id="phone" value="" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -156,7 +156,7 @@
                     <label class="font-semibold text-md" for="date_of_birth">Tanggal Lahir</label>
                     <div class="relative">
                         <input
-                            type="date"
+                            type="date" class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             name="date_of_birth" id="date_of_birth" value="" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-calendar-days text-gray-400"></i>
@@ -169,7 +169,7 @@
                     <label class="font-semibold text-md" for="id_card_number">Nomor KTP</label>
                     <div class="relative">
                         <input
-                            type="text"
+                            type="text" class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             placeholder="Contoh: 1234567890123456"
                             name="id_card_number" id="id_card_number" value="" pattern="[0-9]{16}" title="Nomor KTP harus 16 digit angka" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -183,7 +183,7 @@
                     <label class="font-semibold text-md" for="occupation">Profesi</label>
                     <div class="relative">
                         <input
-                            type="text"
+                            type="text" class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             placeholder="Contoh: Karyawan Swasta"
                             name="occupation" id="occupation" value="" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
@@ -261,7 +261,7 @@
                     <label class="font-semibold text-md" for="BPJS_number">Nomor BPJS (Opsional)</label>
                     <div class="relative">
                         <input
-                            type="text"
+                            type="text" class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             placeholder="Opsional"
                             name="BPJS_number" id="BPJS_number" value="">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
