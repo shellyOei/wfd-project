@@ -9,7 +9,7 @@
         {{-- logo --}}
         <img class="w-[35%]" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
 
-        <form class="w-[85%] space-y-4" action="{{ route('login') }}" method="POST">
+        <form class="w-[85%] space-y-4" action="{{ route('login.post') }}" method="POST">
             @csrf
              <div class="form-group w-full max-w-md mx-auto flex flex-col space-y-1">
                 <label class="font-semibold text-md" for="email">Email</label>

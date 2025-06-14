@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // user login
@@ -15,8 +16,8 @@ Route::post('/login', [LoginController::class, 'loginAsUser'])->name('login.post
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
 Route::post('/register', [RegisterController::class, 'registerUser'])->name('register.post');
 
-Route::middleware(['user'])->prefix('user')->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+Route::middleware(['user'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
 
     // patient registration
     Route::post('/register-patient', [PatientController::class, 'registerPatient'])->name('register.patient.post');
