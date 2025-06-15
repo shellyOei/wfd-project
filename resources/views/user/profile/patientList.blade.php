@@ -42,9 +42,9 @@
                                         {{ $patient->sex === 'male' ? 'Laki-laki' : 'Perempuan' }}
                                     </span>
                                     <!-- <span
-                                                        class="bg-gray-100 text-gray-600 text-xs font-medium md:px-4 md:py-1 px-2 py-1 rounded-full">
-                                                        {{ $umur }} tahun
-                                                    </span> -->
+                                                                class="bg-gray-100 text-gray-600 text-xs font-medium md:px-4 md:py-1 px-2 py-1 rounded-full">
+                                                                {{ $umur }} tahun
+                                                            </span> -->
                                 </div>
 
                                 <div class="flex gap-3 mt-2">
@@ -102,8 +102,13 @@
                     }).then(res => res.json())
                         .then(data => {
                             if (data.success) {
-                                Swal.fire('Berhasil!', 'Pasien telah diputus.', 'success')
-                                    .then(() => location.reload());
+                                Swal.fire({
+                                    title: 'Berhasil!',
+                                    text: 'Pasien telah diputus.',
+                                    icon: 'success',
+                                    showConfirmButton: false,
+                                    timer: 1000
+                                }).then(() => location.reload());
                             } else {
                                 Swal.fire('Gagal', 'Gagal memutuskan pasien.', 'error');
                             }

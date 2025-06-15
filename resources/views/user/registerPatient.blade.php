@@ -243,10 +243,10 @@
 
                 <button type="button" id="next-step-btn"
                     class="btn text-center w-full py-3 rounded-lg text-white font-semibold shadow-lg
-                                                                bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)]
-                                                                hover:from-purple-600 hover:to-indigo-700
-                                                                hover:shadow-xl transition-all duration-300 ease-in-out
-                                                                focus:outline-none focus:ring-2 focus:ring-[var(--blueGradient1)] focus:ring-opacity-75 font-bold tracking-wide">
+                                                                        bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)]
+                                                                        hover:from-purple-600 hover:to-indigo-700
+                                                                        hover:shadow-xl transition-all duration-300 ease-in-out
+                                                                        focus:outline-none focus:ring-2 focus:ring-[var(--blueGradient1)] focus:ring-opacity-75 font-bold tracking-wide">
                     Selanjutnya
                 </button>
             </div>
@@ -315,16 +315,16 @@
                 <div class="flex justify-between space-x-4 mt-6">
                     <button type="button" id="prev-step-btn"
                         class="btn text-center w-1/2 py-3 rounded-lg text-gray-700 font-semibold shadow-lg
-                                                                    bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-in-out
-                                                                    focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75 font-bold tracking-wide">
+                                                                            bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-in-out
+                                                                            focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75 font-bold tracking-wide">
                         Kembali
                     </button>
                     <button id="registPatientForm" type="submit"
                         class="btn text-center w-1/2 py-3 rounded-lg text-white font-semibold shadow-lg
-                                                bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)]
-                                                hover:from-purple-600 hover:to-indigo-700
-                                                hover:shadow-xl transition-all duration-300 ease-in-out
-                                                focus:outline-none focus:ring-2 focus:ring-[var(--blueGradient1)] focus:ring-opacity-75 font-bold tracking-wide">
+                                                        bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)]
+                                                        hover:from-purple-600 hover:to-indigo-700
+                                                        hover:shadow-xl transition-all duration-300 ease-in-out
+                                                        focus:outline-none focus:ring-2 focus:ring-[var(--blueGradient1)] focus:ring-opacity-75 font-bold tracking-wide">
                         {{ $isEdit ? 'Simpan Perubahan' : 'Daftar Pasien' }}
                     </button>
                 </div>
@@ -506,7 +506,9 @@
                                 text: data.message || (isEditMode
                                     ? 'Data pasien berhasil diperbarui.'
                                     : 'Data pasien berhasil didaftarkan.'),
-                                confirmButtonColor: '#3B82F6'
+                                showConfirmButton: false,
+                                timer: 1000,
+                                // confirmButtonColor: '#3B82F6'
                             }).then(() => {
                                 if (isEditMode) {
                                     window.location.href = '{{ route('user.patients') }}';
@@ -607,13 +609,13 @@
                     }
                 @endforeach
 
-                                                                                                    // If any error belongs to step 2, navigate to step 2 after initial page load
-                                                                                                    const step2Fields = ['golongan_darah', 'rhesus', 'nomor_bpjs'];
+                                                                                                                    // If any error belongs to step 2, navigate to step 2 after initial page load
+                                                                                                                    const step2Fields = ['golongan_darah', 'rhesus', 'nomor_bpjs'];
                 const hasStep2Errors = step2Fields.some(field => document.getElementById(field) && document.getElementById(field).classList.contains('border-red-500'));
                 if (hasStep2Errors) {
                     showStep(2);
                 }
             @endif
-                                                });
+                                                        });
     </script>
 @endpush
