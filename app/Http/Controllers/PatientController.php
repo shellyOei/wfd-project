@@ -4,11 +4,23 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterPatientRequest;
 use App\Models\Patient;
+use App\Services\AuthService;
+use App\Services\PatientService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
 {
+    protected $patientService, $authService;
+
+    public function __construct(PatientService $patientService, AuthService $authService)
+    {
+        $this->patientService = $patientService;
+        $this->authService = $authService;
+    }
+
     /**
      * Display a listing of the patients.
      */
@@ -193,15 +205,30 @@ class PatientController extends Controller
 
     public function registerPatient(RegisterPatientRequest $r)
     {
-        $valid = $r->validated();
-        
-        try {
-            Patient::create($valid);
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Failed to register patient: ' . $e->getMessage()]);
-        }
-        // $patient = $this->patientRepository->create($valid);
+        $user = $this->authService->user('user');
 
-        return redirect()->route('user.dashboard')->with('success', 'Patient registration successful!');
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. Please log in to register a user.'
+            ], 401);
+        }
+
+        $valid = $r->validated();
+
+        try {  
+            $patient = $this->patientService->registerPatient($valid, $user);
+
+            return response()->json([
+                'message' => 'Pendaftaran pasien berhasil!',
+                'patient' => $patient
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan server saat mendaftar pasien: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

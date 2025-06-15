@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 
 class AuthService
 {
@@ -14,14 +17,16 @@ class AuthService
         return false; 
     }
 
-    public function logout(): void
+    public function logout(Request $r, $guard)
     {
-        Auth::logout();
+        Auth::guard($guard)->logout();
+        $r->session()->invalidate(); 
+        $r->session()->regenerateToken(); 
     }
 
-    public function user()
+    public function user($guard)
     {
-        return Auth::user();
+        return Auth::guard($guard)->user();
     }
 }
 
