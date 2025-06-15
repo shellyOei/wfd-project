@@ -32,7 +32,7 @@ class RegisterPatientRequest extends FormRequest
             'address' => 'required|string|max:500',
             'blood_type' => 'required|in:A,B,AB,O',
             'rhesus_factor' => 'required|in:Positif,Negatif',
-            'BPJS_number' => 'nullable|string|max:20!unique:patients,BPJS_number',
+            'BPJS_number' => 'nullable|string|max:20|unique:patients,BPJS_number',
         ];
     }
 

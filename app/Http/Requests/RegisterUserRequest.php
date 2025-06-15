@@ -38,6 +38,7 @@ class RegisterUserRequest extends FormRequest
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah digunakan.',
             'phone.required' => 'Nomor telepon wajib diisi.',
+            'phone.max' => 'Nomor telepon tidak boleh lebih dari 20 karakter.',
             'password.required' => 'Password harus diisi.',
             'password.min' => 'Password minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi password tidak cocok.',
