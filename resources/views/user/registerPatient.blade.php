@@ -120,9 +120,7 @@
                             <i class="fa-solid fa-user text-gray-400"></i>
                         </div>
                     </div>
-                    @error('name')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="name-error"></span>
                 </div>
 
                 <div class="form-group w-full flex flex-col space-y-1">
@@ -136,9 +134,7 @@
                             <i class="fa-solid fa-phone text-gray-400"></i>
                         </div>
                     </div>
-                    @error('phone')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="phone-error"></span>
                 </div>
 
                 <div class="form-group w-full flex flex-col space-y-1">
@@ -157,9 +153,7 @@
                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
                         </div>
                     </div>
-                    @error('sex')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="sex-error"></span>
                 </div>
 
                 <div class="form-group w-full flex flex-col space-y-1">
@@ -172,9 +166,7 @@
                             <i class="fa-solid fa-calendar-days text-gray-400"></i>
                         </div>
                     </div>
-                    @error('date_of_birth')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="date_of_birth-error"></span>
                 </div>
 
                 <div class="form-group w-full flex flex-col space-y-1">
@@ -188,9 +180,7 @@
                             <i class="fa-solid fa-id-card text-gray-400"></i>
                         </div>
                     </div>
-                    @error('id_card_number')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="id_card_number-error"></span>
                 </div>
 
                 <div class="form-group w-full flex flex-col space-y-1">
@@ -204,9 +194,7 @@
                             <i class="fa-solid fa-briefcase text-gray-400"></i>
                         </div>
                     </div>
-                    @error('occupation')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="occupation-error"></span>
                 </div>
 
                 <div class="form-group w-full flex flex-col space-y-1">
@@ -217,9 +205,7 @@
                             name="address" id="address" rows="3" required
                             class="w-full pl-4 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent">{{ old('address') }}</textarea>
                     </div>
-                    @error('address')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="address-error"></span>
                 </div>
 
                 <button type="button" id="next-step-btn" class="btn text-center w-full py-3 rounded-lg text-white font-semibold shadow-lg
@@ -252,9 +238,7 @@
                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
                         </div>
                     </div>
-                    @error('blood_type')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="blood_type-error"></span>
                 </div>
 
                 <div class="form-group w-full flex flex-col space-y-1">
@@ -273,9 +257,7 @@
                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
                         </div>
                     </div>
-                    @error('rhesus_factor')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="rhesus_factor-error"></span>
                 </div>
 
                 <div class="form-group w-full flex flex-col space-y-1">
@@ -289,9 +271,7 @@
                             <i class="fa-solid fa-hospital text-gray-400"></i>
                         </div>
                     </div>
-                    @error('BPJS_number')
-                        <span class="error-message">{{ $message }}</span>
-                    @enderror
+                    <span class="error-message text-red-500 text-sm mt-1" id="BPJS_number-error"></span>
                 </div>
 
                 <div class="flex justify-between space-x-4 mt-6">
@@ -325,7 +305,7 @@
         const prevStepBtn = document.getElementById('prev-step-btn');
         const submitFormBtn = document.getElementById('registPatientForm');
         const errorContainer = document.getElementById('error-container');
-        const errorList = document.getElementById('error-list');
+        const errorList = document.getElementById('error-list'); // This is largely unused if errors are field-specific now
         const stepperLine = document.querySelector('.stepper-line');
 
         const stepperCircle1 = document.getElementById('circle-1');
@@ -335,6 +315,15 @@
         const stepperItem1 = document.getElementById('stepper-step-1');
 
         let currentStep = 1;
+
+        function clearErrorState() {
+            document.querySelectorAll('input, select, textarea').forEach(el => {
+                el.classList.remove('border-red-500');
+            });
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.textContent = ''; // Clear error messages
+            });
+        }
 
         // Function to update stepper UI
         function updateStepperUI() {
@@ -363,11 +352,11 @@
 
         // Function to clear all existing error messages and highlights
         function clearErrors() {
-            errorContainer.classList.add('hidden');
-            errorList.innerHTML = '';
-            document.querySelectorAll('.error-message').forEach(el => el.remove());
             document.querySelectorAll('input, select, textarea').forEach(el => {
                 el.classList.remove('border-red-500');
+            });
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.textContent = ''; 
             });
         }
 
@@ -383,64 +372,58 @@
             }
             currentStep = stepNumber;
             updateStepperUI();
-            clearErrors(); // Clear errors when switching steps
+            // clearErrors(); 
         }
 
-        function checkRequiredFields(stepElement) {
-            let allFieldsFilled = true;
-            const requiredInputs = stepElement.querySelectorAll('[required]');
-            requiredInputs.forEach(input => {
-                // Remove previous error message for this specific input
-                const existingErrorMessage = input.nextElementSibling;
-                if (existingErrorMessage && existingErrorMessage.classList.contains('error-message')) {
-                    existingErrorMessage.remove();
-                }
-                input.classList.remove('border-red-500'); // Clear previous error styling
+        // function checkRequiredFields(stepElement) {
+        //     let allFieldsFilled = true;
+        //     const requiredInputs = stepElement.querySelectorAll('[required]');
 
-                if (input.type === 'date' && !input.value) {
-                    allFieldsFilled = false;
-                    input.classList.add('border-red-500');
-                    displayFieldError(input, 'Harap isi tanggal lahir.');
-                } else if (input.tagName === 'SELECT' && !input.value) {
-                    allFieldsFilled = false;
-                    input.classList.add('border-red-500');
-                    displayFieldError(input, `Harap pilih ${input.previousElementSibling.textContent.toLowerCase().replace(':', '')}.`); // Dynamically get label text
-                } else if (input.type !== 'date' && input.tagName !== 'SELECT' && input.value.trim() === '') {
-                    allFieldsFilled = false;
-                    input.classList.add('border-red-500');
-                    displayFieldError(input, `Harap isi ${input.previousElementSibling.textContent.toLowerCase().replace(':', '')}.`); // Dynamically get label text
-                }
-            });
-            return allFieldsFilled;
-        }
+        //     requiredInputs.forEach(input => {
+        //         input.classList.remove('border-red-500');
+        //         input.classList.add('border-[var(--blue1)]'); 
+        //         const existingErrorMessage = document.querySelector(`.error-message[data-for="${input.id}"]`); // Adjusted selector
+        //         if (existingErrorMessage) {
+        //             existingErrorMessage.remove();
+        //         }
+            
+        //         let isEmpty = false;
+        //         if (input.type === 'date') {
+        //             isEmpty = !input.value;
+        //         } else if (input.tagName === 'SELECT') {
+        //             isEmpty = !input.value;
+        //         } else {
+        //             isEmpty = input.value.trim() === '';
+        //         }
 
-        // Function to display error message under a specific input field
-        function displayFieldError(inputElement, message) {
-            // Check if an error message already exists for this input
-            const existingErrorMessage = inputElement.nextElementSibling;
-            if (existingErrorMessage && existingErrorMessage.classList.contains('error-message')) {
-                existingErrorMessage.textContent = message;
-            } else {
-                const errorMessageSpan = document.createElement('span');
-                errorMessageSpan.classList.add('error-message');
-                errorMessageSpan.textContent = message;
-                inputElement.parentNode.insertBefore(errorMessageSpan, inputElement.nextSibling);
-            }
-        }
-
+        //         if (isEmpty) {
+        //             allFieldsFilled = false;
+        //             const label = document.querySelector(`label[for="${input.id}"]`);
+        //             const labelText = label ? label.textContent.toLowerCase().replace(':', '') : input.id; // Fallback to id if label not found
+        //             displayFieldError(input, `Harap isi ${labelText}.`);
+        //         }
+        //     });
+        //     // Specific validation for KTP number pattern
+        //     const idCardNumberInput = stepElement.querySelector('#id_card_number');
+        //     if (idCardNumberInput && idCardNumberInput.value.trim() !== '' && !/^[0-9]{16}$/.test(idCardNumberInput.value)) {
+        //         allFieldsFilled = false;
+        //         displayFieldError(idCardNumberInput, 'Nomor KTP harus 16 digit angka.');
+        //     }
+        //     return allFieldsFilled;
+        // }
 
         // Handle "Next" button click
         nextStepBtn.addEventListener('click', function() {
-            clearErrors(); // Clear all errors before checking
-            if (!checkRequiredFields(step1Content)) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Lengkapi Data!',
-                    text: 'Harap isi semua kolom yang wajib diisi di langkah ini.',
-                    confirmButtonColor: '#3B82F6'
-                });
-                return;
-            }
+            // clearErrors(); 
+            // if (!checkRequiredFields(step1Content)) {
+            //     Swal.fire({
+            //         icon: 'warning',
+            //         title: 'Lengkapi Data!',
+            //         text: 'Harap isi semua kolom yang wajib diisi di langkah ini dengan benar.',
+            //         confirmButtonColor: '#3B82F6'
+            //     });
+            //     return;
+            // }
             showStep(2);
         });
 
@@ -450,17 +433,16 @@
 
         submitFormBtn.addEventListener('click', async function(e) {
             e.preventDefault();
-            clearErrors(); // Clear all errors before submission
 
-            if (!checkRequiredFields(step2Content)) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Lengkapi Data!',
-                    text: 'Harap isi semua kolom yang wajib diisi di langkah ini.',
-                    confirmButtonColor: '#3B82F6'
-                });
-                return;
-            }
+            // if (!checkRequiredFields(step2Content)) {
+            //     Swal.fire({
+            //         icon: 'warning',
+            //         title: 'Lengkapi Data!',
+            //         text: 'Harap isi semua kolom yang wajib diisi di langkah ini dengan benar.',
+            //         confirmButtonColor: '#3B82F6'
+            //     });
+            //     return;
+            // }
 
             // Show confirmation dialog
             const result = await Swal.fire({
@@ -473,6 +455,8 @@
                 confirmButtonText: 'Ya, Daftar!',
                 cancelButtonText: 'Batal'
             });
+
+            clearErrors(); 
 
             if (result.isConfirmed) {
                 const formData = new FormData(form);
@@ -494,7 +478,7 @@
                     const csrfToken = document.querySelector('meta[name="csrf-token"]') ? document.querySelector('meta[name="csrf-token"]').getAttribute('content') : '';
 
                     const response = await fetch(form.action, {
-                        method: form.method,
+                        method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'Accept': 'application/json',
@@ -504,59 +488,70 @@
                         body: JSON.stringify(payload)
                     });
 
-                    const data = await response.json(); // Get JSON response
+                    const data = await response.json(); 
 
-                    if (response.ok) { // Check for successful HTTP status (2xx)
+                    if (response.ok) { 
                         Swal.fire({
                             icon: 'success',
                             title: 'Pendaftaran Berhasil!',
                             text: data.message || 'Data pasien berhasil didaftarkan.',
                             confirmButtonColor: '#3B82F6'
                         }).then(() => {
-                            form.reset(); // Clear form on success
-                            showStep(1); // Go back to first step
+                            form.reset(); 
+                            showStep(1); 
                         });
-                    } else { // Handle HTTP errors (e.g., 422 for validation, 500 for server error)
-                        // This part is modified to display errors under inputs
-                        let hasError = false; // Flag to check if any error was displayed
-                        // Iterate over errors and display them under the respective fields
+                    } else { 
+                        clearErrors();
+
                         if (data.errors) {
+                            let hasStep1Errors = false;
+                            const step1Fields = ['name', 'phone', 'sex', 'date_of_birth', 'id_card_number', 'occupation', 'address'];
+
                             for (const field in data.errors) {
-                                const errorMessages = data.errors[field];
                                 const inputField = document.getElementById(field);
                                 if (inputField) {
-                                    inputField.classList.add('border-red-500');
-                                    // Display the first error message under the input
-                                    displayFieldError(inputField, errorMessages[0]);
-                                    hasError = true;
+                                    const errorSpan = document.getElementById(`${field}-error`);
+                                    if (inputField) {
+                                        inputField.classList.add('border-red-500');
+                                    }
+                                    if (errorSpan) {
+                                        errorSpan.textContent = data.errors[field][0];
+                                    }
+                                    if (step1Fields.includes(field)) {
+                                        hasStep1Errors = true;
+                                    }
                                 }
                             }
-                        }
 
-                        let titleText = 'Pendaftaran Gagal!';
-                        let swalMessage = 'Mohon periksa kembali input Anda.';
+                            // Show the general error container and list all errors
+                            // errorContainer.classList.remove('hidden');
+                            // errorList.innerHTML = '';
+                            // for (const field in data.errors) {
+                            //     const li = document.createElement('li');
+                            //     li.textContent = data.errors[field][0];
+                            //     errorList.appendChild(li);
+                            // }
 
-                        if (!hasError && data.message) {
-                             swalMessage = data.message;
-                        } else if (!hasError) {
-                            swalMessage = 'Terjadi kesalahan saat mendaftarkan pasien.';
-                        }
+                            if (hasStep1Errors) { 
+                                showStep(1); 
+                            } else { 
+                                showStep(2);
+                            }
 
-                        Swal.fire({
-                            icon: 'error',
-                            title: titleText,
-                            text: swalMessage, // Removed `html` to avoid showing all errors in Swal
-                            confirmButtonColor: '#EF4444'
-                        });
-
-                        // Determine which step to show based on where the errors are
-                        const step1Fields = ['name', 'phone', 'sex', 'date_of_birth', 'id_card_number', 'occupation', 'address'];
-                        const hasStep1Errors = Object.keys(data.errors || {}).some(field => step1Fields.includes(field));
-
-                        if (hasStep1Errors && currentStep !== 1) {
-                            showStep(1); // Go back to step 1 if errors are found there
-                        } else if (!hasStep1Errors && currentStep !== 2) {
-                            showStep(2); // Stay on step 2 if errors are only there
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Pendaftaran Gagal!',
+                                text: 'Mohon periksa kembali input Anda.',
+                                confirmButtonColor: '#EF4444'
+                            });
+                        } else {
+                            // General error message if no specific field errors are returned
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Pendaftaran Gagal!',
+                                text: data.message || 'Terjadi kesalahan saat mendaftarkan pasien.',
+                                confirmButtonColor: '#EF4444'
+                            });
                         }
                     }
                 } catch (error) {
@@ -572,41 +567,49 @@
         });
 
         // Initial display
-        showStep(1); // Start on the first step
+        showStep(1); 
 
-        // This section handles Laravel's traditional redirect-with-errors
-        // It will only run on the initial page load if Laravel redirected back with errors
         @if ($errors->any())
-            // Clear any old error messages from previous attempts
-            clearErrors();
+            clearErrorState(); 
 
-            // Iterate through Laravel errors and display them
+            const laravelErrors = @json($errors->messages());
+            let hasStep1LaravelErrors = false;
+            const step1Fields = ['name', 'phone', 'sex', 'date_of_birth', 'id_card_number', 'occupation', 'address'];
+
+            for (const field in laravelErrors) {
+                const inputField = document.getElementById(field);
+                if (inputField) {
+                    displayFieldError(inputField, laravelErrors[field][0]);
+                    if (step1Fields.includes(field)) {
+                        hasStep1LaravelErrors = true;
+                    }
+                }
+            }
+
             @foreach ($errors->keys() as $field)
                 const errorField = document.getElementById('{{ $field }}');
+                const errorSpan = document.getElementById('{{ $field }}-error');
                 if (errorField) {
                     errorField.classList.add('border-red-500');
-                    // Display the first error message for this field
-                    @foreach ($errors->get($field) as $message)
-                        displayFieldError(errorField, '{{ $message }}');
-                        @break {{-- Only show the first message per field from Laravel --}}
-                    @endforeach
+                }
+                if (errorSpan) {
+                    // Display the error message directly from Laravel's error bag
+                    errorSpan.textContent = "{{ $errors->first($field) }}";
                 }
             @endforeach
 
-            // Also trigger SweetAlert for overall error
+            if (!hasStep1LaravelErrors && Object.keys(laravelErrors).length > 0) {
+                showStep(2); // If errors are only in step 2, show step 2
+            } else {
+                showStep(1); // Otherwise, show step 1 (default or if step 1 errors exist)
+            }
+
             Swal.fire({
                 icon: 'error',
                 title: 'Pendaftaran Gagal!',
-                text: 'Terdapat masalah dengan input Anda. Silakan periksa kembali formulir.',
+                text: 'Terdapat beberapa kesalahan dalam pengisian formulir Anda.',
                 confirmButtonColor: '#EF4444'
             });
-
-            // If any error belongs to step 2, navigate to step 2 after initial page load
-            const step2Fields = ['blood_type', 'rhesus_factor', 'BPJS_number']; // Corrected field names
-            const hasStep2Errors = step2Fields.some(field => document.getElementById(field) && document.getElementById(field).classList.contains('border-red-500'));
-            if (hasStep2Errors) {
-                showStep(2);
-            }
         @endif
     });
 </script>
