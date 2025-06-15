@@ -144,7 +144,7 @@
                     <div class="scroll-container overflow-x-auto flex gap-4 pb-2" id="history-appointments">
                         @if ($historyAppointments->isEmpty())
                             <div
-                                class="text-center text-[#a9a9a9] italic py-4 min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
+                                class="w-full text-center text-[#a9a9a9] italic py-4 min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
                                 Belum ada riwayat janji temu.
                             </div>
                         @else
