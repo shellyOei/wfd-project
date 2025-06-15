@@ -6,7 +6,7 @@
 @section('content')
     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
         <div class="flex items-center justify-between mb-6">
-            <h3 class="text-lg font-semibold text-gray-900">Doctor Availability (Master Schedules)</h3>
+            <h3 class="text-lg font-semibold text-gray-900">Doctor Availabilityyy (Master Schedules)</h3>
             <a href="{{ route('admin.day-availables.create') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:border-indigo-900 focus:ring ring-indigo-300 disabled:opacity-25 transition ease-in-out duration-150">
                 <i class="fas fa-plus mr-2"></i> Add New Availability
             </a>
@@ -45,7 +45,7 @@
                         <option value="">All Doctors</option>
                         @foreach($doctors as $doctor)
                             <option value="{{ $doctor->id }}" {{ $selectedDoctorId == $doctor->id ? 'selected' : '' }}>
-                                {{ $doctor->front_title }} {{ $doctor->name }} {{ $doctor->back_title }} ({{ $doctor->specialization }})
+                                {{ $doctor->front_title }} {{ $doctor->name }} {{ $doctor->back_title }} ({{ $doctor->specialization->name }})
                             </option>
                         @endforeach
                     </select>
@@ -98,7 +98,8 @@
                                     <a href="{{ route('admin.day-availables.edit', $dayAvailable->id) }}" class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition duration-200" title="Edit Availability">
                                         <i class="fas fa-edit text-sm"></i>
                                     </a>
-                                    <form action="{{ route('admin.day-availables.destroy', $dayAvailable->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this availability? This will not affect existing generated practice schedules.');">
+                                    {{-- The delete form with SweetAlert integration --}}
+                                    <form action="{{ route('admin.day-availables.destroy', $dayAvailable->id) }}" method="POST" class="delete-form-availability">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200" title="Delete Availability">
@@ -125,4 +126,43 @@
             {{ $dayAvailables->links() }}
         </div>
     </div>
+
+    @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Select all forms that have the class 'delete-form-availability'
+                const deleteForms = document.querySelectorAll('.delete-form-availability');
+
+                // Loop through each delete form and attach the event listener
+                deleteForms.forEach(form => {
+                    form.addEventListener('submit', function (event) {
+                        event.preventDefault(); // Stop the default form submission
+
+                        // Get details for the SweetAlert message
+                        const row = this.closest('tr');
+                        const doctorName = row.querySelector('td:nth-child(1)').textContent.trim();
+                        const day = row.querySelector('td:nth-child(2)').textContent.trim();
+                        const timeSlot = row.querySelector('td:nth-child(3)').textContent.trim();
+
+                        Swal.fire({
+                            title: 'Are you sure?',
+                            text: `You are about to delete the availability for ${doctorName} on ${day} from ${timeSlot}. This action cannot be undone! Deleting a master availability record will NOT automatically delete existing generated practice schedules or appointments, but it will prevent future schedule generation based on this availability.`,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#6c757d', // Changed to a more neutral gray for consistency
+                            confirmButtonText: 'Yes, delete it!',
+                            cancelButtonText: 'Cancel'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // If the user confirms, submit the form
+                                form.submit();
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+    @endpush
 @endsection

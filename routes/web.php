@@ -19,12 +19,16 @@ Route::post('/login', [LoginController::class, 'loginAsUser'])->name('login.post
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
 Route::post('/register', [RegisterController::class, 'registerUser'])->name('register.post');
 
+
 Route::middleware(['user'])->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
 
     // patient registration
     Route::post('/register-patient', [PatientController::class, 'registerPatient'])->name('register.patient.post');
     Route::get('/register-patient', [PatientController::class, 'showPatientRegistrationForm'])->name('register.patient');
+
+    // form.blade.php
+    Route::get('/doctor/{doctor}/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
 });
 
 // admin
@@ -45,38 +49,32 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Doctor routes
         // Doctors Management
-    Route::resource('doctors', DoctorController::class);
-
-    // Day Availables (Master Availability)
-    Route::resource('day-available', DayAvailableController::class);
-
-    // Practice Schedules (Generated Slots & Reservations View)
-    Route::get('practice-schedules', [PracticeScheduleController::class, 'index'])->name('practice-schedules.index');
-    Route::get('practice-schedules/generate', [PracticeScheduleController::class, 'createGenerate'])->name('practice-schedules.generate.create');
-    Route::post('practice-schedules/generate', [PracticeScheduleController::class, 'storeGenerate'])->name('practice-schedules.generate.store');
-    Route::delete('practice-schedules/{practiceSchedule}', [PracticeScheduleController::class, 'destroy'])->name('practice-schedules.destroy');
+        Route::resource('doctors', DoctorController::class);
 
 
+        // Day Availables (Master Availability)
+        Route::resource('day-availables', DayAvailableController::class);
+
+        // Practice Schedules (Generated Slots & Reservations View)
+        Route::get('practice-schedules', [PracticeScheduleController::class, 'index'])->name('practice-schedules.index');
+        // Route::get('practice-schedules/generate', [PracticeScheduleController::class, 'createGenerate'])->name('practice-schedules.generate.create');
+        // Route::post('practice-schedules/generate', [PracticeScheduleController::class, 'storeGenerate'])->name('practice-schedules.generate.store');
+        Route::delete('practice-schedules/{practiceSchedule}', [PracticeScheduleController::class, 'destroy'])->name('practice-schedules.destroy');
+
+        Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
     });
 });
 
-
+// ga harus login bisa liat
 // filter.blade.php
 Route::get('/doctors/filter', [DoctorController::class, 'showSpecializations'])->name('doctors.filter');
-Route::get('/api/doctor-suggestions', [DoctorController::class, 'getDoctorSuggestions'])->name('api.doctor_suggestions');
-
+Route::get('/doctor-suggestions', [DoctorController::class, 'getDoctorSuggestions'])->name('doctor_suggestions');
 
 
 // list.blade.php
 Route::get('/specializations/{specialization}/doctors', [DoctorController::class, 'doctorsBySpecialization'])->name('doctors.by_specialization');
-Route::get('/doctors', [DoctorController::class, 'index'])->name('doctors.index');
-Route::get('/api/doctors-search', [DoctorController::class, 'searchDoctorsAjax'])->name('api.doctors.search');
+Route::get('/doctors', [DoctorController::class, 'listDoctor'])->name('doctors.listDoctors');
+Route::get('/doctors-search', [DoctorController::class, 'searchDoctorsAjax'])->name('doctors.search');
 
 // detail.blade.php
 Route::get('/doctors/{doctor}', [DoctorController::class, 'show'])->name('doctors.show');
-
-// form.blade.php
-Route::get('/doctor/{doctor}/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
-
-
-

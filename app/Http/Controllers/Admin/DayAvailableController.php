@@ -33,7 +33,7 @@ class DayAvailableController extends Controller
 
         $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
-        return view('admin.doctors.day_available', compact('dayAvailables', 'doctors', 'selectedDoctorId', 'selectedDay', 'daysOfWeek'));
+        return view('admin.day-availables.index', compact('dayAvailables', 'doctors', 'selectedDoctorId', 'selectedDay', 'daysOfWeek'));
     }
 
     /**
@@ -43,7 +43,7 @@ class DayAvailableController extends Controller
     {
         $doctors = Doctor::orderBy('name')->get();
         $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        return view('admin.day_availables.create', compact('doctors', 'daysOfWeek'));
+        return view('admin.day-availables.create', compact('doctors', 'daysOfWeek'));
     }
 
     /**
@@ -86,7 +86,7 @@ class DayAvailableController extends Controller
     {
         $doctors = Doctor::orderBy('name')->get();
         $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        return view('admin.day_availables.edit', compact('dayAvailable', 'doctors', 'daysOfWeek'));
+        return view('admin.day-availables.edit', compact('dayAvailable', 'doctors', 'daysOfWeek'));
     }
 
     /**
