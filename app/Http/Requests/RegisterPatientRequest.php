@@ -24,15 +24,15 @@ class RegisterPatientRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'sex' => 'required|in:Male,Female',
-            'date_of_birth' => 'required|date',
+            'phone' => 'required|string|min:10|max:20',
+            'sex' => 'required|in:male,female',
+            'date_of_birth' => 'required|date|before:today',
             'id_card_number' => 'required|string|digits:16|unique:patients,id_card_number',
             'occupation' => 'required|string|max:255',
             'address' => 'required|string|max:500',
             'blood_type' => 'required|in:A,B,AB,O',
             'rhesus_factor' => 'required|in:Positif,Negatif',
-            'BPJS_number' => 'nullable|string|max:20',
+            'BPJS_number' => 'nullable|string|max:20|unique:patients,BPJS_number',
         ];
     }
 
@@ -45,13 +45,15 @@ class RegisterPatientRequest extends FormRequest
 
             'phone.required' => 'Nomor telepon wajib diisi.',
             'phone.string' => 'Nomor telepon harus berupa teks.',
+            'phone.min' => 'Nomor telepon harus terdiri dari minimal 10 karakter.',
             'phone.max' => 'Nomor telepon tidak boleh lebih dari 20 karakter.',
 
             'sex.required' => 'Jenis kelamin wajib diisi.',
-            'sex.in' => 'Jenis kelamin tidak valid. Pilihan yang tersedia: Male, Female.', // Adjusted for 'Male', 'Female'
+            'sex.in' => 'Jenis kelamin tidak valid. Pilih antara Laki-laki atau Perempuan.', // Adjusted for 'Male', 'Female'
 
             'date_of_birth.required' => 'Tanggal lahir wajib diisi.',
             'date_of_birth.date' => 'Tanggal lahir harus dalam format tanggal yang valid.',
+            'date_of_birth.before' => 'Tanggal lahir harus sebelum hari ini.',
 
             'id_card_number.required' => 'Nomor KTP wajib diisi.',
             'id_card_number.string' => 'Nomor KTP harus berupa teks.',
@@ -74,6 +76,7 @@ class RegisterPatientRequest extends FormRequest
 
             'BPJS_number.string' => 'Nomor BPJS harus berupa teks.',
             'BPJS_number.max' => 'Nomor BPJS tidak boleh lebih dari 20 karakter.',
+            'BPJS_number.unique' => 'Nomor BPJS sudah terdaftar.',
         ];
     }
 }
