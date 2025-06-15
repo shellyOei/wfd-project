@@ -35,7 +35,7 @@ class ProfileController extends Controller
         if (!$patient) {
             return response()->json(['message' => 'Pasien tidak ditemukan.'], 404);
         }
-        
+
         // Cek pencarian user
         $user = auth()->guard('user')->user();
 
@@ -133,8 +133,10 @@ class ProfileController extends Controller
     public function showEditPatient()
     {
         $user = auth()->guard('user')->user();
-        $patients = $user->patients()->get();
-
+        $patients = $user->profiles
+            ->sortBy('created_at')
+            ->pluck('patient')
+            ->filter();
         return view('user.profile.patientList', compact('patients'));
     }
 

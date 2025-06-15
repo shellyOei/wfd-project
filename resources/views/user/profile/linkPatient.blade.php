@@ -161,7 +161,9 @@
                             icon: 'success',
                             title: 'Sukses!',
                             text: result.message || 'Pasien berhasil dihubungkan.',
-                            confirmButtonColor: '#3B82F6'
+                            showConfirmButton: false,
+                            timer: 1000
+                            // confirmButtonColor: '#3B82F6'
                         });
                         form.reset();
                     } else {
