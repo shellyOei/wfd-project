@@ -43,15 +43,10 @@ Route::middleware(['user'])->prefix('user')->name('user.')->group(function () {
     Route::delete('/patients/{id}/disconnect', [ProfileController::class, 'disconnect'])->name('patients.disconnect');
 
     // Mini History
-    Route::get('/history', [ProfileController::class, 'miniHistory'])->name('miniHistory');
-    Route::get('/history/data/{patientId}', [PatientController::class, 'getAppointments'])->name('miniHistory.data');
+    Route::get('/mini-history', [ProfileController::class, 'miniHistory'])->name('miniHistory');
+    Route::get('/mini-history/data/{patientId}', [PatientController::class, 'getAppointments'])->name('miniHistory.data');
 });
 Route::post('/logout', [LoginController::class, 'logoutAsUser'])->name('logout');
-
-Route::get('/', function () {
-    return view('user.profile.index');
-});
-
 
 // admin
 Route::prefix('admin')->name('admin.')->group(function () {

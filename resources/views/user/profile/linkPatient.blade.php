@@ -14,7 +14,7 @@
 
             <!-- Header -->
             <div class="flex items-center justify-between my-4 mx-4">
-                <button onclick="history.back()" class="text-[#292929] text-xl">
+                <button onclick="goBackWithReload()" class="text-[#292929] text-xl">
                     <i class="fas fa-arrow-left"></i>
                 </button>
                 <h1 class="text-xl font-bold text-[#292929]">Masukkan Pasien</h1>
@@ -72,108 +72,116 @@
 @endsection
 
 @push('script')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const form = document.getElementById('patientForm');
-        const submitFormBtn = document.getElementById('submitFormBtn');
-
-        // Fungsi validasi field wajib
-        function checkRequiredFields() {
-            let isValid = true;
-            const requiredInputs = form.querySelectorAll('[required]');
-            requiredInputs.forEach(input => {
-                input.classList.remove('border-red-500');
-                if (!input.value.trim()) {
-                    input.classList.add('border-red-500');
-                    isValid = false;
-                }
-            });
-            return isValid;
+    <script>
+        function goBackWithReload() {
+            const previous = document.referrer;
+            if (previous) {
+                window.location.href = previous; // Ini akan ke halaman sebelumnya dan melakukan reload penuh
+            } else {
+                window.history.back(); // fallback kalau referrer kosong (langsung akses halaman ini)
+            }
         }
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('patientForm');
+            const submitFormBtn = document.getElementById('submitFormBtn');
 
-        // Saat tombol submit ditekan
-        submitFormBtn.addEventListener('click', async function (e) {
-            e.preventDefault();
-
-            if (!checkRequiredFields()) {
-                Swal.fire({
-                    icon: 'warning',
-                    title: 'Lengkapi Data!',
-                    text: 'Harap isi semua kolom wajib diisi.',
-                    confirmButtonColor: '#3B82F6'
+            // Fungsi validasi field wajib
+            function checkRequiredFields() {
+                let isValid = true;
+                const requiredInputs = form.querySelectorAll('[required]');
+                requiredInputs.forEach(input => {
+                    input.classList.remove('border-red-500');
+                    if (!input.value.trim()) {
+                        input.classList.add('border-red-500');
+                        isValid = false;
+                    }
                 });
-                return;
+                return isValid;
             }
 
-            const confirmation = await Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah Anda yakin ingin mendaftarkan pasien ini?',
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, Daftar!',
-                cancelButtonText: 'Batal',
-                confirmButtonColor: '#3B82F6',
-                cancelButtonColor: '#EF4444'
-            });
+            // Saat tombol submit ditekan
+            submitFormBtn.addEventListener('click', async function (e) {
+                e.preventDefault();
 
-            if (!confirmation.isConfirmed) return;
-
-            // Ambil data dari form
-            const formData = new FormData(form);
-            const payload = {};
-            formData.forEach((value, key) => {
-                payload[key] = value;
-            });
-
-            // Tampilkan loading
-            Swal.fire({
-                title: 'Memproses...',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading()
-            });
-
-            try {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-                const response = await fetch(form.action, {
-                    method: form.method,
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
+                if (!checkRequiredFields()) {
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses!',
-                        text: result.message || 'Pasien berhasil dihubungkan.',
+                        icon: 'warning',
+                        title: 'Lengkapi Data!',
+                        text: 'Harap isi semua kolom wajib diisi.',
                         confirmButtonColor: '#3B82F6'
                     });
-                    form.reset();
-                } else {
+                    return;
+                }
+
+                const confirmation = await Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin mendaftarkan pasien ini?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, Daftar!',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#3B82F6',
+                    cancelButtonColor: '#EF4444'
+                });
+
+                if (!confirmation.isConfirmed) return;
+
+                // Ambil data dari form
+                const formData = new FormData(form);
+                const payload = {};
+                formData.forEach((value, key) => {
+                    payload[key] = value;
+                });
+
+                // Tampilkan loading
+                Swal.fire({
+                    title: 'Memproses...',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
+                });
+
+                try {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                    const response = await fetch(form.action, {
+                        method: form.method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Sukses!',
+                            text: result.message || 'Pasien berhasil dihubungkan.',
+                            confirmButtonColor: '#3B82F6'
+                        });
+                        form.reset();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Gagal!',
+                            text: result.message || 'Terjadi kesalahan saat mendaftarkan pasien.',
+                            confirmButtonColor: '#EF4444'
+                        });
+                    }
+                } catch (error) {
+                    console.error(error);
                     Swal.fire({
                         icon: 'error',
-                        title: 'Gagal!',
-                        text: result.message || 'Terjadi kesalahan saat mendaftarkan pasien.',
+                        title: 'Kesalahan Jaringan',
+                        text: 'Tidak dapat terhubung ke server.',
                         confirmButtonColor: '#EF4444'
                     });
                 }
-            } catch (error) {
-                console.error(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Kesalahan Jaringan',
-                    text: 'Tidak dapat terhubung ke server.',
-                    confirmButtonColor: '#EF4444'
-                });
-            }
+            });
         });
-    });
-</script>
+    </script>
 @endpush

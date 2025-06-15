@@ -221,28 +221,27 @@ class PatientController extends Controller
 
         $activeAppointments = collect();
         $historyAppointments = collect();
+        $now = \Carbon\Carbon::now()->timezone('Asia/Jakarta');
 
         foreach ($patient->appointments as $appointment) {
             $schedule = $appointment->schedule;
             if (!$schedule || !$schedule->Datetime)
                 continue;
 
-            $datetime = \Carbon\Carbon::parse($schedule->Datetime);
+            $datetime = \Carbon\Carbon::parse($schedule->Datetime)->timezone('Asia/Jakarta');
             $info = [
                 'date' => $datetime->translatedFormat('d F Y'),
                 'time' => $datetime->format('H:i'),
                 'title' => $appointment->type,
                 'doctor_name' => $schedule->doctor->name ?? '-',
-                'specialization' => $schedule->doctor->specialization->name ?? '-', // pakai relasi jika foreign key
+                'specialization' => $schedule->doctor->specialization->name ?? '-',
             ];
-
-            if ($datetime->isToday() || $datetime->isFuture()) {
+            if ($datetime->gt($now)) {
                 $activeAppointments->push($info);
             } else {
                 $historyAppointments->push($info);
             }
         }
-
         return response()->json([
             'activeAppointments' => $activeAppointments->sortBy('date')->values(),
             'historyAppointments' => $historyAppointments->sortByDesc('date')->values(),

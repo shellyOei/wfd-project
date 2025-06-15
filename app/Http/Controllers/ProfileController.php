@@ -26,6 +26,7 @@ class ProfileController extends Controller
             'patient_number' => 'required|string'
         ]);
 
+        // Cek pencarian pasien
         $patient = Patient::where('name', $validated['name'])
             ->where('date_of_birth', $validated['date_of_birth'])
             ->where('patient_number', $validated['patient_number'])
@@ -34,11 +35,28 @@ class ProfileController extends Controller
         if (!$patient) {
             return response()->json(['message' => 'Pasien tidak ditemukan.'], 404);
         }
-
+        
+        // Cek pencarian user
         $user = auth()->guard('user')->user();
 
         if (!$user) {
             return response()->json(['message' => 'User tidak ditemukan.'], 403);
+        }
+
+        // Cek jumlah pasien terhubung tidak lebih dari 5
+        $linkedPatientsCount = Profile::where('user_id', $user->id)->count();
+
+        if ($linkedPatientsCount >= 5) {
+            return response()->json(['message' => 'Anda sudah mencapai batas maksimal 5 pasien terhubung.'], 403);
+        }
+
+        // Cek pasien yang mau dihubungkan belum terhubung sebelumnya
+        $existingProfile = Profile::where('user_id', $user->id)
+            ->where('patient_id', $patient->id)
+            ->first();
+
+        if ($existingProfile) {
+            return response()->json(['message' => 'Pasien sudah terhubung.'], 409);
         }
 
         Profile::create([
@@ -46,7 +64,7 @@ class ProfileController extends Controller
             'patient_id' => $patient->id,
         ]);
 
-        return response()->json(['message' => 'Pasien berhasil dikaitkan.']);
+        return response()->json(['message' => 'Pasien berhasil terhubung.']);
     }
 
     public function miniHistory()
