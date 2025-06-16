@@ -2,97 +2,170 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DayAvailable;
+use App\Models\Appointment;
 use App\Models\Doctor;
+use App\Models\DayAvailable;
+use App\Models\PracticeSchedule;
 use App\Models\Patient;
 use App\Models\Profile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB; // <-- Tambahkan ini
 
 class BookingController extends Controller
 {
    
     public function showBookingForm(Request $request, Doctor $doctor, Patient $patient)
     {
-        // 1. Generate dates for the next 7 days
+        // Ambil tanggal yang dipilih dari request, atau default ke hari ini
+        $selectedDateStr = $request->input('date', Carbon::today()->toDateString());
+        $selectedDate = Carbon::parse($selectedDateStr)->startOfDay();
+
+        // Generate tanggal untuk 7 hari ke depan untuk date picker
         $bookingDates = [];
         for ($i = 0; $i < 7; $i++) {
             $date = Carbon::today()->addDays($i);
             $bookingDates[] = [
-                'day_name' => $date->translatedFormat('D'),
-                'date_num' => $date->format('j'),
-                'full_date' => $date->format('Y-m-d'),
-                'day_of_week_name' => $date->format('l'),
+                'full_date' => $date->toDateString(),
+                'day_name' => $date->translatedFormat('D'), // Misal: Sen, Sel
+                'date_num' => $date->format('d'),
             ];
         }
 
-        // 2. Determine the selected date
-        // Default to today's date if no date is selected in the URL
-        $selectedDate = $request->input('date', Carbon::today()->format('Y-m-d'));
+        // === PERUBAHAN LOGIKA UTAMA DIMULAI DI SINI ===
+        $availableTimeSlots = [];
 
-        // 3. Get the full name of the selected day (e.g., 'Wednesday')
-        $selectedDayName = Carbon::parse($selectedDate)->format('l'); // 'l' gives full day name
+        // dayOfWeek (0=Minggu, 1=Senin, ..., 6=Sabtu)
+        $dayOfWeek = $selectedDate->dayOfWeek;
 
-        // 4. Fetch available slots for the selected doctor and day
-        $doctorAvailability = DayAvailable::where('doctor_id', $doctor->id)
-                                          ->where('day', $selectedDayName)
-                                          ->orderBy('start_time')
-                                          ->get();
+        // Ambil pola ketersediaan dokter untuk hari yang dipilih
+        $dayAvailability = DayAvailable::where('doctor_id', $doctor->id)
+            ->where('day', $dayOfWeek) // Pastikan 'day' di database Anda sesuai format Carbon (0-6)
+            ->first();
 
-        // 5. Generate time slots based on doctor's availability for the selected day
-        $times = [];
-        $intervalMinutes = 30; // Interval for time slots
+        if ($dayAvailability) {
+            $startTime = Carbon::parse($dayAvailability->start_time);
+            $endTime = Carbon::parse($dayAvailability->end_time);
+            $interval = 30; // durasi per slot dalam menit
 
-        foreach ($doctorAvailability as $availability) {
-            $start = Carbon::parse($availability->start_time);
-            $end = Carbon::parse($availability->end_time);
+            while ($startTime < $endTime) {
+                // Gabungkan tanggal yang dipilih dengan waktu slot
+                $slotDateTime = $selectedDate->copy()->setTimeFrom($startTime);
 
-            // If the selected date is today, adjust start time to not show past slots
-            if ($selectedDate === Carbon::today()->format('Y-m-d')) {
-                $currentTime = Carbon::now();
-                // Add a small buffer (e.g., 5 minutes) to avoid showing immediately passed times
-                $bufferTime = $currentTime->copy()->addMinutes(5);
-
-                if ($start->lessThan($bufferTime)) {
-                    // Adjust start to the next valid slot after bufferTime
-                    // Round up to the nearest interval if current time is not aligned
-                    $newStart = $bufferTime->copy();
-                    $minute = $newStart->minute;
-                    $remainder = $minute % $intervalMinutes;
-                    if ($remainder > 0) {
-                        $newStart->addMinutes($intervalMinutes - $remainder);
-                    }
-                    $newStart->second(0); // Clear seconds
-
-                    if ($newStart->greaterThanOrEqualTo($end)) {
-                        continue; // Skip this availability block if no future slots
-                    }
-                    $start = $newStart;
+                // Lewati slot jika sudah terlewat dari waktu sekarang
+                if ($slotDateTime->isPast()) {
+                    $startTime->addMinutes($interval);
+                    continue;
                 }
-            }
 
-            while ($start->lessThan($end)) {
-                $times[] = $start->format('H:i');
-                $start->addMinutes($intervalMinutes);
+                // Cari atau buat PracticeSchedule untuk slot ini (efisien!)
+                // Ini adalah jantung dari perbaikan logika.
+                $practiceSchedule = PracticeSchedule::firstOrCreate(
+                    [
+                        'doctor_id' => $doctor->id,
+                        'Datetime' => $slotDateTime,
+                    ],
+                    [
+                        // Data ini hanya akan diisi jika record baru dibuat
+                        'day_available_id' => $dayAvailability->id,
+                    ]
+                );
+
+                // Cek apakah jadwal ini sudah dibooking (punya appointment)
+                // Kita gunakan ->doesntHave() untuk efisiensi query
+                $isAvailable = !$practiceSchedule->appointment()->exists();
+
+                if ($isAvailable) {
+                    $availableTimeSlots[] = [
+                        'time' => $slotDateTime->format('H:i'),
+                        'schedule_id' => $practiceSchedule->id, // Kirim ID yang dibutuhkan frontend!
+                    ];
+                }
+
+                $startTime->addMinutes($interval);
             }
         }
 
-        $times = array_unique($times); // Remove duplicates
-        sort($times); // Sort times numerically
-
-        // 6. Determine the selected time (for initial load or if user clicks a time)
-        $selectedTime = $request->input('time');
-
-        if ($request->ajax()) { 
+        // Jika ini adalah request AJAX, kembalikan JSON
+        if ($request->ajax()) {
             return response()->json([
-                'times' => $times,
-                'selected_date' => $selectedDate // Send back the selected date for JS
+                'times' => $availableTimeSlots, // Nama 'times' sesuai yang diharapkan JS Anda
             ]);
         }
 
-        // Jika bukan permintaan AJAX, tampilkan view seperti biasa
-        return view('user.booking.form', compact('doctor', 'bookingDates', 'selectedDate', 'times', 'selectedTime', 'patient'));
+        // Jika ini adalah load halaman awal, tampilkan view
+        // Ganti nama variabel 'availableSlots' menjadi 'times' agar konsisten dengan Blade Anda
+        return view('user.booking.form', [
+            'doctor' => $doctor,
+            'bookingDates' => $bookingDates,
+            'selectedDate' => $selectedDateStr,
+            'selectedTime' => $request->input('time'), // Ambil dari request jika ada
+            'times' => $availableTimeSlots, // Kirim slot yang tersedia
+            'patient' => $patient, // Tambahkan pasien yang dipilih
+        ]);
+    }
+
+    /**
+     * Menyimpan booking baru.
+     */
+    public function store(Request $request)
+    {
+       
+        try {
+            $validated = $request->validate([
+                'schedule_id' => 'required|uuid|exists:practice_schedules,id',
+                'patient_id' => 'required|uuid|exists:patients,id', 
+            ]);
+
+            $scheduleId = $validated['schedule_id'];
+            $patientId = $validated['schedule_id'];
+
+            // Mulai transaksi database untuk mencegah race condition (rebutan slot)
+            return DB::transaction(function () use ($scheduleId, $patientId) {
+                // Kunci record PracticeSchedule untuk pembaruan (mencegah user lain booking di saat bersamaan)
+                $practiceSchedule = PracticeSchedule::where('id', $scheduleId)->lockForUpdate()->first();
+
+                // Cek sekali lagi jika slot sudah diambil orang lain
+                if ($practiceSchedule->appointment) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Maaf, slot waktu ini baru saja dibooking. Silakan pilih waktu lain.'
+                    ], 409); // 409 Conflict
+                }
+
+                // Jika masih tersedia, buat appointment
+                $appointment = Appointment::create([
+                    'patient_id' => $patientId,
+                    'schedule_id' => $practiceSchedule->id,
+                    // Isi default lainnya
+                    'type' => 'Online Booking',
+                    'is_bpjs' => false, // Default value
+                ]);
+
+                // Berhasil!
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Janji temu berhasil dikonfirmasi!',
+                    'redirect_url' => route('user.my_appointments') // Ganti dengan rute halaman "Janji Temu Saya"
+                ], 201);
+            });
+
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data yang dikirim tidak valid.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error("Error storing appointment: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan pada server. Silakan coba lagi nanti.'
+            ], 500);
+        }
     }
 
     public function selectPatient(Request $request, Doctor $doctor)

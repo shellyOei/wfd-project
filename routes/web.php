@@ -28,8 +28,11 @@ Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     Route::get('/register-patient', [PatientController::class, 'showPatientRegistrationForm'])->name('register.patient');
 
     // form.blade.php
-    Route::get('/doctor/{doctor}/{patient}/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
+    Route::get('/doctor/{doctor}/{patient)/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
     Route::get('/doctor/{doctor}/select-patient', [BookingController::class, 'selectPatient'])->name('booking.selectPatient');
+    Route::post('/book/store', [BookingController::class, 'store'])->name('booking.store');
+    
+    Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });
 
 // admin
