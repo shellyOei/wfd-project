@@ -215,14 +215,6 @@ class PatientController extends Controller
 
     public function registerPatient(RegisterPatientRequest $r)
     {
-        $valid = $r->validated();
-
-        try {
-            Patient::create($valid);
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Failed to register patient: ' . $e->getMessage()]);
-        }
-        // $patient = $this->patientRepository->create($valid);
         $user = $this->authService->user('user');
 
         if (!$user) {

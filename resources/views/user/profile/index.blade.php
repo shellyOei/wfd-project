@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="min-h-screen bg-[#f4f4fd]">
+    <div class="min-h-screen pb-20">
         <!-- Header - Mobile Only -->
         <!-- <header class="fixed top-0 left-0 right-0 h-[63px] bg-[#f4f4fd] z-10 md:hidden">
                                                 <div class="flex justify-between items-center px-7 pt-6">

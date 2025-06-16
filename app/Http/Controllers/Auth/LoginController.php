@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\AuthService;
 use Illuminate\Http\Request;
 
@@ -28,8 +29,8 @@ class LoginController extends Controller
     public function loginAsUser(Request $request)
     {
         $credentials = $request->only('email', 'password');
-        $user = \App\Models\User::withTrashed()->where('email', $credentials['email'])->first();
-
+        $user = User::withTrashed()->where('email', $credentials['email'])->first();
+        
         // Activate user klo sebelumnya inactive
         if ($user->trashed()) {
             $user->restore();
