@@ -12,7 +12,7 @@
         <div class="w-7"></div> 
     </div>
 
-     <div class="mb-6 relative">
+    <div class="mb-6 relative">
         <input
             type="text"
             id="doctorSearchInput"
@@ -31,9 +31,9 @@
         </div>
     </div>
 
-    <h2 class="text-xl md:text-2xl font-semibold text-gray-700 mb-4">Pilih Spesialis</h2>
+    <h2 class="text-xl md:text-2xl font-semibold text-gray-700 mb-4 max-sm:px-2">Pilih Spesialis</h2>
 
-    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5  gap-3 sm:gap-4">
+    <div class="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 max-sm:px-5 gap-4 sm:gap-4">
         @foreach ($specializations as $specialization)
         <a href="{{ route('doctors.by_specialization', $specialization) }}" class="flex flex-col items-center justify-center p-2 sm:p-4 bg-white rounded-xl shadow-md hover:shadow-lg transition duration-300 ease-in-out cursor-pointer border border-gray-100 transform hover:-translate-y-1">
             <img src="{{ asset($specialization->icon) }}" alt="{{ $specialization->name }} Icon" class="w-10 h-10 sm:w-12 sm:h-12 mb-2">

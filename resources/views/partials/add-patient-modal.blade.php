@@ -25,7 +25,7 @@
                 <p class="w-full text-center text-lg text-black font-bold">Apakah Anda memiliki nomor rekam medis (MRN) di Rumah Sakit Endang Widayat?</p>
                
                 <div tabindex="0"
-                     class="js-selection-option w-full bg-white space-y-2 shadow-md text-center p-4 rounded-3xl p-5
+                    class="js-selection-option w-full bg-white space-y-2 shadow-md text-center p-4 rounded-3xl p-5
                             cursor-pointer transition-all duration-200 ease-in-out
                             hover:shadow-lg hover:scale-[1.01]
                             focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-[var(--blue1)]"

@@ -50,9 +50,9 @@
         </div>
     </div>
 
-    <h2 class="text-xl md:text-2xl font-semibold text-gray-700 mb-4">List Dokter</h2>
+    <h2 class="text-xl md:text-2xl font-semibold text-gray-700 mb-4 max-sm:px-2">List Dokter</h2>
 
-    <div class="space-y-4" id="doctorListContainer">
+    <div class="space-y-4 max-sm:px-5" id="doctorListContainer">
         @forelse ($doctors as $doctor)
             <a href="{{ route('doctors.show', $doctor->id) }}" class="block">
                 <div class="flex items-center p-3 sm:p-4 rounded-2xl text-white shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1"

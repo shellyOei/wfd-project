@@ -80,6 +80,7 @@
 @section('script')
 <script>
  document.addEventListener('DOMContentLoaded', function() {
+    const patientId = "{{ $patient->id ?? 'null' }}";
     const dateItems = document.querySelectorAll('.date-item');
     const timeGrid = document.getElementById('time-slots-grid');
     // Pastikan referensi ke pesan "tidak ada jadwal" diambil dari elemen yang sudah ada
@@ -110,8 +111,9 @@
 
     function updateUrl(date, time) {
         const doctorId = document.querySelector('.date-item').dataset.doctorId;
-        let url = `{{ route('user.booking.show', ['doctor' => '__DOCTOR_ID__']) }}`;
+        let url = `{{ route('user.booking.show', ['doctor' => '__DOCTOR_ID__', 'patient' => '__PATIENT_ID__']) }}`;
         url = url.replace('__DOCTOR_ID__', doctorId);
+        url = url.replace('__PATIENT_ID__', patientId);
         url += `?date=${date}`;
         if (time) {
             url += `&time=${encodeURIComponent(time)}`;
@@ -121,8 +123,12 @@
 
     async function fetchTimeSlots(date) {
         const doctorId = document.querySelector('.date-item').dataset.doctorId;
-        const url = `{{ route('user.booking.show', ['doctor' => '__DOCTOR_ID__']) }}?date=${date}`;
-        const finalUrl = url.replace('__DOCTOR_ID__', doctorId);
+        const urlTemplate = `{{ route('user.booking.show', ['doctor' => '__DOCTOR_ID__', 'patient' => '__PATIENT_ID__']) }}`;
+
+        let finalUrl = urlTemplate.replace('__DOCTOR_ID__', doctorId);
+        finalUrl = finalUrl.replace('__PATIENT_ID__', patientId); 
+
+        finalUrl += `?date=${date}`; 
 
         try {
             const response = await fetch(finalUrl, {
@@ -265,6 +271,7 @@
                 <p><strong>${doctorName}</strong> pada:</p>
                 <p>Tanggal: <strong>${new Date(bookingDate).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong></p>
                 <p>Pukul: <strong>${bookingTime}</strong></p>
+                <p>Pasien: <strong>${patientId ? '{{ $patient->name }}' : 'Tidak ada pasien yang dipilih'}</strong></p>
             `,
             icon: 'question',
             showCancelButton: true,

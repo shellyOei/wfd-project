@@ -41,7 +41,7 @@
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
-                <a href="{{ route('user.booking.show', $doctor->id) }}"
+                <a href="{{ route('user.booking.selectPatient', $doctor->id) }}"
                     class="w-full sm:w-auto bg-white text-blue-700 font-semibold px-6 py-3 rounded-full text-base md:px-8 md:py-4 md:text-lg hover:bg-gray-100 transition duration-300 ease-in-out shadow-lg transform hover:scale-105">
                     Buat Janji Temu
                 </a>

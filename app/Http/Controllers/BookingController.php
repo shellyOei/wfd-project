@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\DayAvailable;
 use App\Models\Doctor;
+use App\Models\Patient;
+use App\Models\Profile;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
    
- public function showBookingForm(Request $request, Doctor $doctor)
+    public function showBookingForm(Request $request, Doctor $doctor, Patient $patient)
     {
         // 1. Generate dates for the next 7 days
         $bookingDates = [];
@@ -89,8 +92,19 @@ class BookingController extends Controller
         }
 
         // Jika bukan permintaan AJAX, tampilkan view seperti biasa
-        return view('user.booking.form', compact('doctor', 'bookingDates', 'selectedDate', 'times', 'selectedTime'));
+        return view('user.booking.form', compact('doctor', 'bookingDates', 'selectedDate', 'times', 'selectedTime', 'patient'));
     }
 
+    public function selectPatient(Request $request, Doctor $doctor)
+    {
+        $user = Auth::guard('user')->user();
 
+        $patients = Profile::where('user_id', $user->id)->with('patient')
+            ->get()
+            ->map(function ($profile) {
+                return $profile->patient;
+            });
+
+        return view('user.booking.select-patient', compact('doctor', 'patients'));
+    }
 }
