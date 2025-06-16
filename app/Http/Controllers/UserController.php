@@ -76,7 +76,8 @@ class UserController extends Controller
     {
         try {
             $user = auth()->guard('user')->user();
-            $user->forceDelete();
+            // $user->forceDelete();
+            $user->delete();
             return response()->json([
                 'success' => true,
                 'message' => 'Akun berhasil dihapus.'
