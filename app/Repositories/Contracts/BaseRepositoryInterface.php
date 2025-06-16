@@ -1,20 +1,18 @@
 <?php
 
-namespace App;
+namespace App\Repositories\Contracts;
 
-interface UserRepositoryInterface
+use Illuminate\Database\Eloquent\Model; 
+
+interface BaseRepositoryInterface
 {
     public function all();
-
-    public function allBy($filter);
-
     public function find($id);
-
+    public function findOrFail($id);
     public function create(array $data);
-
     public function update($id, array $data);
-
     public function delete($id);
     
     public function withTrashed();
 }
+

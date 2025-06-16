@@ -2,20 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterPatientRequest;
 use App\Models\Patient;
+use App\Services\AuthService;
+use App\Services\PatientService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
 {
+    protected $patientService, $authService;
+
+    public function __construct(PatientService $patientService, AuthService $authService)
+    {
+        $this->patientService = $patientService;
+        $this->authService = $authService;
+    }
+
     /**
      * Display a listing of the patients.
      */
     public function index()
     {
         $patients = Patient::with(['profiles.user', 'appointments'])
-                          ->orderBy('created_at', 'desc')
-                          ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('admin.patients', compact('patients'));
     }
@@ -88,7 +101,7 @@ class PatientController extends Controller
     public function show(Patient $patient)
     {
         $patient->load(['profiles.user', 'appointments.schedule.doctor']);
-        
+
         return response()->json([
             'success' => true,
             'patient' => $patient
@@ -149,7 +162,7 @@ class PatientController extends Controller
 
             // Delete related profiles first
             $patient->profiles()->delete();
-            
+
             // Delete the patient
             $patient->delete();
 
@@ -181,6 +194,92 @@ class PatientController extends Controller
             'patient' => $patient,
             'appointments' => $patient->appointments,
             'lab_results' => $patient->labResults ?? []
+        ]);
+    }
+
+    // --- register patient ---
+    public function showPatientRegistrationForm()
+    {
+        return view('user.registerPatient');
+    }
+    public function showExistingPatientRegistrationForm()
+    {
+        return view('user.profile.linkPatient');
+    }
+    public function showEditForm($id)
+    {
+        $patient = Patient::findOrFail($id);
+        return view('user.registerPatient', compact('patient'));
+    }
+
+
+    public function registerPatient(RegisterPatientRequest $r)
+    {
+        $valid = $r->validated();
+
+        try {
+            Patient::create($valid);
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Failed to register patient: ' . $e->getMessage()]);
+        }
+        // $patient = $this->patientRepository->create($valid);
+        $user = $this->authService->user('user');
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthorized. Please log in to register a user.'
+            ], 401);
+        }
+
+        $valid = $r->validated();
+
+        try {  
+            $patient = $this->patientService->registerPatient($valid, $user);
+
+            return response()->json([
+                'message' => 'Pendaftaran pasien berhasil!',
+                'patient' => $patient
+            ], 201);
+
+        } catch (\Throwable $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan server saat mendaftar pasien: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getAppointments($patientId)
+    {
+        $patient = Patient::with(['appointments.schedule.doctor.specialization'])->findOrFail($patientId);
+
+        $activeAppointments = collect();
+        $historyAppointments = collect();
+        $now = \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+
+        foreach ($patient->appointments as $appointment) {
+            $schedule = $appointment->schedule;
+            if (!$schedule || !$schedule->Datetime)
+                continue;
+
+            $datetime = \Carbon\Carbon::parse($schedule->Datetime)->timezone('Asia/Jakarta');
+            $info = [
+                'date' => $datetime->translatedFormat('d F Y'),
+                'time' => $datetime->format('H:i'),
+                'title' => $appointment->type,
+                'doctor_name' => $schedule->doctor->name ?? '-',
+                'specialization' => $schedule->doctor->specialization->name ?? '-',
+            ];
+            if ($datetime->gt($now)) {
+                $activeAppointments->push($info);
+            } else {
+                $historyAppointments->push($info);
+            }
+        }
+        return response()->json([
+            'activeAppointments' => $activeAppointments->sortBy('date')->values(),
+            'historyAppointments' => $historyAppointments->sortByDesc('date')->values(),
         ]);
     }
 }

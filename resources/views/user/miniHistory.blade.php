@@ -37,27 +37,32 @@
                     #4ADEDE 100%);
         }
 
-        ✨ Why this fits the scr
+        .selected {
+            border: 3px solid #1CA7EC;
+        }
+
+        .scroll-transparent {
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+        }
+
+        .scroll-transparent::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .scroll-transparent::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .scroll-transparent::-webkit-scrollbar-thumb {
+            background-color: transparent;
+        }
     </style>
 @endsection
 
 @section('content')
     <div class="min-h-screen bg-[#f4f4fd]">
-        <!-- Header -->
-        <header class="fixed top-0 left-0 right-0 h-[63px] bg-[#f4f4fd] z-10">
-            <div class="flex justify-between items-center px-7 pt-6">
-                <div class="flex gap-1">
-                    <i class="fas fa-signal text-[22px]"></i>
-                    <i class="fas fa-wifi text-[22px]"></i>
-                    <i class="fas fa-battery-full text-[22px]"></i>
-                </div>
-                <time class="font-semibold text-base">12:45</time>
-            </div>
-        </header>
-
-        <!-- Main Content -->
         <main class="max-w-[440px] mx-auto pt-[63px] pb-[61px]">
-            <!-- Title -->
             <div class="flex items-center px-6 mt-2 mb-4">
                 <button onclick="history.back()"
                     class="w-8 h-8 bg-[#f4f4fd] rounded-full flex items-center justify-center mr-2">
@@ -66,60 +71,67 @@
                 <h1 class="text-xl font-bold flex-1 text-center">Riwayat Janji Temu</h1>
             </div>
 
-            <!-- Profile Avatars -->
-            <div class="flex justify-center gap-8 mt-2 mb-6">
-                <div class="text-center">
-                    <div class="w-20 h-20 mx-auto mb-2">
-                        <img src="img/mask-group.png" alt="Angel"
-                            class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-white shadow" />
-                    </div>
-                    <p class="text-[#7a7a7a] text-sm">Angel</p>
-                </div>
-                <div class="text-center">
-                    <div class="w-20 h-20 mx-auto mb-2">
-                        <img src="img/mask-group-2.png" alt="Chris"
-                            class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-white shadow" />
-                    </div>
-                    <p class="text-[#7a7a7a] text-sm">Chris</p>
+            <div class="overflow-x-auto mx-5 scroll-transparent">
+                <div class="flex justify-start gap-8 mt-6 mb-6 px-4 min-w-max">
+                    @foreach ($patients as $index => $data)
+                        @php
+                            $initial = strtoupper(substr($data['patient_name'], 0, 1));
+                            $isSelected = $index === 0 ? 'selected' : '';
+                        @endphp
+                        <div class="text-center">
+                            <div data-id="{{ $data['patient_id'] }}"
+                                class="avatar-circle w-16 h-16 mx-auto mb-2 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-3xl shadow cursor-pointer hover:bg-blue-200 {{ $isSelected }}">
+                                {{ $initial }}
+                            </div>
+                            <p class="text-[#7a7a7a] text-sm">{{ $data['patient_name'] }}</p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
 
-            <!-- Janji Temu Aktif -->
+
+            {{-- Janji Temu Aktif --}}
             <section class="px-6 mb-6">
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="text-lg font-semibold text-[#373737]">Janji Temu Aktif</h2>
+                    <!-- BLM arahin route ke full history n booking -->
                     <a href="#" class="text-xs font-bold text-black underline flex items-center whitespace-nowrap">
                         Lihat Selengkapnya
                         <i class="fas fa-chevron-right ml-1 text-xs"></i>
                     </a>
                 </div>
                 <div class="relative">
-                    <div class="scroll-container overflow-x-auto flex gap-4 pb-2">
-                        <!-- Card 1: Hari Ini -->
-                        <div class="min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-[#18cf00] text-sm font-semibold">Hari Ini</span>
-                                <span class="text-[#7a7a7a] font-bold text-sm">12.30</span>
-                            </div>
-                            <h3 class="text-lg font-bold mb-1">Pengecekan Darah</h3>
-                            <p class="text-sm font-semibold mb-0.5">dr. Oh Yi Young</p>
-                            <p class="text-[#a9a9a9] text-sm">Dokter Umum</p>
+                    @if ($activeAppointments->isEmpty())
+                        <div
+                            class="text-center text-[#a9a9a9] italic py-4 min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
+                            Belum ada janji temu.
                         </div>
-                        <!-- Card 2: Besok -->
-                        <div class="min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-[#7a7a7a] text-sm font-semibold">Besok</span>
-                                <span class="text-[#7a7a7a] font-bold text-sm">11.30</span>
-                            </div>
-                            <h3 class="text-lg font-bold mb-1">Pengecekan Darah</h3>
-                            <p class="text-sm font-semibold mb-0.5">dr. Jessi S.pd</p>
-                            <p class="text-[#a9a9a9] text-sm">Dokter Umum</p>
+                    @else
+                        <div class="scroll-container overflow-x-auto flex gap-4 pb-2" id="active-appointments">
+                            @foreach ($activeAppointments as $item)
+                                <div class="min-w-[260px]bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-semibold text-[#7a7a7a]">{{ $item['date'] }}</span>
+                                        <span class="text-[#7a7a7a] font-bold text-sm">{{ $item['time'] }}</span>
+                                    </div>
+                                    <h3 class="text-lg font-bold mb-1">{{ $item['title'] }}</h3>
+                                    <p class="text-sm font-semibold mb-0.5">{{ $item['doctor_name'] }}</p>
+                                    <p class="text-[#a9a9a9] text-sm">Dokter {{ $item['specialization'] }}</p>
+                                </div>
+                            @endforeach
                         </div>
-                    </div>
+                    @endif
+
+                    @if ($activeAppointments->count() >= 2)
+                        <div
+                            class="absolute top-0 right-0 h-full w-12 pointer-events-none bg-gradient-to-r from-transparent to-[rgba(229,231,235,0.5)] bg-opacity-5 fade-right">
+                        </div>
+                    @endif
+
                 </div>
             </section>
 
-            <!-- Riwayat -->
+            {{-- Riwayat Janji Temu --}}
             <section class="px-6">
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="text-lg font-semibold text-[#373737]">Riwayat</h2>
@@ -129,57 +141,136 @@
                     </a>
                 </div>
                 <div class="relative">
-                    <div class="scroll-container overflow-x-auto flex gap-4 pb-2">
-                        <!-- Card 1: General Checkup -->
-                        <div class="min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-[#7a7a7a] text-sm">27 November 2024</span>
-                                <span class="text-[#7a7a7a] font-bold text-sm">17.00</span>
+                    <div class="scroll-container overflow-x-auto flex gap-4 pb-2" id="history-appointments">
+                        @if ($historyAppointments->isEmpty())
+                            <div
+                                class="w-full text-center text-[#a9a9a9] italic py-4 min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
+                                Belum ada riwayat janji temu.
                             </div>
-                            <h3 class="text-lg font-bold mb-1">General Checkup</h3>
-                            <p class="text-sm font-semibold mb-0.5">dr. Andrew S.pd</p>
-                            <p class="text-[#a9a9a9] text-sm">Dokter Umum</p>
-                        </div>
-                        <!-- Card 2: Pengecekan Darah -->
-                        <div class="min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
-                            <div class="flex justify-between items-center mb-1">
-                                <span class="text-[#7a7a7a] text-sm">2 Januari</span>
-                                <span class="text-[#7a7a7a] font-bold text-sm">11.30</span>
+                        @else
+                                @foreach ($historyAppointments as $item)
+                                    <div class="min-w-[260px]bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
+                                        <div class="flex justify-between items-center mb-1">
+                                            <span class="text-sm font-semibold text-[#7a7a7a]">{{ $item['date'] }}</span>
+                                            <span class="text-[#7a7a7a] font-bold text-sm">{{ $item['time'] }}</span>
+                                        </div>
+                                        <h3 class="text-lg font-bold mb-1">{{ $item['title'] }}</h3>
+                                        <p class="text-sm font-semibold mb-0.5">{{ $item['doctor_name'] }}</p>
+                                        <p class="text-[#a9a9a9] text-sm">Dokter {{ $item['specialization'] }}</p>
+                                    </div>
+                                @endforeach
                             </div>
-                            <h3 class="text-lg font-bold mb-1">Pengecekan Darah</h3>
-                            <p class="text-sm font-semibold mb-0.5">Dr. Oh Yi Young</p>
-                            <p class="text-[#a9a9a9] text-sm">Dokter Umum</p>
+                        @endif
+
+                    @if ($historyAppointments->count() >= 2)
+                        <div
+                            class="absolute top-0 right-0 h-full w-12 pointer-events-none bg-gradient-to-r from-transparent to-[rgba(229,231,235,0.5)] bg-opacity-5 fade-right">
                         </div>
-                    </div>
+                    @endif
+
                 </div>
             </section>
         </main>
-
-        <!-- Bottom Navigation -->
-        <!-- <nav class="fixed bottom-5 left-5 right-5 h-[61px] bg-white rounded-full bottom-nav-shadow flex justify-around items-center">
-                        <a href="#" class="flex flex-col items-center text-[#a9a9a9] text-xs">
-                            <i class="fas fa-home text-2xl mb-1"></i>
-                            <span>Home</span>
-                        </a>
-                        <a href="#" class="flex flex-col items-center text-[#a9a9a9] text-xs">
-                            <i class="fas fa-clipboard text-2xl mb-1"></i>
-                            <span>Appointment</span>
-                        </a>
-                        <a href="#" class="flex flex-col items-center text-[#a9a9a9] text-xs relative">
-                            <div class="relative">
-                                <i class="fas fa-phone text-2xl mb-1"></i>
-                                <i class="fas fa-exclamation-triangle text-red-500 absolute -top-1 -right-1 text-sm"></i>
-                            </div>
-                            <span>SOS</span>
-                        </a>
-                        <a href="#" class="flex flex-col items-center text-[#a9a9a9] text-xs">
-                            <i class="fas fa-calendar-plus text-2xl mb-1"></i>
-                            <span>Booking</span>
-                        </a>
-                        <a href="#" class="flex flex-col items-center text-[#497fff] text-xs">
-                            <i class="fas fa-user text-2xl mb-1"></i>
-                            <span>Profile</span>
-                        </a>
-                    </nav> -->
     </div>
 @endsection
+
+@push('scripts')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const avatars = document.querySelectorAll('.avatar-circle');
+
+            // Load janji temu untuk pasien pertama
+            const firstAvatar = avatars[0];
+            if (firstAvatar) {
+                const firstId = firstAvatar.getAttribute('data-id');
+                fetchData(firstId);
+            }
+
+            avatars.forEach(avatar => {
+                avatar.addEventListener('click', function () {
+                    avatars.forEach(a => a.classList.remove('selected'));
+                    this.classList.add('selected');
+
+
+                    const patientId = this.getAttribute('data-id');
+                    fetchData(patientId);
+                });
+            });
+
+            function fetchData(patientId) {
+                fetch(`/user/mini-history/data/${patientId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        updateSection('active-appointments', data.activeAppointments, true);
+                        updateSection('history-appointments', data.historyAppointments, false);
+                    })
+                    .catch(err => console.error(err));
+            }
+            function toggleFade(containerId, itemCount) {
+                const wrapper = document.getElementById(containerId).parentElement;
+                let fade = wrapper.querySelector('.fade-right');
+
+                if (fade) fade.remove();
+
+                if (itemCount >= 2) {
+                    const div = document.createElement('div');
+                    div.className = 'absolute top-0 right-0 h-full w-12 pointer-events-none bg-gradient-to-r from-transparent to-[rgba(229,231,235,0.5)] bg-opacity-5 fade-right';
+                    wrapper.appendChild(div);
+                }
+            }
+
+
+            function updateSection(containerId, items, isActive) {
+                toggleFade(containerId, items.length);
+                const container = document.getElementById(containerId);
+                // console.log('container ID:', containerId);
+                // console.log('container element:', container);
+                // console.log('items:', items);
+                container.innerHTML = '';
+
+                if (!items.length) {
+                    container.innerHTML = `<div class="text-center text-[#a9a9a9] italic py-4 min-w-[260px] w-full bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
+                                                                                        ${isActive ? 'Belum ada janji temu.' : 'Belum ada riwayat janji temu.'}
+                                                                                    </div>`;
+                    return;
+                }
+
+                items.forEach(item => {
+                    const dateObj = new Date(item.date);
+                    const now = new Date();
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const tomorrow = new Date();
+                    tomorrow.setDate(today.getDate() + 1);
+                    tomorrow.setHours(0, 0, 0, 0);
+
+                    let dateText = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                    let textColor = 'text-[#7a7a7a]';
+
+                    if (dateObj >= today && dateObj < tomorrow) {
+                        dateText = 'Hari ini';
+                        textColor = 'text-green-500';
+                    } else if (dateObj >= tomorrow && dateObj < new Date(tomorrow.getTime() + 86400000)) {
+                        dateText = 'Besok';
+                        textColor = 'text-yellow-500';
+                    }
+                    const card = document.createElement('div');
+                    card.className = 'min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0';
+
+                    card.innerHTML = `
+                                                                                        <div class="flex justify-between items-center mb-1">
+                                                                                            <span class="text-sm font-semibold ${textColor}">${dateText}</span>
+                                                                                            <span class="text-[#7a7a7a] font-bold text-sm">${item.time}</span>
+                                                                                        </div>
+                                                                                        <h3 class="text-lg font-bold mb-1">${item.title}</h3>
+                                                                                        <p class="text-sm font-semibold mb-0.5">${item.doctor_name}</p>
+                                                                                        <p class="text-[#a9a9a9] text-sm">Dokter ${item.specialization}</p>
+                                                                                    `;
+                    container.appendChild(card);
+                    // console.log('Card ditambahkan:', card);
+                });
+            }
+        });
+    </script>
+@endpush

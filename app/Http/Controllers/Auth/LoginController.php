@@ -15,12 +15,12 @@ class LoginController extends Controller
         $this->authService = $authService;
     }
 
-    public function showAdminLogin()
+    public function showAdmin()
     {
         return view('admin.login');
     }
 
-    public function showUserLogin()
+    public function showUser()
     {
         return view('auth.login');
     }
@@ -30,17 +30,17 @@ class LoginController extends Controller
         $credentials = $request->only('email', 'password');
         $user = \App\Models\User::withTrashed()->where('email', $credentials['email'])->first();
 
+        // Activate user klo sebelumnya inactive
+        if ($user->trashed()) {
+            $user->restore();
+        }
         if ($this->authService->login($credentials, 'user')) {
-            if ($user->trashed()) {
-                $user->deleted_at = null;
-                $user->save();
-            }
+
             return redirect()->route('user.dashboard');
         }
 
         return back()->with('error', 'Invalid credentials!');
     }
-
     public function loginAsAdmin(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -51,6 +51,7 @@ class LoginController extends Controller
             // Store admin information in session
             session()->put('name', $admin->name);
             session()->put('email', $admin->email);
+            session()->put('doctor_id', $admin->doctor_id);
 
             return redirect()->route('admin.dashboard');
         }
@@ -58,9 +59,20 @@ class LoginController extends Controller
         return back()->with('error', 'Invalid credentials!');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        $this->authService->logout();
-        return redirect()->route('admin.login')->with('success', 'Logged out successfully!');
+        if (auth()->guard('admin')->check()) {
+            $this->authService->logout($request, 'admin');
+            return redirect()->route('admin.login')->with('success', 'Berhasil logout sebagai admin!');
+        }
+
+        if (auth()->guard('user')->check()) {
+            $this->authService->logout($request, 'user');
+            return redirect()->route('login')->with('success', 'Berhasil logout sebagai user!');
+        }
+
+        // Default fallback kalau tidak ada yang login
+        return redirect('/')->with('warning', 'Anda belum login.');
     }
+
 }
