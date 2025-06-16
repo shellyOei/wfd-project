@@ -11,13 +11,14 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // user login
-Route::get('/login', [LoginController::class, 'showUserLogin'])->name('login');
+Route::get('/login', [LoginController::class, 'showUser'])->name('login');
 Route::post('/login', [LoginController::class, 'loginAsUser'])->name('login.post');
+
 // user registration
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
+Route::get('/register', [RegisterController::class, 'show'])->name('register.index');
 Route::post('/register', [RegisterController::class, 'registerUser'])->name('register.post');
 
-Route::middleware(['user'])->prefix('user')->name('user.')->group(function () {
+Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
 
     // patient registration
@@ -45,14 +46,15 @@ Route::middleware(['user'])->prefix('user')->name('user.')->group(function () {
     // Mini History
     Route::get('/mini-history', [ProfileController::class, 'miniHistory'])->name('miniHistory');
     Route::get('/mini-history/data/{patientId}', [PatientController::class, 'getAppointments'])->name('miniHistory.data');
+    
+    Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });
-Route::post('/logout', [LoginController::class, 'logoutAsUser'])->name('logout');
 
 // admin
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/login', [LoginController::class, 'showAdminLogin'])->name('login');
+    Route::get('/login', [LoginController::class, 'showAdmin'])->name('login');
     Route::post('/login', [LoginController::class, 'loginAsAdmin'])->name('login.post');
-    Route::middleware(['admin'])->group(function () {
+    Route::middleware('admin')->group(function () {
         // protected routes for admin
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 

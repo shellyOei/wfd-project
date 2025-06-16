@@ -15,12 +15,12 @@ class LoginController extends Controller
         $this->authService = $authService;
     }
 
-    public function showAdminLogin()
+    public function showAdmin()
     {
         return view('admin.login');
     }
 
-    public function showUserLogin()
+    public function showUser()
     {
         return view('auth.login');
     }
@@ -65,9 +65,9 @@ class LoginController extends Controller
         return back()->with('error', 'Invalid credentials!');
     }
 
-    public function logout()
+    public function logout(Request $r)
     {
-        $this->authService->logout();
+        $this->authService->logout($r, 'user');
         return redirect()->route('admin.login')->with('success', 'Logged out successfully!');
     }
 }

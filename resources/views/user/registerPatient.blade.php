@@ -90,6 +90,15 @@
         .stepper-label.completed {
             color: var(--blue1);
         }
+
+        /* New style for error messages below inputs */
+        .error-message {
+            color: #EF4444;
+            /* red-500 */
+            font-size: 0.75rem;
+            /* text-xs */
+            margin-top: 0.25rem;
+        }
     </style>
 @endsection
 
@@ -103,7 +112,7 @@
                 <div class="stepper-circle active" id="circle-1">1</div>
                 <div class="stepper-label active" id="label-1">Informasi Pribadi</div>
             </div>
-            <div class=""></div>
+            <div class="w-1/4 h-[2px] bg-[#D1D5DB] stepper-line"></div>
             <div class="stepper-item" id="stepper-step-2">
                 <div class="stepper-circle" id="circle-2">2</div>
                 <div class="stepper-label" id="label-2">Detail Medis</div>
@@ -126,7 +135,6 @@
                 <strong class="font-bold">Whoops!</strong>
                 <span class="block sm:inline">Terdapat masalah dengan input Anda.</span>
                 <ul id="error-list" class="mt-3 list-disc list-inside">
-                    <!-- Errors will be populated here by JavaScript for demonstration or by Laravel for real app -->
                 </ul>
             </div>
 
@@ -137,45 +145,40 @@
                 </h2>
 
 
-                <!-- Nama Lengkap Input Field -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold wetext-md" for="name">Nama Lengkap</label>
                     <div class="relative">
                         <input type="text"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
-                            placeholder="Contoh: Budi Santoso" name="name" id="name"
-                            value="{{ old('name', $patient->name ?? '') }}" required>
+                            placeholder="Contoh: Budi Santoso" name="name" id="name" value="{{ old('name') }}" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-user text-gray-400"></i>
                         </div>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="name-error"></span>
                 </div>
 
-                <!-- Nomor Telepon Input Field -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="phone">Nomor Telepon</label>
                     <div class="relative">
                         <input type="tel"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
-                            placeholder="Contoh: 081234567890" name="phone" id="phone"
-                            value="{{ old('phone', $patient->phone ?? '') }}" required>
+                            placeholder="Contoh: 081234567890" name="phone" id="phone" value="{{ old('phone') }}" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-phone text-gray-400"></i>
                         </div>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="phone-error"></span>
                 </div>
 
-                <!-- Jenis Kelamin Dropdown -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="sex">Jenis Kelamin</label>
                     <div class="relative">
                         <select name="sex" id="sex" required
                             class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Jenis Kelamin</option>
-                            <option value="male" {{ (old('sex', $patient->sex ?? '') == 'male') ? 'selected' : '' }}>Laki-laki
-                            </option>
-                            <option value="female" {{ (old('sex', $patient->sex ?? '') == 'female') ? 'selected' : '' }}>
-                                Perempuan</option>
+                            <option value="male" {{ old('sex') == 'male' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="female" {{ old('sex') == 'female' ? 'selected' : '' }}>Perempuan</option>
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-venus-mars text-gray-400"></i>
@@ -186,85 +189,84 @@
                             </svg>
                         </div>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="sex-error"></span>
                 </div>
 
-                <!-- Tanggal Lahir Input Field -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="date_of_birth">Tanggal Lahir</label>
                     <div class="relative">
                         <input type="date"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
-                            name="date_of_birth" id="date_of_birth"
-                            value="{{ old('date_of_birth', $patient->date_of_birth ?? '') }}" required>
+                            name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth') }}" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-calendar-days text-gray-400"></i>
                         </div>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="date_of_birth-error"></span>
                 </div>
 
-                <!-- Nomor KTP Input Field -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="id_card_number">Nomor KTP</label>
                     <div class="relative">
                         <input type="text"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             placeholder="Contoh: 1234567890123456" name="id_card_number" id="id_card_number"
-                            value="{{ old('id_card_number', $patient->id_card_number ?? '') }}" pattern="[0-9]{16}"
-                            title="Nomor KTP harus 16 digit angka" required>
+                            value="{{ old('id_card_number') }}" pattern="[0-9]{16}" title="Nomor KTP harus 16 digit angka"
+                            required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-id-card text-gray-400"></i>
                         </div>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="id_card_number-error"></span>
                 </div>
 
-                <!-- Profesi Input Field -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="occupation">Profesi</label>
                     <div class="relative">
                         <input type="text"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             placeholder="Contoh: Karyawan Swasta" name="occupation" id="occupation"
-                            value="{{ old('occupation', $patient->occupation ?? '') }}" required>
+                            value="{{ old('occupation') }}" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-briefcase text-gray-400"></i>
                         </div>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="occupation-error"></span>
                 </div>
 
-                <!-- Alamat Tempat Tinggal Textarea -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="address">Alamat Tempat Tinggal</label>
                     <div class="relative">
                         <textarea placeholder="Contoh: Jl. Merdeka No. 10, Jakarta" name="address" id="address" rows="3"
                             required
-                            class="w-full pl-4 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent">{{ old('address', $patient->address ?? '') }}</textarea>
+                            class="w-full pl-4 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent">{{ old('address') }}</textarea>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="address-error"></span>
                 </div>
 
                 <button type="button" id="next-step-btn"
                     class="btn text-center w-full py-3 rounded-lg text-white font-semibold shadow-lg
-                                                                        bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)]
-                                                                        hover:from-purple-600 hover:to-indigo-700
-                                                                        hover:shadow-xl transition-all duration-300 ease-in-out
-                                                                        focus:outline-none focus:ring-2 focus:ring-[var(--blueGradient1)] focus:ring-opacity-75 font-bold tracking-wide">
+                                                                                    bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)]
+                                                                                    hover:from-purple-600 hover:to-indigo-700
+                                                                                    hover:shadow-xl transition-all duration-300 ease-in-out
+                                                                                    focus:outline-none focus:ring-2 focus:ring-[var(--blueGradient1)] focus:ring-opacity-75 font-bold tracking-wide">
                     Selanjutnya
                 </button>
             </div>
 
-            <!-- Step 2: Detail Medis & Lainnya -->
-            <div id="step-2-content" class="form-section hidden">
+            <div id="step-2-content" class="form-section hidden space-y-4">
                 <h2 class="text-xl font-bold mb-4 text-center">Langkah 2: Detail Medis & Lainnya</h2>
 
-                <!-- Golongan Darah Dropdown -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="blood_type">Golongan Darah</label>
                     <div class="relative">
                         <select name="blood_type" id="blood_type" required
                             class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Golongan Darah</option>
-                            @foreach(['A', 'B', 'AB', 'O'] as $bt)
-                                <option value="{{ $bt }}" {{ (old('blood_type', $patient->blood_type ?? '') == $bt) ? 'selected' : '' }}>{{ $bt }}</option>
-                            @endforeach
+                            <option value="A" {{ old('blood_type') == 'A' ? 'selected' : '' }}>A</option>
+                            <option value="B" {{ old('blood_type') == 'B' ? 'selected' : '' }}>B</option>
+                            <option value="AB" {{ old('blood_type') == 'AB' ? 'selected' : '' }}>AB</option>
+                            <option value="O" {{ old('blood_type') == 'O' ? 'selected' : '' }}>O</option>
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-droplet text-gray-400"></i>
@@ -275,9 +277,9 @@
                             </svg>
                         </div>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="blood_type-error"></span>
                 </div>
 
-                <!-- Rhesus Dropdown -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="rhesus_factor">Rhesus</label>
                     <div class="relative">
@@ -296,35 +298,35 @@
                             </svg>
                         </div>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="rhesus_factor-error"></span>
                 </div>
 
-                <!-- Nomor BPJS Input Field -->
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="BPJS_number">Nomor BPJS (Opsional)</label>
                     <div class="relative">
                         <input type="text"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
-                            placeholder="Opsional" name="BPJS_number" id="BPJS_number"
-                            value="{{ old('BPJS_number', $patient->BPJS_number ?? '') }}">
+                            placeholder="Opsional" name="BPJS_number" id="BPJS_number" value="{{ old('BPJS_number') }}">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-hospital text-gray-400"></i>
                         </div>
                     </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="BPJS_number-error"></span>
                 </div>
 
                 <div class="flex justify-between space-x-4 mt-6">
                     <button type="button" id="prev-step-btn"
                         class="btn text-center w-1/2 py-3 rounded-lg text-gray-700 font-semibold shadow-lg
-                                                                            bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-in-out
-                                                                            focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75 font-bold tracking-wide">
+                                                                                        bg-gray-200 hover:bg-gray-300 transition-all duration-300 ease-in-out
+                                                                                        focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-opacity-75 font-bold tracking-wide">
                         Kembali
                     </button>
                     <button id="registPatientForm" type="submit"
                         class="btn text-center w-1/2 py-3 rounded-lg text-white font-semibold shadow-lg
-                                                        bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)]
-                                                        hover:from-purple-600 hover:to-indigo-700
-                                                        hover:shadow-xl transition-all duration-300 ease-in-out
-                                                        focus:outline-none focus:ring-2 focus:ring-[var(--blueGradient1)] focus:ring-opacity-75 font-bold tracking-wide">
+                                                                    bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)]
+                                                                    hover:from-purple-600 hover:to-indigo-700
+                                                                    hover:shadow-xl transition-all duration-300 ease-in-out
+                                                                    focus:outline-none focus:ring-2 focus:ring-[var(--blueGradient1)] focus:ring-opacity-75 font-bold tracking-wide">
                         {{ $isEdit ? 'Simpan Perubahan' : 'Daftar Pasien' }}
                     </button>
                 </div>
@@ -347,6 +349,7 @@
             const submitFormBtn = document.getElementById('registPatientForm');
             const errorContainer = document.getElementById('error-container');
             const errorList = document.getElementById('error-list');
+            const stepperLine = document.querySelector('.stepper-line');
 
             const stepperCircle1 = document.getElementById('circle-1');
             const stepperLabel1 = document.getElementById('label-1');
@@ -356,7 +359,15 @@
 
             let currentStep = 1;
 
-            // Function to update stepper UI
+            function clearErrorState() {
+                document.querySelectorAll('input, select, textarea').forEach(el => {
+                    el.classList.remove('border-red-500');
+                });
+                document.querySelectorAll('.error-message').forEach(el => {
+                    el.textContent = '';
+                });
+            }
+
             function updateStepperUI() {
                 if (currentStep === 1) {
                     stepperCircle1.classList.add('active');
@@ -364,6 +375,8 @@
                     stepperCircle2.classList.remove('active', 'completed');
                     stepperLabel2.classList.remove('active', 'completed');
                     stepperItem1.classList.remove('completed');
+                    stepperLine.classList.add('bg-[#D1D5DB]');
+                    stepperLine.classList.remove('bg-[var(--blue1)]');
                 } else if (currentStep === 2) {
                     stepperCircle1.classList.remove('active');
                     stepperCircle1.classList.add('completed');
@@ -373,10 +386,12 @@
 
                     stepperCircle2.classList.add('active');
                     stepperLabel2.classList.add('active');
+
+                    stepperLine.classList.remove('bg-[#D1D5DB]');
+                    stepperLine.classList.add('bg-[var(--blue1)]');
                 }
             }
 
-            // Function to show a specific step
             function showStep(stepNumber) {
                 step1Content.classList.add('hidden');
                 step2Content.classList.add('hidden');
@@ -388,22 +403,14 @@
                 }
                 currentStep = stepNumber;
                 updateStepperUI();
-                // Clear and hide errors when switching steps or showing a step
-                errorContainer.classList.add('hidden');
-                errorList.innerHTML = '';
-                // Remove all red borders from inputs
-                document.querySelectorAll('input, select, textarea').forEach(el => {
-                    el.classList.remove('border-red-500');
-                });
+                clearErrorState();
             }
 
-            // Helper function to check if all required fields in a step are filled
-            // This is a basic client-side check for UX, but backend validation is authoritative.
             function checkRequiredFields(stepElement) {
                 let allFieldsFilled = true;
                 const requiredInputs = stepElement.querySelectorAll('[required]');
                 requiredInputs.forEach(input => {
-                    input.classList.remove('border-red-500'); // Clear previous error styling
+                    input.classList.remove('border-red-500');
                     if (input.type === 'date' && !input.value) {
                         allFieldsFilled = false;
                         input.classList.add('border-red-500');
@@ -418,9 +425,7 @@
                 return allFieldsFilled;
             }
 
-            // Handle "Next" button click
             nextStepBtn.addEventListener('click', function () {
-                // Check if basic required fields in step 1 are filled for better UX
                 if (!checkRequiredFields(step1Content)) {
                     Swal.fire({
                         icon: 'warning',
@@ -428,17 +433,15 @@
                         text: 'Harap isi semua kolom yang wajib diisi di langkah ini.',
                         confirmButtonColor: '#3B82F6'
                     });
-                    return; // Prevent moving to next step if required fields are empty
+                    return;
                 }
                 showStep(2);
             });
 
-            // Handle "Previous" button click
             prevStepBtn.addEventListener('click', function () {
                 showStep(1);
             });
 
-            // Handle "Submit" button click
             submitFormBtn.addEventListener('click', async function (e) {
                 e.preventDefault();
 
@@ -452,7 +455,6 @@
                     return;
                 }
 
-                // Show confirmation dialog
                 const result = await Swal.fire({
                     title: isEditMode ? 'Konfirmasi Perubahan Data' : 'Konfirmasi Pendaftaran',
                     text: isEditMode
@@ -467,7 +469,6 @@
                 });
 
                 if (result.isConfirmed) {
-                    // User confirmed, now prepare and send the form data
                     const formData = new FormData(form);
                     const payload = {};
                     for (const [key, value] of formData.entries()) {
@@ -490,16 +491,16 @@
                             method: form.method,
                             headers: {
                                 'Content-Type': 'application/json',
-                                'Accept': 'application/json', // Explicitly ask for JSON response
+                                'Accept': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest',
                                 'X-CSRF-TOKEN': csrfToken
                             },
                             body: JSON.stringify(payload)
                         });
 
-                        const data = await response.json(); // Get JSON response
+                        const data = await response.json();
 
-                        if (response.ok) { // Check for successful HTTP status (2xx)
+                        if (response.ok) {
                             Swal.fire({
                                 icon: 'success',
                                 title: isEditMode ? 'Perubahan Disimpan!' : 'Pendaftaran Berhasil!',
@@ -507,48 +508,43 @@
                                     ? 'Data pasien berhasil diperbarui.'
                                     : 'Data pasien berhasil didaftarkan.'),
                                 showConfirmButton: false,
-                                timer: 1000,
-                                // confirmButtonColor: '#3B82F6'
+                                timer: 1000
                             }).then(() => {
                                 if (isEditMode) {
                                     window.location.href = '{{ route('user.patients') }}';
                                 } else {
-                                    form.reset(); // hanya reset kalau tambah pasien
+                                    form.reset();
                                     showStep(1);
                                 }
                             });
-
-                        } else { // Handle HTTP errors (e.g., 422 for validation, 500 for server error)
-                            errorList.innerHTML = ''; // Clear previous errors
+                        } else {
+                            errorList.innerHTML = '';
                             let errorMessageHtml = '<p>Pendaftaran gagal. Mohon periksa kembali input Anda:</p><ul class="mt-2 text-left">';
 
-                            // Clear all previous error highlights from inputs
                             document.querySelectorAll('input, select, textarea').forEach(el => {
                                 el.classList.remove('border-red-500');
                             });
 
-                            if (data.errors) { // Assuming Laravel sends validation errors in 'errors' object
+                            if (data.errors) {
                                 for (const field in data.errors) {
-                                    const errorMessages = data.errors[field]; // This will be an array of messages
+                                    const errorMessages = data.errors[field];
                                     errorMessages.forEach(errorText => {
                                         const li = document.createElement('li');
                                         li.textContent = errorText;
-                                        errorList.appendChild(li); // Add to on-page error list
-                                        errorMessageHtml += `<li>${errorText}</li>`; // Add to Swal HTML
+                                        errorList.appendChild(li);
+                                        errorMessageHtml += `<li>${errorText}</li>`;
                                     });
 
-                                    // Highlight the input field if it exists
                                     const inputField = document.getElementById(field);
                                     if (inputField) {
                                         inputField.classList.add('border-red-500');
                                     }
                                 }
                             } else {
-                                // General error message if no specific validation errors are provided
                                 errorMessageHtml += `<li>${data.message || 'Terjadi kesalahan saat mendaftarkan pasien.'}</li>`;
                             }
                             errorMessageHtml += '</ul>';
-                            errorContainer.classList.remove('hidden'); // Show on-page error container
+                            errorContainer.classList.remove('hidden');
 
                             Swal.fire({
                                 icon: 'error',
@@ -557,11 +553,10 @@
                                 confirmButtonColor: '#EF4444'
                             });
 
-                            // If errors occurred in step 1 fields, show step 1
-                            const step1Fields = ['nama_lengkap', 'nomor_telepon', 'jenis_kelamin', 'tanggal_lahir', 'nomor_ktp', 'profesi', 'alamat_tempat_tinggal'];
+                            const step1Fields = ['name', 'phone', 'sex', 'date_of_birth', 'id_card_number', 'occupation', 'address'];
                             const hasStep1Errors = Object.keys(data.errors || {}).some(field => step1Fields.includes(field));
                             if (hasStep1Errors && currentStep !== 1) {
-                                showStep(1); // Go back to step 1 if errors are found there
+                                showStep(1);
                             }
                         }
                     } catch (error) {
@@ -576,46 +571,40 @@
                 }
             });
 
-            // Initial display
-            showStep(1); // Start on the first step
-
-            // Check for old input and pre-populate if coming back from failed submission
-            // This relies on Laravel's `old()` helper and a fresh page load after redirect with errors
-            // If coming back from redirect, it will always be on step 1.
-            // However, if we want to retain step for specific errors, we'd need more complex logic (e.g., passing step via session/flash)
             @if ($errors->any())
-                // Show the error container immediately if there are Laravel backend errors
-                errorContainer.classList.remove('hidden');
-                errorList.innerHTML = '';
-                @foreach ($errors->all() as $error)
-                    const li = document.createElement('li');
-                    li.textContent = "{{ $error }}";
-                    errorList.appendChild(li);
-                @endforeach
+                clearErrorState();
 
-                // Also trigger SweetAlert for overall error
+                const laravelErrors = @json($errors->messages());
+                let hasStep1LaravelErrors = false;
+                const step1Fields = ['name', 'phone', 'sex', 'date_of_birth', 'id_card_number', 'occupation', 'address'];
+
+                for (const field in laravelErrors) {
+                    const inputField = document.getElementById(field);
+                    if (inputField) {
+                        inputField.classList.add('border-red-500');
+                        const errorSpan = document.getElementById(`${field}-error`);
+                        if (errorSpan) {
+                            errorSpan.textContent = laravelErrors[field][0];
+                        }
+                        if (step1Fields.includes(field)) {
+                            hasStep1LaravelErrors = true;
+                        }
+                    }
+                }
+
+                if (!hasStep1LaravelErrors && Object.keys(laravelErrors).length > 0) {
+                    showStep(2);
+                } else {
+                    showStep(1);
+                }
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Pendaftaran Gagal!',
-                    html: 'Terdapat masalah dengan input Anda. Silakan periksa kembali formulir.',
+                    text: 'Terdapat beberapa kesalahan dalam pengisian formulir Anda.',
                     confirmButtonColor: '#EF4444'
                 });
-
-                // Highlight fields that have errors
-                @foreach ($errors->keys() as $field)
-                    const errorField = document.getElementById('{{ $field }}');
-                    if (errorField) {
-                        errorField.classList.add('border-red-500');
-                    }
-                @endforeach
-
-                                                                                                                    // If any error belongs to step 2, navigate to step 2 after initial page load
-                                                                                                                    const step2Fields = ['golongan_darah', 'rhesus', 'nomor_bpjs'];
-                const hasStep2Errors = step2Fields.some(field => document.getElementById(field) && document.getElementById(field).classList.contains('border-red-500'));
-                if (hasStep2Errors) {
-                    showStep(2);
-                }
             @endif
-                                                        });
+        });
     </script>
 @endpush
