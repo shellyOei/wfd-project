@@ -1,4 +1,4 @@
-@extends('layout')
+@extends('layout') {{-- Pastikan ini mengarah ke layout utama Anda --}}
 
 @section('content')
 <div class="max-w-xl mx-auto p-4 min-h-screen font-sans antialiased pb-24">
@@ -9,27 +9,31 @@
             </svg>
         </a>
         <h1 class="text-xl font-bold flex-grow text-center text-gray-800">Pilih Tanggal & Waktu</h1>
-        <div class="w-6"></div>
+        <div class="w-6"></div> {{-- Placeholder untuk keseimbangan layout --}}
     </div>
 
     <div class="bg-white p-4 rounded-xl shadow-md mb-6">
         <h2 class="text-xl font-bold text-gray-800 mb-4 text-center">
-            {{ \Carbon\Carbon::parse($selectedDate)->translatedFormat('F Y') }}
+            {{ \Carbon\Carbon::parse($selectedDate)->translatedFormat('F Y') }} {{-- Menampilkan bulan dan tahun --}}
         </h2>
 
-        <div class="flex overflow-x-auto pb-4 custom-scrollbar" id="date-picker-container">
-            @foreach ($bookingDates as $dateItem)
-                <div class="flex-none w-20 mx-1 date-item
-                            @if($selectedDate == $dateItem['full_date']) bg-gradient-to-b from-yellow-400 to-orange-500 text-white shadow-lg
-                            @else text-gray-700 bg-gray-100 hover:bg-gray-200 @endif
-                            rounded-lg py-2 text-center cursor-pointer transition-all duration-300"
-                    data-date="{{ $dateItem['full_date'] }}"
-                    data-doctor-id="{{ $doctor->id }}"
-                >
-                    <div class="text-lg font-bold">{{ $dateItem['day_name'] }}</div>
-                    <div class="text-sm">{{ $dateItem['date_num'] }}</div>
-                </div>
-            @endforeach
+        {{-- Container untuk tanggal yang bisa di-scroll --}}
+        <div class="flex justify-center">
+            <div class="flex overflow-x-auto pb-4 custom-scrollbar" id="date-picker-container">
+                @foreach ($bookingDates as $dateItem)
+                    <div class="flex-none w-20 mx-1 date-item
+                                @if($selectedDate == $dateItem['full_date']) bg-gradient-to-b from-yellow-400 to-orange-500 text-white shadow-lg
+                                @else text-gray-700 bg-gray-100 hover:bg-gray-200 @endif
+                                rounded-lg py-2 cursor-pointer transition-all duration-300
+                                flex flex-col justify-center items-center h-full"
+                        data-date="{{ $dateItem['full_date'] }}"
+                        data-doctor-id="{{ $doctor->id }}" {{-- Diperlukan untuk AJAX request --}}
+                    >
+                        <div class="text-lg font-bold">{{ $dateItem['day_name'] }}</div>
+                        <div class="text-sm">{{ $dateItem['date_num'] }}</div>
+                    </div>
+                @endforeach
+            </div>
         </div>
 
         <p class="text-sm text-gray-500 mt-4 text-center">
@@ -40,16 +44,19 @@
     <div class="bg-white p-4 rounded-xl shadow-md mb-8">
         <h2 class="text-lg font-semibold text-gray-700 mb-4">Waktu yang Tersedia</h2>
         <div class="grid grid-cols-3 gap-3" id="time-slots-grid">
-            @forelse ($times as $time)
+            {{-- Loop untuk menampilkan slot waktu dari $times --}}
+            @forelse ($times as $slot)
                 <div class="time-item
-                            @if(isset($selectedTime) && $selectedTime == $time) bg-gradient-to-r from-cyan-400 to-blue-600 text-white shadow-lg
+                            @if(isset($selectedTime) && $selectedTime == $slot['time']) bg-gradient-to-r from-cyan-400 to-blue-600 text-white shadow-lg
                             @else bg-blue-50 text-blue-900 hover:bg-blue-100 @endif
                             text-sm font-semibold text-center py-3 rounded-xl cursor-pointer transition-all duration-300"
-                    data-time="{{ $time }}"
+                    data-time="{{ $slot['time'] }}"
+                    data-schedule-id="{{ $slot['schedule_id'] }}" {{-- Menyimpan schedule_id di sini --}}
                 >
-                    {{ $time }}
+                    {{ $slot['time'] }}
                 </div>
             @empty
+                {{-- Pesan ini akan disembunyikan/ditampilkan oleh JS --}}
                 <p class="col-span-3 text-center text-gray-600" id="no-schedule-message">Tidak ada jadwal tersedia untuk tanggal ini.</p>
             @endforelse
         </div>
@@ -60,6 +67,7 @@
     </button>
 </div>
 
+{{-- CSS untuk custom scrollbar --}}
 <style>
     .custom-scrollbar::-webkit-scrollbar {
         height: 5px;
@@ -74,271 +82,314 @@
         background-color: #edf2f7;
         border-radius: 3px;
     }
+
+    /* Menambahkan tinggi minimum agar item tanggal terlihat bagus */
+    .date-item {
+        min-height: 80px; /* Sesuaikan sesuai kebutuhan desain Anda */
+    }
 </style>
 @endsection
 
 @section('script')
+{{-- SweetAlert2 CDN (Pastikan ini dimuat di bagian <head> atau sebelum script ini) --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
- document.addEventListener('DOMContentLoaded', function() {
-    const dateItems = document.querySelectorAll('.date-item');
-    const timeGrid = document.getElementById('time-slots-grid');
-    // Pastikan referensi ke pesan "tidak ada jadwal" diambil dari elemen yang sudah ada
-    let noScheduleMessage = document.getElementById('no-schedule-message');
+    // Ambil CSRF token untuk permintaan POST Laravel
+    const CSRF_TOKEN = '{{ csrf_token() }}';
 
-    const confirmBookingBtn = document.getElementById('confirmBookingBtn');
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateItems = document.querySelectorAll('.date-item');
+        const timeGrid = document.getElementById('time-slots-grid');
+        let noScheduleMessage = document.getElementById('no-schedule-message'); // Referensi pesan "tidak ada jadwal"
 
-    let currentSelectedDate = '{{ $selectedDate }}';
-    let currentSelectedTime = '{{ $selectedTime ?? '' }}';
+        const confirmBookingBtn = document.getElementById('confirmBookingBtn');
 
-    // Fungsi untuk menyembunyikan/menampilkan pesan "tidak ada jadwal"
-    function toggleNoScheduleMessage(show) {
-        if (noScheduleMessage) {
-            noScheduleMessage.style.display = show ? 'block' : 'none';
+        let currentSelectedDate = '{{ $selectedDate }}';
+        let currentSelectedTime = '{{ $selectedTime ?? '' }}';
+        let currentSelectedScheduleId = ''; // Menyimpan ID PracticeSchedule yang dipilih
+
+        // Inisialisasi currentSelectedScheduleId jika ada waktu yang sudah terpilih saat halaman dimuat
+        const initialSelectedTimeElement = document.querySelector('.time-item.bg-gradient-to-r');
+        if (initialSelectedTimeElement) {
+            currentSelectedScheduleId = initialSelectedTimeElement.dataset.scheduleId;
         }
-    }
 
-    // Fungsi untuk mengosongkan grid waktu (hanya slot waktu, bukan pesan)
-    function clearTimeSlots() {
-        // Hapus semua child dari timeGrid kecuali noScheduleMessage
-        Array.from(timeGrid.children).forEach(child => {
-            if (child.id !== 'no-schedule-message') {
-                timeGrid.removeChild(child);
+        // Fungsi untuk menyembunyikan/menampilkan pesan "tidak ada jadwal"
+        function toggleNoScheduleMessage(show) {
+            if (noScheduleMessage) {
+                noScheduleMessage.style.display = show ? 'block' : 'none';
+            } else {
+                // Jika noScheduleMessage belum ada (misal, karena awalnya ada jadwal), buat elemen baru
+                if (show) {
+                    const p = document.createElement('p');
+                    p.className = 'col-span-3 text-center text-gray-600';
+                    p.textContent = 'Tidak ada jadwal tersedia untuk tanggal ini.';
+                    p.id = 'no-schedule-message';
+                    timeGrid.appendChild(p);
+                    noScheduleMessage = p; // Perbarui referensi
+                }
             }
-        });
-    }
-
-
-    function updateUrl(date, time) {
-        const doctorId = document.querySelector('.date-item').dataset.doctorId;
-        let url = `{{ route('user.booking.show', ['doctor' => '__DOCTOR_ID__']) }}`;
-        url = url.replace('__DOCTOR_ID__', doctorId);
-        url += `?date=${date}`;
-        if (time) {
-            url += `&time=${encodeURIComponent(time)}`;
         }
-        history.pushState({ date: date, time: time }, '', url);
-    }
 
-    async function fetchTimeSlots(date) {
-        const doctorId = document.querySelector('.date-item').dataset.doctorId;
-        const url = `{{ route('user.booking.show', ['doctor' => '__DOCTOR_ID__']) }}?date=${date}`;
-        const finalUrl = url.replace('__DOCTOR_ID__', doctorId);
-
-        try {
-            const response = await fetch(finalUrl, {
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
+        // Fungsi untuk mengosongkan grid waktu (hanya slot waktu, bukan pesan "tidak ada jadwal")
+        function clearTimeSlots() {
+            Array.from(timeGrid.children).forEach(child => {
+                if (child.id !== 'no-schedule-message') {
+                    child.remove(); // Hapus elemen slot waktu
                 }
             });
-            const data = await response.json();
+        }
 
-            clearTimeSlots(); // Kosongkan hanya slot waktu
+        // Fungsi untuk memperbarui URL di browser tanpa reload halaman penuh
+        function updateUrl(date, time) {
+            const doctorId = document.querySelector('.date-item').dataset.doctorId;
+            let url = `{{ route('user.booking.show', ['doctor' => '__DOCTOR_ID__']) }}`;
+            url = url.replace('__DOCTOR_ID__', doctorId);
+            url += `?date=${date}`;
+            if (time) {
+                url += `&time=${encodeURIComponent(time)}`;
+            }
+            history.pushState({ date: date, time: time }, '', url);
+        }
 
-            if (data.times.length > 0) {
-                toggleNoScheduleMessage(false); // Sembunyikan pesan
-                data.times.forEach(time => {
-                    const div = document.createElement('div');
-                    let classes = 'time-item text-sm font-semibold text-center py-3 rounded-xl cursor-pointer transition-all duration-300';
+        // Fungsi untuk mengambil dan menampilkan slot waktu dari server via AJAX
+        async function fetchTimeSlots(date) {
+            const doctorId = document.querySelector('.date-item').dataset.doctorId;
+            const url = `{{ route('user.booking.show', ['doctor' => '__DOCTOR_ID__']) }}?date=${date}`;
+            const finalUrl = url.replace('__DOCTOR_ID__', doctorId);
 
-                    if (currentSelectedTime === time) {
-                        classes += ' bg-gradient-to-r from-cyan-400 to-blue-600 text-white shadow-lg';
-                    } else {
-                        classes += ' bg-blue-50 text-blue-900 hover:bg-blue-100';
+            try {
+                const response = await fetch(finalUrl, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest' // Penting untuk deteksi AJAX di Laravel
                     }
+                });
+                const data = await response.json();
 
-                    div.className = classes;
-                    div.dataset.time = time;
-                    div.textContent = time;
+                clearTimeSlots(); // Kosongkan slot waktu yang ada sebelum menampilkan yang baru
 
-                    div.addEventListener('click', function() {
-                        const prevSelectedTime = document.querySelector('.time-item.bg-gradient-to-r');
-                        if (prevSelectedTime) {
-                            prevSelectedTime.classList.remove('bg-gradient-to-r', 'from-cyan-400', 'to-blue-600', 'text-white', 'shadow-lg');
-                            prevSelectedTime.classList.add('bg-blue-50', 'text-blue-900', 'hover:bg-blue-100');
+                // Cek jika ada slot yang tersedia dari respons backend
+                if (data.times && data.times.length > 0) {
+                    toggleNoScheduleMessage(false); // Sembunyikan pesan "tidak ada jadwal"
+                    data.times.forEach(slot => {
+                        const div = document.createElement('div');
+                        let classes = 'time-item text-sm font-semibold text-center py-3 rounded-xl cursor-pointer transition-all duration-300';
+
+                        // Tentukan kelas CSS jika slot ini adalah yang terpilih
+                        if (currentSelectedTime === slot.time) {
+                            classes += ' bg-gradient-to-r from-cyan-400 to-blue-600 text-white shadow-lg';
+                            currentSelectedScheduleId = slot.schedule_id; // Set schedule_id jika ini waktu yang terpilih
+                        } else {
+                            classes += ' bg-blue-50 text-blue-900 hover:bg-blue-100';
                         }
 
-                        this.classList.remove('bg-blue-50', 'text-blue-900', 'hover:bg-blue-100');
-                        this.classList.add('bg-gradient-to-r', 'from-cyan-400', 'to-blue-600', 'text-white', 'shadow-lg');
+                        div.className = classes;
+                        div.dataset.time = slot.time;
+                        div.dataset.scheduleId = slot.schedule_id; // Simpan schedule_id di dataset
+                        div.textContent = slot.time;
 
-                        currentSelectedTime = time;
-                        updateUrl(currentSelectedDate, currentSelectedTime);
+                        // Tambahkan event listener untuk setiap slot waktu yang baru dibuat
+                        div.addEventListener('click', function() {
+                            // Hapus highlight dari slot waktu sebelumnya (jika ada)
+                            const prevSelectedTimeElement = document.querySelector('.time-item.bg-gradient-to-r');
+                            if (prevSelectedTimeElement) {
+                                prevSelectedTimeElement.classList.remove('bg-gradient-to-r', 'from-cyan-400', 'to-blue-600', 'text-white', 'shadow-lg');
+                                prevSelectedTimeElement.classList.add('bg-blue-50', 'text-blue-900', 'hover:bg-blue-100');
+                            }
+
+                            // Tambahkan highlight ke slot waktu yang baru diklik
+                            this.classList.remove('bg-blue-50', 'text-blue-900', 'hover:bg-blue-100');
+                            this.classList.add('bg-gradient-to-r', 'from-cyan-400', 'to-blue-600', 'text-white', 'shadow-lg');
+
+                            currentSelectedTime = this.dataset.time;
+                            currentSelectedScheduleId = this.dataset.scheduleId; // Ambil schedule_id dari slot yang diklik
+                            updateUrl(currentSelectedDate, currentSelectedTime); // Perbarui URL
+                        });
+
+                        timeGrid.appendChild(div); // Tambahkan div slot waktu ke grid
+                    });
+                } else {
+                    toggleNoScheduleMessage(true); // Tampilkan pesan "tidak ada jadwal"
+                }
+            } catch (error) {
+                console.error('Error fetching time slots:', error);
+                clearTimeSlots(); // Pastikan slot waktu terhapus jika ada error
+                toggleNoScheduleMessage(true); // Tampilkan pesan error
+                if (noScheduleMessage) {
+                    noScheduleMessage.textContent = 'Gagal memuat jadwal. Silakan coba lagi.';
+                    noScheduleMessage.style.color = 'red';
+                }
+            }
+        }
+
+        // Tambahkan event listener untuk setiap item tanggal
+        dateItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const newDate = this.dataset.date;
+
+                // Hapus highlight dari tanggal sebelumnya
+                const prevSelectedDateElement = document.querySelector('.date-item.bg-gradient-to-b');
+                if (prevSelectedDateElement) {
+                    prevSelectedDateElement.classList.remove('bg-gradient-to-b', 'from-yellow-400', 'to-orange-500', 'text-white', 'shadow-lg');
+                    prevSelectedDateElement.classList.add('text-gray-700', 'bg-gray-100', 'hover:bg-gray-200');
+                }
+
+                // Tambahkan highlight ke tanggal yang baru diklik
+                this.classList.remove('text-gray-700', 'bg-gray-100', 'hover:bg-gray-200');
+                this.classList.add('bg-gradient-to-b', 'from-yellow-400', 'to-orange-500', 'text-white', 'shadow-lg');
+
+                currentSelectedDate = newDate;
+                currentSelectedTime = ''; // Reset waktu yang dipilih saat tanggal berubah
+                currentSelectedScheduleId = ''; // Reset schedule_id saat tanggal berubah
+
+                updateUrl(currentSelectedDate, currentSelectedTime); // Perbarui URL
+                fetchTimeSlots(currentSelectedDate); // Ambil slot waktu baru untuk tanggal ini
+            });
+        });
+
+        // Inisialisasi event listener untuk slot waktu yang dimuat secara statis saat halaman pertama kali dimuat
+        document.querySelectorAll('.time-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Hapus highlight dari slot waktu sebelumnya
+                const prevSelectedTimeElement = document.querySelector('.time-item.bg-gradient-to-r');
+                if (prevSelectedTimeElement) {
+                    prevSelectedTimeElement.classList.remove('bg-gradient-to-r', 'from-cyan-400', 'to-blue-600', 'text-white', 'shadow-lg');
+                    prevSelectedTimeElement.classList.add('bg-blue-50', 'text-blue-900', 'hover:bg-blue-100');
+                }
+
+                // Tambahkan highlight ke slot waktu yang baru diklik
+                this.classList.remove('bg-blue-50', 'text-blue-900', 'hover:bg-blue-100');
+                this.classList.add('bg-gradient-to-r', 'from-cyan-400', 'to-blue-600', 'text-white', 'shadow-lg');
+
+                currentSelectedTime = this.dataset.time;
+                currentSelectedScheduleId = this.dataset.scheduleId;
+                updateUrl(currentSelectedDate, currentSelectedTime);
+            });
+        });
+
+        // Tangani tombol back/forward browser
+        window.addEventListener('popstate', function(event) {
+            if (event.state) {
+                currentSelectedDate = event.state.date;
+                currentSelectedTime = event.state.time;
+
+                // Perbarui highlight tanggal
+                dateItems.forEach(item => {
+                    if (item.dataset.date === currentSelectedDate) {
+                        item.classList.add('bg-gradient-to-b', 'from-yellow-400', 'to-orange-500', 'text-white', 'shadow-lg');
+                        item.classList.remove('text-gray-700', 'bg-gray-100', 'hover:bg-gray-200');
+                    } else {
+                        item.classList.remove('bg-gradient-to-b', 'from-yellow-400', 'to-orange-500', 'text-white', 'shadow-lg');
+                        item.classList.add('text-gray-700', 'bg-gray-100', 'hover:bg-gray-200');
+                    }
+                });
+
+                // Ambil ulang slot waktu untuk tanggal yang baru dari history
+                fetchTimeSlots(currentSelectedDate);
+            }
+        });
+
+        // Event listener untuk tombol Konfirmasi Booking
+        confirmBookingBtn.addEventListener('click', function() {
+            const doctorName = 'Dr. {{ $doctor->name ?? 'Dokter' }}'; // Nama dokter
+            const bookingDate = currentSelectedDate;
+            const bookingTime = currentSelectedTime;
+            const scheduleId = currentSelectedScheduleId; // schedule_id yang akan dikirim ke backend
+
+            // Validasi apakah tanggal, waktu, dan schedule_id sudah dipilih
+            if (!bookingDate || !bookingTime || !scheduleId) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Peringatan',
+                    text: 'Mohon pilih tanggal dan waktu booking terlebih dahulu.',
+                    confirmButtonColor: '#3085d6',
+                });
+                return; // Hentikan proses jika belum lengkap
+            }
+
+            // Tampilkan konfirmasi SweetAlert
+            Swal.fire({
+                title: 'Konfirmasi Janji Temu Anda?',
+                html: `
+                    <p>Anda akan membuat janji temu dengan</p>
+                    <p><strong>${doctorName}</strong> pada:</p>
+                    <p>Tanggal: <strong>${new Date(bookingDate).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong></p>
+                    <p>Pukul: <strong>${bookingTime}</strong></p>
+                `,
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Konfirmasi!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tampilkan loading sebelum mengirim permintaan
+                    Swal.fire({
+                        title: 'Memproses...',
+                        text: 'Harap tunggu sebentar.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
                     });
 
-                    timeGrid.appendChild(div);
-                });
-            } else {
-                toggleNoScheduleMessage(true); // Tampilkan pesan
-            }
-        } catch (error) {
-            console.error('Error fetching time slots:', error);
-            clearTimeSlots(); // Pastikan slot waktu terhapus
-            toggleNoScheduleMessage(true); // Tampilkan pesan error jika terjadi masalah
-            // Optional: Anda bisa menambahkan pesan error yang berbeda di sini
-            // if (noScheduleMessage) {
-            //     noScheduleMessage.textContent = 'Gagal memuat jadwal. Silakan coba lagi.';
-            //     noScheduleMessage.style.color = 'red';
-            // }
-        }
-    }
+                    // Kirim permintaan AJAX ke backend untuk menyimpan booking
+                    fetch('{{ route('user.booking.store') }}', { // Pastikan rute ini benar
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': CSRF_TOKEN // Penting untuk POST request di Laravel
+                        },
+                        body: JSON.stringify({
+                            schedule_id: scheduleId // Kirim schedule_id
+                        })
+                    })
+                    .then(response => response.json()) // Parse respons JSON
+                    .then(data => {
+                        Swal.close(); // Tutup loading SweetAlert
 
-    // Add click listeners to date items
-    dateItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const newDate = this.dataset.date;
-
-            const prevSelectedDateElement = document.querySelector('.date-item.bg-gradient-to-b');
-            if (prevSelectedDateElement) {
-                prevSelectedDateElement.classList.remove('bg-gradient-to-b', 'from-yellow-400', 'to-orange-500', 'text-white', 'shadow-lg');
-                prevSelectedDateElement.classList.add('text-gray-700', 'bg-gray-100', 'hover:bg-gray-200');
-            }
-
-            this.classList.remove('text-gray-700', 'bg-gray-100', 'hover:bg-gray-200');
-            this.classList.add('bg-gradient-to-b', 'from-yellow-400', 'to-orange-500', 'text-white', 'shadow-lg');
-
-            currentSelectedDate = newDate;
-            currentSelectedTime = ''; // Reset selected time when date changes
-
-            updateUrl(currentSelectedDate, currentSelectedTime);
-            fetchTimeSlots(currentSelectedDate);
-        });
-    });
-
-    // Initialize time slot click listeners for the initial render (if any times are present)
-    // Make sure this runs *after* noScheduleMessage is properly set up
-    document.querySelectorAll('.time-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const prevSelectedTime = document.querySelector('.time-item.bg-gradient-to-r');
-            if (prevSelectedTime) {
-                prevSelectedTime.classList.remove('bg-gradient-to-r', 'from-cyan-400', 'to-blue-600', 'text-white', 'shadow-lg');
-                prevSelectedTime.classList.add('bg-blue-50', 'text-blue-900', 'hover:bg-blue-100');
-            }
-
-            this.classList.remove('bg-blue-50', 'text-blue-900', 'hover:bg-blue-100');
-            this.classList.add('bg-gradient-to-r', 'from-cyan-400', 'to-blue-600', 'text-white', 'shadow-lg');
-
-            currentSelectedTime = this.dataset.time;
-            updateUrl(currentSelectedDate, currentSelectedTime);
-        });
-    });
-
-    // Handle browser back/forward buttons
-    window.addEventListener('popstate', function(event) {
-        if (event.state) {
-            currentSelectedDate = event.state.date;
-            currentSelectedTime = event.state.time;
-
-            // Update date highlight
-            dateItems.forEach(item => {
-                if (item.dataset.date === currentSelectedDate) {
-                    item.classList.add('bg-gradient-to-b', 'from-yellow-400', 'to-orange-500', 'text-white', 'shadow-lg');
-                    item.classList.remove('text-gray-700', 'bg-gray-100', 'hover:bg-gray-200');
-                } else {
-                    item.classList.remove('bg-gradient-to-b', 'from-yellow-400', 'to-orange-500', 'text-white', 'shadow-lg');
-                    item.classList.add('text-gray-700', 'bg-gray-100', 'hover:bg-gray-200');
+                        if (data.success) {
+                            Swal.fire(
+                                'Berhasil!',
+                                data.message, // Gunakan pesan sukses dari backend
+                                'success'
+                            ).then(() => {
+                                // Redirect ke URL yang diberikan oleh backend
+                                if (data.redirect_url) {
+                                    window.location.href = data.redirect_url;
+                                }
+                            });
+                        } else {
+                            // Tampilkan pesan error dari backend
+                            Swal.fire(
+                                'Gagal!',
+                                data.message || 'Terjadi kesalahan saat mengkonfirmasi janji temu.',
+                                'error'
+                            );
+                        }
+                    })
+                    .catch(error => {
+                        Swal.close(); // Tutup loading SweetAlert jika terjadi kesalahan
+                        console.error('Error:', error);
+                        Swal.fire(
+                            'Error!',
+                            'Terjadi kesalahan jaringan atau server. Silakan coba lagi.',
+                            'error'
+                        );
+                    });
                 }
             });
-
-            fetchTimeSlots(currentSelectedDate); // Re-fetch times for the new date
-        }
-    });
-
-    // --- NEW: SweetAlert for Konfirmasi Booking button ---
-    confirmBookingBtn.addEventListener('click', function() {
-        const doctorName = 'Dr. {{ $doctor->name }}'; // Assuming doctor name is available in blade
-        const bookingDate = currentSelectedDate;
-        const bookingTime = currentSelectedTime;
-
-        if (!bookingDate || !bookingTime) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Peringatan',
-                text: 'Mohon pilih tanggal dan waktu booking terlebih dahulu.',
-                confirmButtonColor: '#3085d6',
-            });
-            return; // Stop if date or time is not selected
-        }
-
-        Swal.fire({
-            title: 'Konfirmasi Booking Anda?',
-            html: `
-                <p>Anda akan membuat janji temu dengan</p>
-                <p><strong>${doctorName}</strong> pada:</p>
-                <p>Tanggal: <strong>${new Date(bookingDate).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</strong></p>
-                <p>Pukul: <strong>${bookingTime}</strong></p>
-            `,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Ya, Konfirmasi!',
-            cancelButtonText: 'Batal'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Here you would typically send an AJAX request to your backend
-                // to actually create the booking in the database.
-                // For now, we'll just show a success message.
-
-                // Example: Send data to a backend route
-                // const doctorId = document.querySelector('.date-item').dataset.doctorId;
-                // fetch('/api/book-appointment', { // Replace with your actual booking API route
-                //     method: 'POST',
-                //     headers: {
-                //         'Content-Type': 'application/json',
-                //         'X-CSRF-TOKEN': '{{ csrf_token() }}' // For Laravel POST requests
-                //     },
-                //     body: JSON.stringify({
-                //         doctor_id: doctorId,
-                //         date: bookingDate,
-                //         time: bookingTime
-                //     })
-                // })
-                // .then(response => response.json())
-                // .then(data => {
-                //     if (data.success) {
-                //         Swal.fire(
-                //             'Berhasil!',
-                //             'Janji temu Anda telah berhasil dikonfirmasi.',
-                //             'success'
-                //         );
-                //         // Optionally, redirect to a success page or user dashboard
-                //         // window.location.href = '/booking/success';
-                //     } else {
-                //         Swal.fire(
-                //             'Gagal!',
-                //             data.message || 'Terjadi kesalahan saat mengkonfirmasi janji temu.',
-                //             'error'
-                //         );
-                //     }
-                // })
-                // .catch(error => {
-                //     console.error('Error:', error);
-                //     Swal.fire(
-                //         'Error!',
-                //         'Terjadi kesalahan jaringan atau server.',
-                //         'error'
-                //     );
-                // });
-
-                // For demonstration, just show success alert immediately:
-                Swal.fire(
-                    'Berhasil!',
-                    'Janji temu Anda telah berhasil dikonfirmasi.',
-                    'success'
-                );
-                // You might want to redirect the user after success, e.g.:
-                // setTimeout(() => {
-                //     window.location.href = '/user/my-appointments'; // Redirect to user's appointments
-                // }, 2000);
-            }
         });
-    });
 
-    // Initial check to show/hide message based on initial data
-    if (document.querySelectorAll('.time-item').length === 0) {
-        toggleNoScheduleMessage(true);
-    } else {
-        toggleNoScheduleMessage(false);
-    }
-});
+        // Pengecekan awal untuk menampilkan/menyembunyikan pesan "tidak ada jadwal"
+        // Berdasarkan data `$times` yang dimuat secara awal oleh Blade
+        if ({{ count($times) }} === 0) {
+            toggleNoScheduleMessage(true);
+        } else {
+            toggleNoScheduleMessage(false);
+        }
+    });
 </script>
 @endsection

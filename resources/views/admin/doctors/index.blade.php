@@ -1,7 +1,7 @@
 @extends('admin.layout')
 
 @section('title', 'Manage Doctors')
-@section('page-title', 'Doctors Managementt')
+@section('page-title', 'Doctors Management')
 
 @section('content')
     <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">

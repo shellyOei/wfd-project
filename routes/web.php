@@ -29,6 +29,7 @@ Route::middleware(['user'])->prefix('user')->name('user.')->group(function () {
 
     // form.blade.php
     Route::get('/doctor/{doctor}/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
+     Route::post('/book/store', [BookingController::class, 'store'])->name('booking.store');
 });
 
 // admin
