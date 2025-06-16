@@ -8,28 +8,28 @@
     <div class="min-h-screen bg-[#f4f4fd]">
         <!-- Header - Mobile Only -->
         <!-- <header class="fixed top-0 left-0 right-0 h-[63px] bg-[#f4f4fd] z-10 md:hidden">
-                                            <div class="flex justify-between items-center px-7 pt-6">
-                                                <div class="flex gap-1">
-                                                    <i class="fas fa-signal text-[22px]"></i>
-                                                    <i class="fas fa-wifi text-[22px]"></i>
-                                                    <i class="fas fa-battery-full text-[22px]"></i>
+                                                <div class="flex justify-between items-center px-7 pt-6">
+                                                    <div class="flex gap-1">
+                                                        <i class="fas fa-signal text-[22px]"></i>
+                                                        <i class="fas fa-wifi text-[22px]"></i>
+                                                        <i class="fas fa-battery-full text-[22px]"></i>
+                                                    </div>
+                                                    <time class="font-semibold text-base">12:45</time>
                                                 </div>
-                                                <time class="font-semibold text-base">12:45</time>
-                                            </div>
-                                        </header> -->
+                                            </header> -->
 
         <!-- Main Content -->
         <main class="max-w-[440px] md:max-w-7xl mx-auto md:pt-8 pb-[61px] md:pb-8">
             <!-- Desktop Header -->
             <!-- <div class="hidden md:block mb-8">
-                                                <div class="flex items-center justify-between">
-                                                    <h1 class="text-4xl font-bold text-gray-800">Dashboard</h1>
-                                                    <div class="flex items-center space-x-4">
-                                                        <span class="text-gray-600">Welcome back, Angel</span>
-                                                        <img class="w-10 h-10 rounded-full" src="img/mask-group.png" alt="User avatar" />
+                                                    <div class="flex items-center justify-between">
+                                                        <h1 class="text-4xl font-bold text-gray-800">Dashboard</h1>
+                                                        <div class="flex items-center space-x-4">
+                                                            <span class="text-gray-600">Welcome back, Angel</span>
+                                                            <img class="w-10 h-10 rounded-full" src="img/mask-group.png" alt="User avatar" />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div> -->
+                                                </div> -->
 
             <!-- Desktop Grid Layout -->
             <div class="md:grid md:grid-cols-12 md:gap-8">
@@ -83,12 +83,12 @@
                                                 </span>
 
                                                 <!-- @php
-                                                                $umur = Carbon\Carbon::parse($profile->patient->date_of_birth)->age;
-                                                            @endphp
-                                                            <span
-                                                                class="bg-gray-100 text-gray-600 text-xs font-medium px-4 py-1 md:py-1 px-2 py-1 rounded-full">
-                                                                {{ $umur }} tahun
-                                                            </span> -->
+                                                                            $umur = Carbon\Carbon::parse($profile->patient->date_of_birth)->age;
+                                                                        @endphp
+                                                                        <span
+                                                                            class="bg-gray-100 text-gray-600 text-xs font-medium px-4 py-1 md:py-1 px-2 py-1 rounded-full">
+                                                                            {{ $umur }} tahun
+                                                                        </span> -->
                                             </div>
                                         </div>
                                     </div>
@@ -96,16 +96,16 @@
                             @endforeach
 
                             <!-- <div class="flex items-center bg-white rounded-2xl p-4 md:p-6 shadow-sm hover:shadow-md transition-shadow">
-                                                                <img class="w-[88px] h-[87px] md:w-20 md:h-20 rounded-full mr-4 md:mr-6" src="img/image.png" alt="User avatar" />
-                                                                <div class="flex-grow">
-                                                                    <h3 class="text-xl md:text-xl font-bold">Chris Parker</h3>
-                                                                    <p class="text-[#7a7a7a] md:text-base">Pasangan</p>
-                                                                    <div class="hidden md:block mt-2 text-sm text-gray-500">
-                                                                        Last visit: 1 week ago
+                                                                    <img class="w-[88px] h-[87px] md:w-20 md:h-20 rounded-full mr-4 md:mr-6" src="img/image.png" alt="User avatar" />
+                                                                    <div class="flex-grow">
+                                                                        <h3 class="text-xl md:text-xl font-bold">Chris Parker</h3>
+                                                                        <p class="text-[#7a7a7a] md:text-base">Pasangan</p>
+                                                                        <div class="hidden md:block mt-2 text-sm text-gray-500">
+                                                                            Last visit: 1 week ago
+                                                                        </div>
                                                                     </div>
-                                                                </div>
 
-                                                            </div> -->
+                                                                </div> -->
                         </div>
 
                         @php
@@ -169,14 +169,15 @@
                             </div>
                         </div>
 
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit"
-                                class="w-full mt-5 flex items-center justify-center border border-[#cf0003] text-[#cf0003] rounded-xl py-2.5 md:py-3 text-xl font-semibold hover:bg-red-50 transition-colors">
-                                <i class="fas fa-sign-out-alt mr-2.5"></i>
-                                Logout
-                            </button>
-                        </form>
+                        <!-- <form method="POST" action="{{ route('user.logout') }}">
+                                @csrf -->
+                        <a href="{{ route('user.logout') }}"
+                            class="w-full mt-5 flex items-center justify-center border border-[#cf0003] text-[#cf0003] rounded-xl py-2.5 md:py-3 text-xl font-semibold hover:bg-red-50 transition-colors">
+                            <i class="fas fa-sign-out-alt mr-2.5"></i>
+                            Logout
+                        </a>
+
+                        <!-- </form> -->
 
                     </section>
                 </div>

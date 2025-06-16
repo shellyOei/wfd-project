@@ -41,12 +41,6 @@ class LoginController extends Controller
 
         return back()->with('error', 'Invalid credentials!');
     }
-    public function logoutAsUser(Request $request)
-    {
-        $this->authService->logout();
-        return redirect()->route('login')->with('success', 'Logged out successfully!');
-    }
-
     public function loginAsAdmin(Request $request)
     {
         $credentials = $request->only('email', 'password');
@@ -65,9 +59,20 @@ class LoginController extends Controller
         return back()->with('error', 'Invalid credentials!');
     }
 
-    public function logout(Request $r)
+    public function logout(Request $request)
     {
-        $this->authService->logout($r, 'user');
-        return redirect()->route('admin.login')->with('success', 'Logged out successfully!');
+        if (auth()->guard('admin')->check()) {
+            $this->authService->logout($request, 'admin');
+            return redirect()->route('admin.login')->with('success', 'Berhasil logout sebagai admin!');
+        }
+
+        if (auth()->guard('user')->check()) {
+            $this->authService->logout($request, 'user');
+            return redirect()->route('user.login')->with('success', 'Berhasil logout sebagai user!');
+        }
+
+        // Default fallback kalau tidak ada yang login
+        return redirect('/')->with('warning', 'Anda belum login.');
     }
+
 }

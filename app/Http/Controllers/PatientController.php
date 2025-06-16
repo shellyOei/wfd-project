@@ -208,7 +208,7 @@ class PatientController extends Controller
     }
     public function showEditForm($id)
     {
-        $patient = Patient::findOrFail($id); // Kalau tidak ketemu, langsung 404
+        $patient = Patient::findOrFail($id);
         return view('user.registerPatient', compact('patient'));
     }
 

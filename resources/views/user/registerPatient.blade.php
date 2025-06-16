@@ -148,9 +148,10 @@
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold wetext-md" for="name">Nama Lengkap</label>
                     <div class="relative">
-                        <input type="text"
+                         <input type="text"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
-                            placeholder="Contoh: Budi Santoso" name="name" id="name" value="{{ old('name') }}" required>
+                            placeholder="Contoh: Budi Santoso" name="name" id="name"
+                            value="{{ old('name', $patient->name ?? '') }}" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-user text-gray-400"></i>
                         </div>
@@ -161,9 +162,10 @@
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="phone">Nomor Telepon</label>
                     <div class="relative">
-                        <input type="tel"
+                      <input type="tel"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
-                            placeholder="Contoh: 081234567890" name="phone" id="phone" value="{{ old('phone') }}" required>
+                            placeholder="Contoh: 081234567890" name="phone" id="phone"
+                            value="{{ old('phone', $patient->phone ?? '') }}" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-phone text-gray-400"></i>
                         </div>
@@ -177,8 +179,10 @@
                         <select name="sex" id="sex" required
                             class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Jenis Kelamin</option>
-                            <option value="male" {{ old('sex') == 'male' ? 'selected' : '' }}>Laki-laki</option>
-                            <option value="female" {{ old('sex') == 'female' ? 'selected' : '' }}>Perempuan</option>
+                            <option value="male" {{ (old('sex', $patient->sex ?? '') == 'male') ? 'selected' : '' }}>Laki-laki
+                            </option>
+                            <option value="female" {{ (old('sex', $patient->sex ?? '') == 'female') ? 'selected' : '' }}>
+                                Perempuan</option>
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-venus-mars text-gray-400"></i>
@@ -197,7 +201,8 @@
                     <div class="relative">
                         <input type="date"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
-                            name="date_of_birth" id="date_of_birth" value="{{ old('date_of_birth') }}" required>
+                            name="date_of_birth" id="date_of_birth"
+                            value="{{ old('date_of_birth', $patient->date_of_birth ?? '') }}" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-calendar-days text-gray-400"></i>
                         </div>
@@ -208,11 +213,11 @@
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="id_card_number">Nomor KTP</label>
                     <div class="relative">
-                        <input type="text"
+                         <input type="text"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             placeholder="Contoh: 1234567890123456" name="id_card_number" id="id_card_number"
-                            value="{{ old('id_card_number') }}" pattern="[0-9]{16}" title="Nomor KTP harus 16 digit angka"
-                            required>
+                            value="{{ old('id_card_number', $patient->id_card_number ?? '') }}" pattern="[0-9]{16}"
+                            title="Nomor KTP harus 16 digit angka" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-id-card text-gray-400"></i>
                         </div>
@@ -226,7 +231,7 @@
                         <input type="text"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
                             placeholder="Contoh: Karyawan Swasta" name="occupation" id="occupation"
-                            value="{{ old('occupation') }}" required>
+                            value="{{ old('occupation', $patient->occupation ?? '') }}" required>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-briefcase text-gray-400"></i>
                         </div>
@@ -239,7 +244,7 @@
                     <div class="relative">
                         <textarea placeholder="Contoh: Jl. Merdeka No. 10, Jakarta" name="address" id="address" rows="3"
                             required
-                            class="w-full pl-4 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent">{{ old('address') }}</textarea>
+                            class="w-full pl-4 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent">{{ old('address', $patient->address ?? '') }}</textarea>
                     </div>
                     <span class="error-message text-red-500 text-sm mt-1" id="address-error"></span>
                 </div>
@@ -263,10 +268,9 @@
                         <select name="blood_type" id="blood_type" required
                             class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Golongan Darah</option>
-                            <option value="A" {{ old('blood_type') == 'A' ? 'selected' : '' }}>A</option>
-                            <option value="B" {{ old('blood_type') == 'B' ? 'selected' : '' }}>B</option>
-                            <option value="AB" {{ old('blood_type') == 'AB' ? 'selected' : '' }}>AB</option>
-                            <option value="O" {{ old('blood_type') == 'O' ? 'selected' : '' }}>O</option>
+                             @foreach(['A', 'B', 'AB', 'O'] as $bt)
+                                <option value="{{ $bt }}" {{ (old('blood_type', $patient->blood_type ?? '') == $bt) ? 'selected' : '' }}>{{ $bt }}</option>
+                            @endforeach
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-droplet text-gray-400"></i>
@@ -286,8 +290,8 @@
                         <select name="rhesus_factor" id="rhesus_factor" required
                             class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Rhesus</option>
-                            <option value="+" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '+') ? 'selected' : '' }}>Positif</option>
-                            <option value="-" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Negatif</option>
+                            <option value="Positif" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '+') ? 'selected' : '' }}>Positif</option>
+                            <option value="Negatif" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Negatif</option>
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-plus-minus text-gray-400"></i>
@@ -306,7 +310,8 @@
                     <div class="relative">
                         <input type="text"
                             class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
-                            placeholder="Opsional" name="BPJS_number" id="BPJS_number" value="{{ old('BPJS_number') }}">
+                            placeholder="Opsional" name="BPJS_number" id="BPJS_number"
+                            value="{{ old('BPJS_number', $patient->BPJS_number ?? '') }}">
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-hospital text-gray-400"></i>
                         </div>
