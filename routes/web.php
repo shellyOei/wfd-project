@@ -51,6 +51,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // emergency
         Route::get('/emergency', [EmergencyController::class, 'viewAdmin'])->name('emergency.dashboard');
+        Route::get('/emergency-next', [EmergencyController::class, 'getNextCall'])->name('emergency.next');
+        Route::get('/emergency-count', [EmergencyController::class, 'countOnLine'])->name('emergency.count');
         
 
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
