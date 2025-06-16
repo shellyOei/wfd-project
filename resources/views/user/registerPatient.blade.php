@@ -106,7 +106,7 @@
                     </ul>
             </div>
 
-            <div id="step-1-content" class="form-section space-y-4">
+            <div id="step-1-content" class="form-section space-y-4 pb-5">
                 <h2 class="text-xl font-bold mb-4 text-center">Langkah 1: Informasi Pribadi</h2>
 
                 <div class="form-group w-full flex flex-col space-y-1">
