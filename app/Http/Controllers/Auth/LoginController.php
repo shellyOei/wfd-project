@@ -68,7 +68,7 @@ class LoginController extends Controller
 
         if (auth()->guard('user')->check()) {
             $this->authService->logout($request, 'user');
-            return redirect()->route('user.login')->with('success', 'Berhasil logout sebagai user!');
+            return redirect()->route('login')->with('success', 'Berhasil logout sebagai user!');
         }
 
         // Default fallback kalau tidak ada yang login
