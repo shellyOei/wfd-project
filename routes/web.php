@@ -6,7 +6,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DokterController;
+use App\Http\Controllers\EmergencyController;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 // user login
@@ -22,6 +24,13 @@ Route::middleware(['user'])->prefix('user')->name('user.')->group(function () {
     // patient registration
     Route::post('/register-patient', [PatientController::class, 'registerPatient'])->name('register.patient.post');
     Route::get('/register-patient', [PatientController::class, 'showPatientRegistrationForm'])->name('register.patient');
+
+    // emergency
+    Route::controller(EmergencyController::class)->group(function () {
+        Route::get('/emergency', 'viewUser')->name('emergency')->withoutMiddleware('user');
+        Route::post('/request-emergency-call', 'requestEmergencyCall')->name('emergency.request')->withoutMiddleware('user');
+    });
+    
 });
 
 // admin
@@ -39,6 +48,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::put('/patients/{patient}', [PatientController::class, 'update'])->name('patients.update');
         Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
         Route::get('/patients/{patient}/medical-history', [PatientController::class, 'getMedicalHistory'])->name('patients.medical-history');
+
+        // emergency
+        Route::get('/emergency', [EmergencyController::class, 'viewAdmin'])->name('emergency.dashboard');
+        
 
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
     });
@@ -63,3 +76,5 @@ Route::get('/specializations/{specialization}/doctors', [DokterController::class
 
 // Route for a single doctor's detail page
 Route::get('/doctors/{doctor}', [DokterController::class, 'show'])->name('doctors.show');
+
+Broadcast::routes();
