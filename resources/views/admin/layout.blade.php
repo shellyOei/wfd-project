@@ -75,8 +75,8 @@
 
     <script>
         tailwind.config = {
-            darkMode: "class",
-            theme: {
+            darkMode: "class",-
+            theme: {    
                 fontFamily: {
                     sans: ["Roboto", "sans-serif"],
                     body: ["Roboto", "sans-serif"],

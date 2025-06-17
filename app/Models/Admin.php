@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Authenticatable
 {
-    use HasUuids;
+    use HasUuids, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -35,12 +36,23 @@ class Admin extends Authenticatable
 
     public function doctor()
     {
-        return $this->hasOne(Doctor::class);
+        return $this->belongsTo(Doctor::class);
     }
 
     // for role checking 
     public function isDoctor() : bool
     {
         return $this->doctor()->exists();
+    }
+
+     // Untuk pengecekan peran
+    public function isDoctorAdmin(): bool
+    {
+        return $this->doctor_id !== null;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->doctor_id === null;
     }
 }

@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('day_availables', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('doctor_id');
-            $table->date('day');
+            $table->string('day');
+            // $table->enum('day', ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']);
             $table->time('start_time');
             $table->time('end_time');
 

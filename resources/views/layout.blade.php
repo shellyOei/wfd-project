@@ -64,6 +64,7 @@
             background: #ec0143 !important;
         }
     </style>
+    @yield('style')
 
     <script>
         tailwind.config = {
@@ -85,7 +86,7 @@
     @stack('head')
 
 </head>
-
+@stack('scripts')
 <body class="bg-[var(--background)]">
     @include('partials.user-nav')
 

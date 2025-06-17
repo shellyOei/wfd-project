@@ -27,6 +27,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '+',
                 'id_card_number' => '3171051505900001',
                 'BPJS_number' => '0001234567890',
+                'emergency_contact' => '081112223333',
+                'allergy' => 'Pollen',
             ],
             [
                 'patient_number' => 'P002',
@@ -40,6 +42,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '+',
                 'id_card_number' => '3171052208850002',
                 'BPJS_number' => '0001234567891',
+                'emergency_contact' => '081112223334',
+                'allergy' => null,
             ],
             [
                 'patient_number' => 'P003',
@@ -53,6 +57,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '+',
                 'id_card_number' => '3171051012920003',
                 'BPJS_number' => null,
+                'emergency_contact' => '081112223335',
+                'allergy' => 'Penicillin',
             ],
             [
                 'patient_number' => 'P004',
@@ -66,6 +72,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '+',
                 'id_card_number' => '3171051803880004',
                 'BPJS_number' => '0001234567893',
+                'emergency_contact' => null,
+                'allergy' => null,
             ],
             [
                 'patient_number' => 'P005',
@@ -79,6 +87,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '-',
                 'id_card_number' => '3171052507950005',
                 'BPJS_number' => null,
+                'emergency_contact' => '081112223336',
+                'allergy' => 'Bee stings',
             ],
             [
                 'patient_number' => 'P006',
@@ -92,6 +102,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '-',
                 'id_card_number' => '3171050811910006',
                 'BPJS_number' => '0001234567895',
+                'emergency_contact' => '081112223337',
+                'allergy' => null,
             ],
             [
                 'patient_number' => 'P007',
@@ -105,6 +117,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '-',
                 'id_card_number' => '3171051404870007',
                 'BPJS_number' => null,
+                'emergency_contact' => null,
+                'allergy' => 'Shellfish',
             ],
             [
                 'patient_number' => 'P008',
@@ -118,6 +132,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '-',
                 'id_card_number' => '3171053009930008',
                 'BPJS_number' => '0001234567897',
+                'emergency_contact' => '081112223338',
+                'allergy' => null,
             ],
             [
                 'patient_number' => 'P009',
@@ -131,6 +147,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '+',
                 'id_card_number' => '3171051201890009',
                 'BPJS_number' => '0001234567898',
+                'emergency_contact' => '081112223339',
+                'allergy' => 'Dust mites',
             ],
             [
                 'patient_number' => 'P010',
@@ -144,6 +162,8 @@ class PatientSeeder extends Seeder
                 'rhesus_factor' => '+',
                 'id_card_number' => '3171052006940010',
                 'BPJS_number' => null,
+                'emergency_contact' => null,
+                'allergy' => null,
             ],
         ];
 
