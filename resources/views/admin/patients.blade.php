@@ -57,7 +57,9 @@
                     <tr>
                         <th class="text-left py-4 px-6 font-medium text-gray-700">Patient</th>
                         <th class="text-left py-4 px-6 font-medium text-gray-700">Date of Birth</th>
-                        <th class="text-center py-4 px-6 font-medium text-gray-700">Medical History</th>
+                        @if (session('doctor_id') != null)
+                            <th class="text-center py-4 px-6 font-medium text-gray-700">Medical History</th>
+                        @endif
                         <th class="text-center py-4 px-6 font-medium text-gray-700">Status</th>
                         <th class="text-center py-4 px-6 font-medium text-gray-700">Actions</th>
                     </tr>
@@ -91,13 +93,15 @@
                             </td>
 
                             <!-- Medical History -->
-                            <td class="py-4 px-6 text-center">
-                                <button
-                                    class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-lg text-sm font-medium transition duration-200 flex items-center mx-auto"
-                                    onclick="viewMedicalHistory('{{ $patient->id }}', '{{ $patient->name }}')">
-                                    <i class="fas fa-file-medical mr-2"></i>View
-                                </button>
-                            </td>
+                            @if (session('doctor_id') != null)
+                                <td class="py-4 px-6 text-center">
+                                    <button
+                                        class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1 rounded-lg text-sm font-medium transition duration-200 flex items-center mx-auto"
+                                        onclick="viewMedicalHistory('{{ $patient->id }}', '{{ $patient->name }}')">
+                                        <i class="fas fa-file-medical mr-2"></i>View
+                                    </button>
+                                </td>
+                            @endif
 
                             <!-- Status -->
                             <td class="py-4 px-6 text-center">
@@ -740,8 +744,8 @@
                     <div>
                         <h4 class="font-semibold text-gray-900 mb-3">Recent Appointments</h4>
                         ${appointmentCount > 0 ? `
-                                                <div class="space-y-3">
-                                                    ${patient.appointments.slice(0, 5).map(appointment => `
+                                                    <div class="space-y-3">
+                                                        ${patient.appointments.slice(0, 5).map(appointment => `
                                     <div class="border border-gray-200 rounded-lg p-4">
                                         <div class="flex justify-between items-start mb-2">
                                             <span class="font-medium text-gray-900">Appointment #${appointment.queue_number || 'N/A'}</span>
@@ -754,13 +758,13 @@
                                         </div>
                                     </div>
                                 `).join('')}
-                                                </div>
-                                            ` : `
-                                                <div class="text-center py-8 text-gray-500">
-                                                    <i class="fas fa-calendar-times text-3xl mb-3"></i>
-                                                    <p>No appointment history found</p>
-                                                </div>
-                                            `}
+                                                    </div>
+                                                ` : `
+                                                    <div class="text-center py-8 text-gray-500">
+                                                        <i class="fas fa-calendar-times text-3xl mb-3"></i>
+                                                        <p>No appointment history found</p>
+                                                    </div>
+                                                `}
                     </div>
 
                     <!-- Lab Results -->
@@ -790,7 +794,7 @@
                 ],
                 columnDefs: [{
                     orderable: false,
-                    targets: [3, 4] // Corrected from [3, 5]
+                    targets: [3] // Corrected from [3, 5]
                 }],
                 language: {
                     search: "Search patients:",
