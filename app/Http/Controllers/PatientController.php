@@ -37,21 +37,10 @@ class PatientController extends Controller
     /**
      * Store a newly created patient in storage.
      */
-    public function store(Request $request)
+    public function store(RegisterPatientRequest $request)
     {
         try {
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'phone' => 'required|string|min:10|max:20',
-                'sex' => 'required|in:male,female',
-                'date_of_birth' => 'required|date|before:today',
-                'address' => 'required|string',
-                'occupation' => 'required|string|max:255',
-                'blood_type' => 'nullable|string|max:5',
-                'rhesus_factor' => 'nullable|string|max:5',
-                'id_card_number' => 'required|string|max:20|unique:patients,id_card_number',
-                'BPJS_number' => 'nullable|string|max:20|unique:patients,BPJS_number',
-            ]);
+            $valid = $request->validated();
 
             // Generate patient number
             $lastPatient = Patient::orderBy('patient_number', 'desc')->first();
@@ -63,19 +52,9 @@ class PatientController extends Controller
             $newNumber = $lastNumber + 1;
             $patientNumber = 'P' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
-            $patient = Patient::create([
-                'patient_number' => $patientNumber,
-                'name' => $request->name,
-                'phone' => $request->phone,
-                'sex' => $request->sex,
-                'date_of_birth' => $request->date_of_birth,
-                'address' => $request->address,
-                'occupation' => $request->occupation,
-                'blood_type' => $request->blood_type,
-                'rhesus_factor' => $request->rhesus_factor,
-                'id_card_number' => $request->id_card_number,
-                'BPJS_number' => $request->BPJS_number,
-            ]);
+            $valid['patient_number'] = $patientNumber;
+
+            $patient = Patient::create($valid);
 
             return response()->json([
                 'success' => true,
