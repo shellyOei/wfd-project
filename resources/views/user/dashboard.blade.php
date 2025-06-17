@@ -3,17 +3,20 @@
 @section('content')
 <div class="max-w-7xl mx-auto p-4">
         <!-- Selamat Datang -->
-        <div class="flex justify-between items-center mb-6">
-            <div class="flex items-center space-x-3">
-                <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center">
-                        <img src="/assets/ewaps-logo.png" alt="Logo" class="w-full h-full mx-auto rounded-full ">
-                </div>
-                <div>
-                    <p class="text-gray-500 text-sm">Selamat Datang,</p>
-                    <p class="font-bold text-lg">Angel</p>
+        @auth
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center space-x-3">
+                    <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center">
+                            <img src="/assets/ewaps-logo.png" alt="Logo" class="w-full h-full mx-auto rounded-full ">
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-sm">Selamat Datang,</p>
+                        <p class="font-bold text-lg">{{ Auth::guard('user')->user}}</p>
+                    </div>
                 </div>
             </div>
-        </div>
+        @endauth
+        
 
         <!-- Layanan -->
         <div class="bg-gradient-to-r from-blue-400 to-blue-700 rounded-lg p-6 flex flex-col md:flex-row items-center text-white mb-8">
