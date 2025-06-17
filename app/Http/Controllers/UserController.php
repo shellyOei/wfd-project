@@ -98,7 +98,7 @@ class UserController extends Controller
         // $user = $this->userRepo->create($request->all());
 
         $user = User::create($validated);
-        auth()->login($user);
+        auth()->guard('user')->login($user);
 
         return redirect()->route('user.dashboard')->with('success', 'Berhasil registrasi akun!');
     }

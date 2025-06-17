@@ -226,6 +226,20 @@
                 </div>
 
                 <div class="form-group w-full flex flex-col space-y-1">
+                    <label class="font-semibold text-md" for="emergency_contact">Kontak Darurat (Opsional)</label>
+                    <div class="relative">
+                         <input type="text"
+                            class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
+                            placeholder="Contoh: 1234567890123456" name="emergency_contact" id="emergency_contact"
+                            value="{{ old('emergency_contact', $patient->emergency_contact ?? '') }}" required>
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-address-book text-gray-400"></i>
+                        </div>
+                    </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="emergency_contact-error"></span>
+                </div>
+
+                <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="occupation">Profesi</label>
                     <div class="relative">
                         <input type="text"
@@ -294,6 +308,21 @@
                     </div>
                     <span class="error-message text-red-500 text-sm mt-1" id="rhesus_factor-error"></span>
                 </div>
+
+                <div class="form-group w-full flex flex-col space-y-1">
+                    <label class="font-semibold text-md" for="allergy">Alergi</label>
+                    <div class="relative">
+                        <input type="text"
+                            class="w-full pl-10 pr-4 py-3 rounded-lg border border-2 border-[var(--blue1)] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--blue1)] focus:border-transparent;"
+                            placeholder="Contoh: kacang, apel" name="allergy" id="allergy"
+                            value="{{ old('allergy', $patient->allergy ?? '') }}" required>
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-triangle-exclamation text-gray-400"></i>
+                        </div>
+                    </div>
+                    <span class="error-message text-red-500 text-sm mt-1" id="allergy-error"></span>
+                </div>
+
 
                 <div class="form-group w-full flex flex-col space-y-1">
                     <label class="font-semibold text-md" for="BPJS_number">Nomor BPJS (Opsional)</label>
