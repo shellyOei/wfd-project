@@ -27,7 +27,7 @@ class AdminController extends Controller
                                 ->sum('total_price');
 
         // Get recent appointments with relationships
-        $recentAppointments = Appointment::with(['patient', 'schedule.doctor'])
+        $recentAppointments = Appointment::with(['patient', 'schedule.dayAvailable.doctor'])
                                         ->orderBy('created_at', 'desc')
                                         ->limit(5)
                                         ->get();
@@ -102,7 +102,7 @@ class AdminController extends Controller
         foreach ($specializations as $specialization) {
             if ($specialization->doctors->count() > 0) {
                 // Count unique patients who have appointments with doctors from this specialization
-                $patientCount = Patient::whereHas('appointments.schedule.doctor', function($query) use ($specialization) {
+                $patientCount = Patient::whereHas('appointments.schedule.dayAvailable.doctor', function($query) use ($specialization) {
                     $query->where('specialization_id', $specialization->id);
                 })->distinct()->count();
 

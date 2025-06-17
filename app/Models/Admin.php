@@ -44,4 +44,15 @@ class Admin extends Authenticatable
     {
         return $this->doctor()->exists();
     }
+
+     // Untuk pengecekan peran
+    public function isDoctorAdmin(): bool
+    {
+        return $this->doctor_id !== null;
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return $this->doctor_id === null;
+    }
 }

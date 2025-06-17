@@ -1,22 +1,25 @@
 <?php
 
+use App\Http\Controllers\Admin\DayAvailableController;
+use App\Http\Controllers\Admin\PracticeScheduleController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\DokterController;
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
 
 // user login
 Route::get('/login', [LoginController::class, 'showUser'])->name('login');
 Route::post('/login', [LoginController::class, 'loginAsUser'])->name('login.post');
-
 // user registration
-Route::get('/register', [RegisterController::class, 'show'])->name('register.index');
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
 Route::post('/register', [RegisterController::class, 'registerUser'])->name('register.post');
+
 
 Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
@@ -46,6 +49,11 @@ Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     // Mini History
     Route::get('/mini-history', [ProfileController::class, 'miniHistory'])->name('miniHistory');
     Route::get('/mini-history/data/{patientId}', [PatientController::class, 'getAppointments'])->name('miniHistory.data');
+
+    // form.blade.php
+    Route::get('/doctor/{doctor}/{patient)/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
+    Route::get('/doctor/{doctor}/select-patient', [BookingController::class, 'selectPatient'])->name('booking.selectPatient');
+    Route::post('/book/store', [BookingController::class, 'store'])->name('booking.store');
     
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });
@@ -58,7 +66,7 @@ Route::get('/', function () {
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [LoginController::class, 'showAdmin'])->name('login');
     Route::post('/login', [LoginController::class, 'loginAsAdmin'])->name('login.post');
-    Route::middleware('admin')->group(function () {
+    Route::middleware(['admin'])->group(function () {
         // protected routes for admin
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
@@ -70,6 +78,34 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/patients/{patient}', [PatientController::class, 'destroy'])->name('patients.destroy');
         Route::get('/patients/{patient}/medical-history', [PatientController::class, 'getMedicalHistory'])->name('patients.medical-history');
         Route::get('/patients-export', [PatientController::class, 'export'])->name('patients.export');
+
+        // Doctor routes
+        // Doctors Management
+        Route::resource('doctors', DoctorController::class);
+
+
+        // Day Availables (Master Availability)
+        Route::resource('day-availables', DayAvailableController::class);
+
+        // Practice Schedules (Generated Slots & Reservations View)
+        Route::get('practice-schedules', [PracticeScheduleController::class, 'index'])->name('practice-schedules.index');
+        // Route::get('practice-schedules/generate', [PracticeScheduleController::class, 'createGenerate'])->name('practice-schedules.generate.create');
+        // Route::post('practice-schedules/generate', [PracticeScheduleController::class, 'storeGenerate'])->name('practice-schedules.generate.store');
+        Route::delete('practice-schedules/{practiceSchedule}', [PracticeScheduleController::class, 'destroy'])->name('practice-schedules.destroy');
+
+        // Doctor routes
+        // Doctors Management
+        Route::resource('doctors', DoctorController::class);
+
+
+        // Day Availables (Master Availability)
+        Route::resource('day-availables', DayAvailableController::class);
+
+        // Practice Schedules (Generated Slots & Reservations View)
+        Route::get('practice-schedules', [PracticeScheduleController::class, 'index'])->name('practice-schedules.index');
+        // Route::get('practice-schedules/generate', [PracticeScheduleController::class, 'createGenerate'])->name('practice-schedules.generate.create');
+        // Route::post('practice-schedules/generate', [PracticeScheduleController::class, 'storeGenerate'])->name('practice-schedules.generate.store');
+        Route::delete('practice-schedules/{practiceSchedule}', [PracticeScheduleController::class, 'destroy'])->name('practice-schedules.destroy');
 
 
         Route::get('/users', [UserController::class, 'users'])->name('users');
@@ -89,22 +125,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 });
 
-// Route::get('/filterdokter', [BookingController::class, 'filterDokter'])->name('filterdokter');
-Route::get('/listdokter', [BookingController::class, 'listDokter'])->name('listdokter');
-Route::get('/detaildokter', [BookingController::class, 'detailDokter'])->name('detaildokter');
-Route::get('/booking', [BookingController::class, 'booking'])->name('appointment.booking');
-Route::get('/uploadfile', [BookingController::class, 'uploadFile'])->name('uploadfile');
+// ga harus login bisa liat
+// filter.blade.php
+Route::get('/doctors/filter', [DoctorController::class, 'showSpecializations'])->name('doctors.filter');
+Route::get('/doctor-suggestions', [DoctorController::class, 'getDoctorSuggestions'])->name('doctor_suggestions');
 
 
+// list.blade.php
+Route::get('/specializations/{specialization}/doctors', [DoctorController::class, 'doctorsBySpecialization'])->name('doctors.by_specialization');
+Route::get('/doctors', [DoctorController::class, 'listDoctor'])->name('doctors.listDoctors');
+Route::get('/doctors-search', [DoctorController::class, 'searchDoctorsAjax'])->name('doctors.search');
 
-// Route to the page where users can pick a specialization
-Route::get('/doctors/filter', [DokterController::class, 'showSpecializations'])->name('doctors.filter');
-
-// Route for the main list of all doctors
-Route::get('/doctors', [DokterController::class, 'index'])->name('doctors.index');
-
-// Route for the list of doctors filtered by a specialization
-Route::get('/specializations/{specialization}/doctors', [DokterController::class, 'doctorsBySpecialization'])->name('doctors.by_specialization');
-
-// Route for a single doctor's detail page
-Route::get('/doctors/{doctor}', [DokterController::class, 'show'])->name('doctors.show');
+// detail.blade.php
+Route::get('/doctors/{doctor}', [DoctorController::class, 'show'])->name('doctors.show');

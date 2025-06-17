@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterPatientRequest;
+use App\Models\Doctor;
 use App\Models\Patient;
 use App\Services\AuthService;
 use App\Services\PatientService;
@@ -218,6 +219,22 @@ class PatientController extends Controller
                 'message' => 'Terjadi kesalahan server saat mendaftar pasien: ' . $e->getMessage()
             ], 500);
         }
+    }
+    
+    // choosing patient for appointment
+    public function selectExistingPatient(Request $request, Doctor $doctor)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return redirect()->route('login')->with('error', 'Please log in to select a patient.');
+        }
+
+
+        $patients = $user->profiles->with('patient')->get()->map(function($profile) {
+            return $profile->patient;
+        })->filter()->unique('id');
+
+        return view('appointment.select-existing-patient', compact('patients', 'doctor'));
     }
 
     public function getAppointments($patientId)
