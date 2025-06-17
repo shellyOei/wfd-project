@@ -28,8 +28,8 @@ class PatientController extends Controller
     public function index()
     {
         $patients = Patient::with(['profiles.user', 'appointments'])
-                          ->orderBy('created_at', 'desc')
-                          ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('admin.patients', compact('patients'));
     }
@@ -102,7 +102,6 @@ class PatientController extends Controller
     public function show(Patient $patient)
     {
         $patient->load(['profiles.user', 'appointments.schedule.doctor']);
-        
         return response()->json([
             'success' => true,
             'patient' => $patient
@@ -112,33 +111,11 @@ class PatientController extends Controller
     /**
      * Update the specified patient in storage.
      */
-    public function update(Request $request, Patient $patient)
+    public function update(RegisterPatientRequest $request, Patient $patient)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'sex' => 'required|in:male,female',
-            'date_of_birth' => 'required|date|before:today',
-            'address' => 'required|string',
-            'occupation' => 'required|string|max:255',
-            'blood_type' => 'nullable|string|max:5',
-            'rhesus_factor' => 'nullable|string|max:5',
-            'id_card_number' => 'required|string|max:20|unique:patients,id_card_number,' . $patient->id,
-            'BPJS_number' => 'nullable|string|max:20|unique:patients,BPJS_number,' . $patient->id,
-        ]);
+        $valid = $request->validated();
 
-        $patient->update([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'sex' => $request->sex,
-            'date_of_birth' => $request->date_of_birth,
-            'address' => $request->address,
-            'occupation' => $request->occupation,
-            'blood_type' => $request->blood_type,
-            'rhesus_factor' => $request->rhesus_factor,
-            'id_card_number' => $request->id_card_number,
-            'BPJS_number' => $request->BPJS_number,
-        ]);
+        $patient->update($valid);
 
         return response()->json([
             'success' => true,
@@ -163,7 +140,6 @@ class PatientController extends Controller
 
             // Delete related profiles first
             $patient->profiles()->delete();
-            
             // Delete the patient
             $patient->delete();
 
@@ -203,6 +179,16 @@ class PatientController extends Controller
     {
         return view('user.registerPatient');
     }
+    public function showExistingPatientRegistrationForm()
+    {
+        return view('user.profile.linkPatient');
+    }
+    public function showEditForm($id)
+    {
+        $patient = Patient::findOrFail($id);
+        return view('user.registerPatient', compact('patient'));
+    }
+
 
     public function registerPatient(RegisterPatientRequest $r)
     {
@@ -247,5 +233,38 @@ class PatientController extends Controller
         })->filter()->unique('id');
 
         return view('appointment.select-existing-patient', compact('patients', 'doctor'));
+    }
+
+    public function getAppointments($patientId)
+    {
+        $patient = Patient::with(['appointments.schedule.doctor.specialization'])->findOrFail($patientId);
+
+        $activeAppointments = collect();
+        $historyAppointments = collect();
+        $now = \Carbon\Carbon::now()->timezone('Asia/Jakarta');
+
+        foreach ($patient->appointments as $appointment) {
+            $schedule = $appointment->schedule;
+            if (!$schedule || !$schedule->Datetime)
+                continue;
+
+            $datetime = \Carbon\Carbon::parse($schedule->Datetime)->timezone('Asia/Jakarta');
+            $info = [
+                'date' => $datetime->translatedFormat('d F Y'),
+                'time' => $datetime->format('H:i'),
+                'title' => $appointment->type,
+                'doctor_name' => $schedule->doctor->name ?? '-',
+                'specialization' => $schedule->doctor->specialization->name ?? '-',
+            ];
+            if ($datetime->gt($now)) {
+                $activeAppointments->push($info);
+            } else {
+                $historyAppointments->push($info);
+            }
+        }
+        return response()->json([
+            'activeAppointments' => $activeAppointments->sortBy('date')->values(),
+            'historyAppointments' => $historyAppointments->sortByDesc('date')->values(),
+        ]);
     }
 }

@@ -44,6 +44,11 @@ class UserRepository implements UserRepositoryInterface // Implementasi interfac
         $user = User::findOrFail($id);
         return $user->delete();
     }
+    public function withTrashed()
+    {
+        return User::withTrashed();
+    }
+
 
     // implentation of user-specific methods examples
     public function findByEmail(string $email)
