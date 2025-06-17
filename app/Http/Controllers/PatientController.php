@@ -101,7 +101,6 @@ class PatientController extends Controller
     public function show(Patient $patient)
     {
         $patient->load(['profiles.user', 'appointments.schedule.doctor']);
-
         return response()->json([
             'success' => true,
             'patient' => $patient
@@ -111,33 +110,11 @@ class PatientController extends Controller
     /**
      * Update the specified patient in storage.
      */
-    public function update(Request $request, Patient $patient)
+    public function update(RegisterPatientRequest $request, Patient $patient)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'phone' => 'required|string|max:20',
-            'sex' => 'required|in:male,female',
-            'date_of_birth' => 'required|date|before:today',
-            'address' => 'required|string',
-            'occupation' => 'required|string|max:255',
-            'blood_type' => 'nullable|string|max:5',
-            'rhesus_factor' => 'nullable|string|max:5',
-            'id_card_number' => 'required|string|max:20|unique:patients,id_card_number,' . $patient->id,
-            'BPJS_number' => 'nullable|string|max:20|unique:patients,BPJS_number,' . $patient->id,
-        ]);
+        $valid = $request->validated();
 
-        $patient->update([
-            'name' => $request->name,
-            'phone' => $request->phone,
-            'sex' => $request->sex,
-            'date_of_birth' => $request->date_of_birth,
-            'address' => $request->address,
-            'occupation' => $request->occupation,
-            'blood_type' => $request->blood_type,
-            'rhesus_factor' => $request->rhesus_factor,
-            'id_card_number' => $request->id_card_number,
-            'BPJS_number' => $request->BPJS_number,
-        ]);
+        $patient->update($valid);
 
         return response()->json([
             'success' => true,
@@ -162,7 +139,6 @@ class PatientController extends Controller
 
             // Delete related profiles first
             $patient->profiles()->delete();
-
             // Delete the patient
             $patient->delete();
 

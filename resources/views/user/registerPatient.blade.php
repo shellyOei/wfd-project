@@ -187,11 +187,11 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-venus-mars text-gray-400"></i>
                         </div>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                        {{-- <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                 <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                             </svg>
-                        </div>
+                        </div> --}}
                     </div>
                     <span class="error-message text-red-500 text-sm mt-1" id="sex-error"></span>
                 </div>
@@ -275,11 +275,6 @@
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-droplet text-gray-400"></i>
                         </div>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                            </svg>
-                        </div>
                     </div>
                     <span class="error-message text-red-500 text-sm mt-1" id="blood_type-error"></span>
                 </div>
@@ -295,11 +290,6 @@
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-plus-minus text-gray-400"></i>
-                        </div>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                            </svg>
                         </div>
                     </div>
                     <span class="error-message text-red-500 text-sm mt-1" id="rhesus_factor-error"></span>
@@ -411,35 +401,35 @@
                 clearErrorState();
             }
 
-            function checkRequiredFields(stepElement) {
-                let allFieldsFilled = true;
-                const requiredInputs = stepElement.querySelectorAll('[required]');
-                requiredInputs.forEach(input => {
-                    input.classList.remove('border-red-500');
-                    if (input.type === 'date' && !input.value) {
-                        allFieldsFilled = false;
-                        input.classList.add('border-red-500');
-                    } else if (input.tagName === 'SELECT' && !input.value) {
-                        allFieldsFilled = false;
-                        input.classList.add('border-red-500');
-                    } else if (input.type !== 'date' && input.tagName !== 'SELECT' && input.value.trim() === '') {
-                        allFieldsFilled = false;
-                        input.classList.add('border-red-500');
-                    }
-                });
-                return allFieldsFilled;
-            }
+            // function checkRequiredFields(stepElement) {
+            //     let allFieldsFilled = true;
+            //     const requiredInputs = stepElement.querySelectorAll('[required]');
+            //     requiredInputs.forEach(input => {
+            //         input.classList.remove('border-red-500');
+            //         if (input.type === 'date' && !input.value) {
+            //             allFieldsFilled = false;
+            //             input.classList.add('border-red-500');
+            //         } else if (input.tagName === 'SELECT' && !input.value) {
+            //             allFieldsFilled = false;
+            //             input.classList.add('border-red-500');
+            //         } else if (input.type !== 'date' && input.tagName !== 'SELECT' && input.value.trim() === '') {
+            //             allFieldsFilled = false;
+            //             input.classList.add('border-red-500');
+            //         }
+            //     });
+            //     return allFieldsFilled;
+            // }
 
             nextStepBtn.addEventListener('click', function () {
-                if (!checkRequiredFields(step1Content)) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Lengkapi Data!',
-                        text: 'Harap isi semua kolom yang wajib diisi di langkah ini.',
-                        confirmButtonColor: '#3B82F6'
-                    });
-                    return;
-                }
+                // if (!checkRequiredFields(step1Content)) {
+                //     Swal.fire({
+                //         icon: 'warning',
+                //         title: 'Lengkapi Data!',
+                //         text: 'Harap isi semua kolom yang wajib diisi di langkah ini.',
+                //         confirmButtonColor: '#3B82F6'
+                //     });
+                //     return;
+                // }
                 showStep(2);
             });
 
@@ -450,15 +440,15 @@
             submitFormBtn.addEventListener('click', async function (e) {
                 e.preventDefault();
 
-                if (!checkRequiredFields(step2Content)) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: isEditMode ? 'Lengkapi Data Perubahan!' : 'Lengkapi Data!',
-                        text: 'Harap isi semua kolom yang wajib diisi di langkah ini.',
-                        confirmButtonColor: '#3B82F6'
-                    });
-                    return;
-                }
+                // if (!checkRequiredFields(step2Content)) {
+                //     Swal.fire({
+                //         icon: 'warning',
+                //         title: isEditMode ? 'Lengkapi Data Perubahan!' : 'Lengkapi Data!',
+                //         text: 'Harap isi semua kolom yang wajib diisi di langkah ini.',
+                //         confirmButtonColor: '#3B82F6'
+                //     });
+                //     return;
+                // }
 
                 const result = await Swal.fire({
                     title: isEditMode ? 'Konfirmasi Perubahan Data' : 'Konfirmasi Pendaftaran',
@@ -518,50 +508,65 @@
                                 if (isEditMode) {
                                     window.location.href = '{{ route('user.patients') }}';
                                 } else {
-                                    form.reset();
-                                    showStep(1);
+                                    // form.reset();
+                                    // showStep(1);
+                                    window.history.back();
                                 }
                             });
                         } else {
-                            errorList.innerHTML = '';
-                            let errorMessageHtml = '<p>Pendaftaran gagal. Mohon periksa kembali input Anda:</p><ul class="mt-2 text-left">';
-
-                            document.querySelectorAll('input, select, textarea').forEach(el => {
-                                el.classList.remove('border-red-500');
-                            });
+                            clearErrorState();
 
                             if (data.errors) {
-                                for (const field in data.errors) {
-                                    const errorMessages = data.errors[field];
-                                    errorMessages.forEach(errorText => {
-                                        const li = document.createElement('li');
-                                        li.textContent = errorText;
-                                        errorList.appendChild(li);
-                                        errorMessageHtml += `<li>${errorText}</li>`;
-                                    });
+                                let hasStep1Errors = false;
+                                const step1Fields = ['name', 'phone', 'sex', 'date_of_birth', 'id_card_number', 'occupation', 'address'];
 
-                                    const inputField = document.getElementById(field);
+                                for (const field in data.errors) {
+                                    const inputField = document.getElementById(field);  
                                     if (inputField) {
-                                        inputField.classList.add('border-red-500');
+                                        const errorSpan = document.getElementById(`${field}-error`);
+                                        inputField.classList.remove('border-[var(--blue1)]');
+                                        inputField.classList.add('!border-red-500');
+                                        console.log('Setting error state for:', inputField);
+                                        if (errorSpan) {
+                                            console.log('Setting error text for:');
+                                            errorSpan.textContent = data.errors[field][0];
+                                        }
+                                        if (step1Fields.includes(field)) {
+                                            hasStep1Errors = true;
+                                        }
                                     }
                                 }
+
+                                // Show the general error container and list all errors
+                                // errorContainer.classList.remove('hidden');
+                                // errorList.innerHTML = '';
+                                
+                                // for (const field in data.errors) {
+                                //     const li = document.createElement('li');
+                                //     li.textContent = data.errors[field][0];
+                                //     errorList.appendChild(li);
+                                // }
+
+                                if (hasStep1Errors) { 
+                                    showStep(1); 
+                                } else { 
+                                    showStep(2);
+                                }
+
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Pendaftaran Gagal!',
+                                    text: 'Mohon periksa kembali input Anda.',
+                                    confirmButtonColor: '#EF4444'
+                                });
                             } else {
-                                errorMessageHtml += `<li>${data.message || 'Terjadi kesalahan saat mendaftarkan pasien.'}</li>`;
-                            }
-                            errorMessageHtml += '</ul>';
-                            errorContainer.classList.remove('hidden');
-
-                            Swal.fire({
-                                icon: 'error',
-                                title: isEditMode ? 'Gagal Menyimpan Data!' : 'Pendaftaran Gagal!',
-                                html: errorMessageHtml,
-                                confirmButtonColor: '#EF4444'
-                            });
-
-                            const step1Fields = ['name', 'phone', 'sex', 'date_of_birth', 'id_card_number', 'occupation', 'address'];
-                            const hasStep1Errors = Object.keys(data.errors || {}).some(field => step1Fields.includes(field));
-                            if (hasStep1Errors && currentStep !== 1) {
-                                showStep(1);
+                                //general error message
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Pendaftaran Gagal!',
+                                    text: data.message || 'Terjadi kesalahan saat mendaftarkan pasien.',
+                                    confirmButtonColor: '#EF4444'
+                                });
                             }
                         }
                     } catch (error) {
@@ -576,8 +581,10 @@
                 }
             });
 
+            showStep(1); 
+
             @if ($errors->any())
-                clearErrorState();
+                clearErrorState(); 
 
                 const laravelErrors = @json($errors->messages());
                 let hasStep1LaravelErrors = false;
@@ -586,22 +593,29 @@
                 for (const field in laravelErrors) {
                     const inputField = document.getElementById(field);
                     if (inputField) {
-                        inputField.classList.add('border-red-500');
-                        const errorSpan = document.getElementById(`${field}-error`);
-                        if (errorSpan) {
-                            errorSpan.textContent = laravelErrors[field][0];
-                        }
+                        displayFieldError(inputField, laravelErrors[field][0]);
                         if (step1Fields.includes(field)) {
                             hasStep1LaravelErrors = true;
                         }
                     }
                 }
 
-                if (!hasStep1LaravelErrors && Object.keys(laravelErrors).length > 0) {
-                    showStep(2);
-                } else {
-                    showStep(1);
-                }
+                // @foreach ($errors->keys() as $field)
+                //     const errorField = document.getElementById('{{ $field }}');
+                //     const errorSpan = document.getElementById('{{ $field }}-error');
+                //     if (errorField) {
+                //         errorField.classList.add('border-red-500');
+                //     }
+                //     if (errorSpan) {
+                //         errorSpan.textContent = "{{ $errors->first($field) }}";
+                //     }
+                // @endforeach
+
+                // if (!hasStep1LaravelErrors && Object.keys(laravelErrors).length > 0) {
+                //     showStep(2); // If errors are only in step 2, show step 2
+                // } else {
+                //     showStep(1); // Otherwise, show step 1 (default or if step 1 errors exist)
+                // }
 
                 Swal.fire({
                     icon: 'error',
