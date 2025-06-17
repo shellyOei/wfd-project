@@ -39,13 +39,13 @@ class BookingController extends Controller
         $availableTimeSlots = [];
 
         // dayOfWeek (0=Minggu, 1=Senin, ..., 6=Sabtu)
-        $dayOfWeek = $selectedDate->dayOfWeek;
-
+        $dayName = strtolower($selectedDate->format('l')); //convert to day names
+        
         // Ambil pola ketersediaan dokter untuk hari yang dipilih
         $dayAvailability = DayAvailable::where('doctor_id', $doctor->id)
-            ->where('day', $dayOfWeek) // Pastikan 'day' di database Anda sesuai format Carbon (0-6)
+            ->where('day', $dayName) // Pastikan 'day' di database Anda sesuai format Carbon (0-6)
             ->first();
-
+        
         if ($dayAvailability) {
             $startTime = Carbon::parse($dayAvailability->start_time);
             $endTime = Carbon::parse($dayAvailability->end_time);
@@ -54,7 +54,7 @@ class BookingController extends Controller
             while ($startTime < $endTime) {
                 // Gabungkan tanggal yang dipilih dengan waktu slot
                 $slotDateTime = $selectedDate->copy()->setTimeFrom($startTime);
-
+                // dd($slotDateTime);
                 // Lewati slot jika sudah terlewat dari waktu sekarang
                 if ($slotDateTime->isPast()) {
                     $startTime->addMinutes($interval);
@@ -63,25 +63,27 @@ class BookingController extends Controller
 
                 // Cari atau buat PracticeSchedule untuk slot ini (efisien!)
                 // Ini adalah jantung dari perbaikan logika.
-                $practiceSchedule = PracticeSchedule::firstOrCreate(
-                    [
-                        'doctor_id' => $doctor->id,
-                        'Datetime' => $slotDateTime,
-                    ],
-                    [
-                        // Data ini hanya akan diisi jika record baru dibuat
-                        'day_available_id' => $dayAvailability->id,
-                    ]
-                );
+                // $practiceSchedule = PracticeSchedule::firstOrCreate(
+                //     [
+                //         'doctor_id' => $doctor->id,
+                //         'Datetime' => $slotDateTime,
+                //     ],
+                //     [
+                //         // Data ini hanya akan diisi jika record baru dibuat
+                //         'day_available_id' => $dayAvailability->id,
+                //     ]
+                // );
 
-                // Cek apakah jadwal ini sudah dibooking (punya appointment)
-                // Kita gunakan ->doesntHave() untuk efisiensi query
-                $isAvailable = !$practiceSchedule->appointment()->exists();
+                $existingPracticeSchedule = PracticeSchedule::where('day_available_id',  $dayAvailability->id)
+                                                    ->where('Datetime', $slotDateTime)
+                                                    ->first();
 
-                if ($isAvailable) {
+                // // Cek apakah jadwal ini sudah dibooking (punya appointment)
+                // // Kita gunakan ->doesntHave() untuk efisiensi query
+                // $isAvailable = !$practiceSchedule->appointment()->exists();
+                if (!$existingPracticeSchedule) {
                     $availableTimeSlots[] = [
                         'time' => $slotDateTime->format('H:i'),
-                        'schedule_id' => $practiceSchedule->id, // Kirim ID yang dibutuhkan frontend!
                     ];
                 }
 
