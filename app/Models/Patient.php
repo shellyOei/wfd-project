@@ -18,6 +18,8 @@ class Patient extends Model
         'date_of_birth',
         'address',
         'occupation',
+        'emergency_contact',
+        'allergy',
         'blood_type',
         'rhesus_factor',
         'id_card_number',

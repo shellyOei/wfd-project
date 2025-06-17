@@ -36,6 +36,8 @@ class RegisterPatientRequest extends FormRequest
                 'digits:16',
                 Rule::unique('patients', 'id_card_number')->ignore($patientId),
             ],
+            'emergency_contact' => 'nullable|string|max:255',
+            'allergy' => 'nullable|string|max:500',
             'occupation' => 'required|string|max:255',
             'address' => 'required|string|max:500',
             'blood_type' => 'required|in:A,B,AB,O',
@@ -73,6 +75,12 @@ class RegisterPatientRequest extends FormRequest
             'id_card_number.digits' => 'Nomor KTP harus terdiri dari 16 digit.',
             'id_card_number.unique' => 'Nomor KTP sudah terdaftar.',
 
+            'emergency_contact.string' => 'Kontak darurat harus berupa teks.',
+            'emergency_contact.max' => 'Kontak darurat tidak boleh lebih dari 255 karakter.',
+            
+            'allergy.string' => 'Alergi harus berupa teks.',
+            'allergy.max' => 'Alergi tidak boleh lebih dari 500 karakter.',
+            
             'occupation.required' => 'Profesi wajib diisi.',
             'occupation.string' => 'Profesi harus berupa teks.',
             'occupation.max' => 'Profesi tidak boleh lebih dari 255 karakter.',
