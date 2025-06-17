@@ -40,10 +40,12 @@ class PatientsExport implements FromCollection, WithHeadings, WithMapping, WithS
             'Age',
             'Blood Type',
             'Rhesus Factor',
+            'Allergy',
             'Occupation',
             'Address',
             'ID Card Number',
             'BPJS Number',
+            'Emergency Contact',
             'Linked Users',
             'Total Appointments',
             'Status',
@@ -82,10 +84,12 @@ class PatientsExport implements FromCollection, WithHeadings, WithMapping, WithS
             $age . ' years',
             $patient->blood_type ?? 'N/A',
             $patient->rhesus_factor ?? 'N/A',
+            $patient->allergy ?? 'No known allergies',
             $patient->occupation,
             $patient->address,
             $patient->id_card_number,
             $patient->BPJS_number ?? 'Not registered',
+            $patient->emergency_contact ?? 'Not provided',
             $linkedUsers,
             $totalAppointments,
             $status,
@@ -158,14 +162,16 @@ class PatientsExport implements FromCollection, WithHeadings, WithMapping, WithS
             'F' => 8,  // Age
             'G' => 12, // Blood Type
             'H' => 12, // Rhesus Factor
-            'I' => 20, // Occupation
-            'J' => 30, // Address
-            'K' => 18, // ID Card Number
-            'L' => 18, // BPJS Number
-            'M' => 25, // Linked Users
-            'N' => 12, // Total Appointments
-            'O' => 10, // Status
-            'P' => 18  // Registration Date
+            'I' => 25, // Allergy
+            'J' => 20, // Occupation
+            'K' => 30, // Address
+            'L' => 18, // ID Card Number
+            'M' => 18, // BPJS Number
+            'N' => 20, // Emergency Contact
+            'O' => 25, // Linked Users
+            'P' => 12, // Total Appointments
+            'Q' => 10, // Status
+            'R' => 18  // Registration Date
         ];
     }
 

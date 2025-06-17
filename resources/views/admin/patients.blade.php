@@ -78,6 +78,11 @@
                                         <p class="text-sm text-gray-600">{{ $patient->patient_number }}</p>
                                         <p class="text-xs text-gray-500">{{ ucfirst($patient->sex) }} •
                                             {{ $patient->blood_type }}{{ $patient->rhesus_factor }}</p>
+                                        @if($patient->allergy)
+                                            <p class="text-xs text-red-600 mt-1">
+                                                <i class="fas fa-exclamation-triangle mr-1"></i>Allergy: {{ Str::limit($patient->allergy, 30) }}
+                                            </p>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
@@ -240,10 +245,26 @@
                         </div>
 
                         <!-- BPJS Number -->
-                        <div class="md:col-span-2">
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Number (Optional)</label>
                             <input type="text" name="BPJS_number" id="add_BPJS_number"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <!-- Emergency Contact -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Emergency Contact</label>
+                            <input type="text" name="emergency_contact" id="add_emergency_contact"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Name and phone number">
+                        </div>
+
+                        <!-- Allergy -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Allergy Information</label>
+                            <textarea name="allergy" id="add_allergy" rows="2"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="List any known allergies or medications to avoid"></textarea>
                         </div>
 
                         <!-- Address -->
@@ -358,10 +379,26 @@
                         </div>
 
                         <!-- BPJS Number -->
-                        <div class="md:col-span-2">
+                        <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">BPJS Number (Optional)</label>
                             <input type="text" name="BPJS_number" id="edit_BPJS_number"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+
+                        <!-- Emergency Contact -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Emergency Contact</label>
+                            <input type="text" name="emergency_contact" id="edit_emergency_contact"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="Name and phone number">
+                        </div>
+
+                        <!-- Allergy -->
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Allergy Information</label>
+                            <textarea name="allergy" id="edit_allergy" rows="2"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                placeholder="List any known allergies or medications to avoid"></textarea>
                         </div>
 
                         <!-- Address -->
@@ -510,6 +547,8 @@
             document.getElementById('edit_occupation').value = patient.occupation;
             document.getElementById('edit_id_card_number').value = patient.id_card_number;
             document.getElementById('edit_BPJS_number').value = patient.BPJS_number || '';
+            document.getElementById('edit_emergency_contact').value = patient.emergency_contact || '';
+            document.getElementById('edit_allergy').value = patient.allergy || '';
             document.getElementById('edit_address').value = patient.address;
 
             // Store patient ID for form submission
@@ -701,6 +740,14 @@
                             <strong>BPJS Number:</strong><br>
                             <span class="text-gray-600">${patient.BPJS_number || 'Not registered'}</span>
                         </div>
+                        <div class="col-span-2">
+                            <strong>Emergency Contact:</strong><br>
+                            <span class="text-gray-600">${patient.emergency_contact || 'Not provided'}</span>
+                        </div>
+                        <div class="col-span-2">
+                            <strong>Allergy Information:</strong><br>
+                            <span class="text-gray-600 ${patient.allergy ? 'text-red-600' : ''}">${patient.allergy || 'No known allergies'}</span>
+                        </div>
                     </div>
                 </div>
             `,
@@ -736,6 +783,14 @@
                             <div>
                                 <span class="text-blue-700">Blood Type:</span>
                                 <span class="font-medium">${patient.blood_type || 'N/A'}${patient.rhesus_factor || ''}</span>
+                            </div>
+                            <div class="col-span-2">
+                                <span class="text-blue-700">Allergies:</span>
+                                <span class="font-medium ${patient.allergy ? 'text-red-600' : ''}">${patient.allergy || 'No known allergies'}</span>
+                            </div>
+                            <div class="col-span-2">
+                                <span class="text-blue-700">Emergency Contact:</span>
+                                <span class="font-medium">${patient.emergency_contact || 'Not provided'}</span>
                             </div>
                         </div>
                     </div>
