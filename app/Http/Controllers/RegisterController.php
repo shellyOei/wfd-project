@@ -4,12 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterUserRequest;
 use App\Models\User;
+use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Repositories\UserRepository;
+use App\Services\AuthService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
-    public function showRegistrationForm()
+    protected $authService;
+
+    public function __construct(AuthService $authService)
+    {
+        $this->authService = $authService;
+    }
+
+    // --- register account for user ---
+    public function show()
     {
         return view('auth.registerUser');
     }
@@ -18,16 +32,30 @@ class RegisterController extends Controller
     {
         $valid = $r->validated();
 
-         $user = User::create([
-            'name' => $valid['name'], 
-            'email' => $valid['email'], 
-            'phone' => $valid['phone'], 
-            'password' => Hash::make($valid['password']), 
-        ]);
+        try {
+            $user = User::create($valid);
+        
+            Auth::guard('user')->login($user);
 
-        // Log the user in
-        auth()->guard('user')->login($user);
+            return response()->json([
+                'success' => true, 
+                'message' => 'Registrasi akun berhasil', 
+                'redirect' => route('user.dashboard')
+            ]);
 
-        return redirect()->route('login')->with('success', 'Registration successful!');
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false, 
+                'message' => 'Validasi gagal.', 
+                'errors' => $e->errors()], 422); 
+
+        } catch (\Exception $e) {
+            Log::error('Registrasi akun gagal: ' . $e->getMessage(), ['exception' => $e]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal melakukan registrasi akun: ' . $e->getMessage()
+            ], 500); 
+
+        }
     }
 }

@@ -64,6 +64,7 @@
             background: #ec0143 !important;
         }
     </style>
+    @yield('style')
 
     <script>
         tailwind.config = {
@@ -82,9 +83,10 @@
     </script>
 
     @yield('head')
+    @stack('head')
 
 </head>
-
+@stack('scripts')
 <body class="bg-[var(--background)]">
     @include('partials.user-nav')
 
@@ -114,12 +116,15 @@
 
     <main class="w-screen overflow-x-hidden">
         @yield('content')
+        @stack('content')
     </main>
 
     @include('partials.footer')
-
+    
     @yield('script')
     @stack('script')
+
+    @include('partials.add-patient-modal')
 
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/js/tw-elements.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>

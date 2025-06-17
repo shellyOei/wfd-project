@@ -68,6 +68,26 @@
 
         <!-- Settings & Logout -->
         <ul class="space-y-2">
+            <!-- Users -->
+            <li>
+                <a href="{{ route('admin.users') }}"
+                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    <i class="fas fa-users-gear text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
+                    <span class="font-medium">Users</span>
+                </a>
+            </li>
+
+            @if(session('doctor_id') == NULL)
+            <!-- Admins -->
+            <li>
+                <a href="{{ route('admin.manage') }}"
+                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    <i class="fas fa-user-tie text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
+                    <span class="font-medium">Admins</span>
+                </a>
+            </li>
+            @endif
+
             <!-- Settings -->
             <li>
                 <a href=""

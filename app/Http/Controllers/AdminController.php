@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use App\Models\Doctor;
 use App\Models\Patient;
 use App\Models\Appointment;
@@ -173,5 +174,60 @@ class AdminController extends Controller
             'labels' => $labels,
             'data' => $data
         ];
+    }
+
+
+
+    public function manageAdmins(){
+        $admins = Admin::with('doctor')->withTrashed()->get();
+
+        return view('admin.admins', compact('admins'));
+    }
+
+    public function activate($id)
+    {
+        try {
+            $admin = Admin::withTrashed()->findOrFail($id);
+            $admin->restore(); // undo soft delete
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin account activated successfully.'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to activate admin: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function deactivate(Admin $admin)
+    {
+        try {
+            $admin->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin deactivated successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deactivating the admin: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function destroy(Admin $admin)
+    {
+        try {
+            $admin->forceDelete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin deleted successfully!'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the admin: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }

@@ -10,7 +10,6 @@ class PracticeSchedule extends Model
     use HasUuids;
 
     protected $fillable = [
-        'doctor_id',
         'Datetime',
     ];
 
@@ -33,4 +32,9 @@ class PracticeSchedule extends Model
     {
         return $this->hasMany(Appointment::class, 'schedule_id');
     }
+    public function doctor()
+    {
+        return $this->belongsTo(Doctor::class, 'doctor_id');
+    }
+
 }
