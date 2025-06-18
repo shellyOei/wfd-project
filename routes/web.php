@@ -51,7 +51,7 @@ Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     Route::get('/mini-history/data/{patientId}', [PatientController::class, 'getAppointments'])->name('miniHistory.data');
 
     // form.blade.php
-    Route::get('/doctor/{doctor}/{patient)/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
+    Route::get('/doctor/{doctor}/{patient}/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
     Route::get('/doctor/{doctor}/select-patient', [BookingController::class, 'selectPatient'])->name('booking.selectPatient');
     Route::post('/book/store', [BookingController::class, 'store'])->name('booking.store');
     
@@ -107,19 +107,19 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('practice-schedules/{practiceSchedule}', [PracticeScheduleController::class, 'destroy'])->name('practice-schedules.destroy');
 
 
-        Route::get('/users', [UserController::class, 'users'])->name('users');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
-        Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-        Route::delete('/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('users.destroy');
-        Route::put('/users/{user}/activate', [UserController::class, 'activate'])->name('users.activate');
-        Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
+        // Route::get('/users', [UserController::class, 'users'])->name('users');
+        // Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+        // Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+        // Route::delete('/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('users.destroy');
+        // Route::put('/users/{user}/activate', [UserController::class, 'activate'])->name('users.activate');
+        // Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
-        Route::get('/manage', [AdminController::class, 'manageAdmins'])->name('manage');
-        Route::get('/manage/store', [AdminController::class, 'manageAdmins'])->name('manage.store');
-        Route::delete('/manage/{admin}/deactivate', [AdminController::class, 'deactivate'])->name('manage.destroy');
-        Route::put('/manage/{admin}/activate', [AdminController::class, 'activate'])->name('manage.activate');
-        Route::delete('/manage/{admin}', [AdminController::class, 'destroy'])->name('manage.destroy');
-        Route::get('/doctors/search', [AdminController::class, 'manageAdmins'])->name('doctors.search');
+        // Route::get('/manage', [AdminController::class, 'manageAdmins'])->name('manage');
+        // Route::get('/manage/store', [AdminController::class, 'manageAdmins'])->name('manage.store');
+        // Route::delete('/manage/{admin}/deactivate', [AdminController::class, 'deactivate'])->name('manage.destroy');
+        // Route::put('/manage/{admin}/activate', [AdminController::class, 'activate'])->name('manage.activate');
+        // Route::delete('/manage/{admin}', [AdminController::class, 'destroy'])->name('manage.destroy');
+        // Route::get('/doctors/search', [AdminController::class, 'manageAdmins'])->name('doctors.search');
 
     });
 });
