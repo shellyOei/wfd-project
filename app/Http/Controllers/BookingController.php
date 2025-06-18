@@ -34,67 +34,47 @@ class BookingController extends Controller
                 'date_num' => $date->format('d'),
             ];
         }
-
-        // === PERUBAHAN LOGIKA UTAMA DIMULAI DI SINI ===
+        
         $availableTimeSlots = [];
 
-        // dayOfWeek (0=Minggu, 1=Senin, ..., 6=Sabtu)
         $dayName = strtolower($selectedDate->format('l')); //convert to day names
-        
-        // Ambil pola ketersediaan dokter untuk hari yang dipilih
+
         $dayAvailability = DayAvailable::where('doctor_id', $doctor->id)
-            ->where('day', $dayName) // Pastikan 'day' di database Anda sesuai format Carbon (0-6)
+            ->where('day', $dayName) 
             ->first();
-        
+
         if ($dayAvailability) {
             $startTime = Carbon::parse($dayAvailability->start_time);
             $endTime = Carbon::parse($dayAvailability->end_time);
-            $interval = 30; // durasi per slot dalam menit
+            $interval = 30; 
 
             while ($startTime < $endTime) {
-                // Gabungkan tanggal yang dipilih dengan waktu slot
                 $slotDateTime = $selectedDate->copy()->setTimeFrom($startTime);
-                // dd($slotDateTime);
-                // Lewati slot jika sudah terlewat dari waktu sekarang
                 if ($slotDateTime->isPast()) {
                     $startTime->addMinutes($interval);
                     continue;
                 }
 
-                // Cari atau buat PracticeSchedule untuk slot ini (efisien!)
-                // Ini adalah jantung dari perbaikan logika.
-                // $practiceSchedule = PracticeSchedule::firstOrCreate(
-                //     [
-                //         'doctor_id' => $doctor->id,
-                //         'Datetime' => $slotDateTime,
-                //     ],
-                //     [
-                //         // Data ini hanya akan diisi jika record baru dibuat
-                //         'day_available_id' => $dayAvailability->id,
-                //     ]
-                // );
-
                 $existingPracticeSchedule = PracticeSchedule::where('day_available_id',  $dayAvailability->id)
-                                                    ->where('Datetime', $slotDateTime)
-                                                    ->first();
+                                                ->where('Datetime', $slotDateTime)
+                                                ->first();
 
-                // // Cek apakah jadwal ini sudah dibooking (punya appointment)
-                // // Kita gunakan ->doesntHave() untuk efisiensi query
-                // $isAvailable = !$practiceSchedule->appointment()->exists();
-                if (!$existingPracticeSchedule) {
-                    $availableTimeSlots[] = [
-                        'time' => $slotDateTime->format('H:i'),
-                    ];
-                }
+                // check if the slot is already booked
+                $isBooked = $existingPracticeSchedule && $existingPracticeSchedule->appointment;
+
+                $availableTimeSlots[] = [
+                    'time' => $slotDateTime->format('H:i'),
+                    'isBooked' => $isBooked,
+                ];
 
                 $startTime->addMinutes($interval);
             }
         }
 
-        // Jika ini adalah request AJAX, kembalikan JSON
+      
         if ($request->ajax()) {
             return response()->json([
-                'times' => $availableTimeSlots, // Nama 'times' sesuai yang diharapkan JS Anda
+                'times' => $availableTimeSlots, 
             ]);
         }
 
@@ -107,6 +87,7 @@ class BookingController extends Controller
             'selectedTime' => $request->input('time'), // Ambil dari request jika ada
             'times' => $availableTimeSlots, // Kirim slot yang tersedia
             'patient' => $patient, // Tambahkan pasien yang dipilih
+            'dayAvailable' => $dayAvailability, // Tambahkan pola ketersediaan hari
         ]);
     }
 
@@ -115,46 +96,54 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-       
         try {
-            $validated = $request->validate([
-                'schedule_id' => 'required|uuid|exists:practice_schedules,id',
-                'patient_id' => 'required|uuid|exists:patients,id', 
+            $request->validate([
+                'date' => 'required|date_format:Y-m-d',
+                'time' => 'required|date_format:H:i',
+                'patient_id' => 'required|exists:patients,id',
+                'day_available_id' => 'required|exists:day_availables,id', 
             ]);
 
-            $scheduleId = $validated['schedule_id'];
-            $patientId = $validated['schedule_id'];
+            $dateString = $request->input('date'); // e.g., "2025-06-20"
+            $timeString = $request->input('time'); // e.g., "12:00"
 
-            // Mulai transaksi database untuk mencegah race condition (rebutan slot)
-            return DB::transaction(function () use ($scheduleId, $patientId) {
-                // Kunci record PracticeSchedule untuk pembaruan (mencegah user lain booking di saat bersamaan)
-                $practiceSchedule = PracticeSchedule::where('id', $scheduleId)->lockForUpdate()->first();
+            $dateTimeString = $dateString . ' ' . $timeString;
+            $appointmentDateTime = Carbon::parse($dateTimeString);
 
-                // Cek sekali lagi jika slot sudah diambil orang lain
-                if ($practiceSchedule->appointment) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Maaf, slot waktu ini baru saja dibooking. Silakan pilih waktu lain.'
-                    ], 409); // 409 Conflict
-                }
+            if ($appointmentDateTime->isPast()) {
+                return response()->json(['success' => false, 'message' => 'Cannot book an appointment in the past.'], 400);
+            }
 
-                // Jika masih tersedia, buat appointment
-                $appointment = Appointment::create([
-                    'patient_id' => $patientId,
-                    'schedule_id' => $practiceSchedule->id,
-                    // Isi default lainnya
-                    'type' => 'Online Booking',
-                    'is_bpjs' => false, // Default value
-                ]);
+            DB::beginTransaction();
+            
+            $existingSchedule = PracticeSchedule::where('day_available_id', $request->input('day_available_id'))
+                ->where('Datetime', $appointmentDateTime)
+                ->first();
 
-                // Berhasil!
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Janji temu berhasil dikonfirmasi!',
-                    'redirect_url' => route('user.my_appointments') // Ganti dengan rute halaman "Janji Temu Saya"
-                ], 201);
-            });
+            if ($existingSchedule) {
+                DB::rollBack(); 
+                return response()->json(['success' => false, 'message' => 'Slot waktu ini sudah dibooking.'], 400);
+            }      
 
+            // create practice schedule 
+            $newSchedule = PracticeSchedule::create([
+                'day_available_id' => $request->input('day_available_id'),
+                'Datetime' => $appointmentDateTime,
+            ]);    
+
+            // Buat appointment baru
+            Appointment::create([
+                'schedule_id' => $newSchedule->id,
+                'queue_number' => 1, // Atau logika queue_number yang sesuai
+                'patient_id' => $request->input('patient_id'),
+            ]);
+
+            DB::commit(); 
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking berhasil disimpan.',
+            ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'success' => false,
