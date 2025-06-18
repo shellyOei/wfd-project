@@ -15,7 +15,7 @@
             <!-- Header -->
             <div class="flex items-center justify-between my-4 mx-4">
                 <button onclick="goBackWithReload()" class="text-[#292929] text-xl">
-                    <i class="fas fa-arrow-left"></i>
+                    <i class="fas fa-chevron-left"></i>
                 </button>
                 <h1 class="text-xl font-bold text-[#292929]">Masukkan Pasien</h1>
                 <div class="w-6 h-6"></div>

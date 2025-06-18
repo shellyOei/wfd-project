@@ -62,17 +62,17 @@
 
 @section('content')
     <div class="min-h-screen bg-[#f4f4fd]">
-        <main class="max-w-[440px] mx-auto pt-[63px] pb-[61px]">
+        <main class="max-w-[440px] mx-auto pt-[2rem] pb-[2rem]">
             <div class="flex items-center px-6 mt-2 mb-4">
                 <button onclick="history.back()"
-                    class="w-8 h-8 bg-[#f4f4fd] rounded-full flex items-center justify-center mr-2">
+                    class="w-8 h-8 bg-[#f4f4fd] rounded-full flex items-center justify-center -mr-2">
                     <i class="fas fa-chevron-left text-lg"></i>
                 </button>
                 <h1 class="text-xl font-bold flex-1 text-center">Riwayat Janji Temu</h1>
             </div>
 
             <div class="overflow-x-auto mx-5 scroll-transparent">
-                <div class="flex justify-start gap-8 mt-6 mb-6 px-4 min-w-max">
+                <div class="flex justify-center  gap-8 mt-6 mb-6 px-4 min-w-max">
                     @foreach ($patients as $index => $data)
                         @php
                             $initial = strtoupper(substr($data['patient_name'], 0, 1));
@@ -93,7 +93,7 @@
             {{-- Janji Temu Aktif --}}
             <section class="px-6 mb-6">
                 <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-lg font-semibold text-[#373737]">Janji Temu Aktif</h2>
+                    <h2 class="text-md font-semibold text-[#373737]">Janji Temu Mendatang</h2>
                     <!-- BLM arahin route ke full history n booking -->
                     <a href="#" class="text-xs font-bold text-black underline flex items-center whitespace-nowrap">
                         Lihat Selengkapnya
@@ -134,7 +134,10 @@
             {{-- Riwayat Janji Temu --}}
             <section class="px-6">
                 <div class="flex justify-between items-center mb-2">
-                    <h2 class="text-lg font-semibold text-[#373737]">Riwayat</h2>
+                    <h2 class="text-md font-semibold text-[#373737] flex items-center gap-2">
+                        Riwayat
+                         <i class="fas fa-history text-xs text-[#6b7280]"></i>
+                    </h2>
                     <a href="#" class="text-xs font-bold text-black underline flex items-center whitespace-nowrap">
                         Lihat Selengkapnya
                         <i class="fas fa-chevron-right ml-1 text-xs"></i>
@@ -231,8 +234,8 @@
 
                 if (!items.length) {
                     container.innerHTML = `<div class="text-center text-[#a9a9a9] italic py-4 min-w-[260px] w-full bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
-                                                                                        ${isActive ? 'Belum ada janji temu.' : 'Belum ada riwayat janji temu.'}
-                                                                                    </div>`;
+                                                                                            ${isActive ? 'Belum ada janji temu.' : 'Belum ada riwayat janji temu.'}
+                                                                                        </div>`;
                     return;
                 }
 
@@ -259,14 +262,14 @@
                     card.className = 'min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0';
 
                     card.innerHTML = `
-                                                                                        <div class="flex justify-between items-center mb-1">
-                                                                                            <span class="text-sm font-semibold ${textColor}">${dateText}</span>
-                                                                                            <span class="text-[#7a7a7a] font-bold text-sm">${item.time}</span>
-                                                                                        </div>
-                                                                                        <h3 class="text-lg font-bold mb-1">${item.title}</h3>
-                                                                                        <p class="text-sm font-semibold mb-0.5">${item.doctor_name}</p>
-                                                                                        <p class="text-[#a9a9a9] text-sm">Dokter ${item.specialization}</p>
-                                                                                    `;
+                                                                                            <div class="flex justify-between items-center mb-1">
+                                                                                                <span class="text-sm font-semibold ${textColor}">${dateText}</span>
+                                                                                                <span class="text-[#7a7a7a] font-bold text-sm">${item.time}</span>
+                                                                                            </div>
+                                                                                            <h3 class="text-lg font-bold mb-1">${item.title}</h3>
+                                                                                            <p class="text-sm font-semibold mb-0.5">${item.doctor_name}</p>
+                                                                                            <p class="text-[#a9a9a9] text-sm">Dokter ${item.specialization}</p>
+                                                                                        `;
                     container.appendChild(card);
                     // console.log('Card ditambahkan:', card);
                 });

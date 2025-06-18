@@ -16,7 +16,7 @@
             <div class="flex items-center px-6 mb-8">
                 <button onclick="goBackWithReload()"
                     class="w-10 h-10 bg-transparent rounded-full flex items-center justify-center mr-4 transition-shadow">
-                    <i class="fas fa-arrow-left text-gray-600"></i>
+                    <i class="fas fa-chevron-left text-gray-600"></i>
                 </button>
                 <h1 class="text-2xl font-bold text-gray-800">Edit Akun</h1>
             </div>

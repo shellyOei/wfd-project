@@ -12,7 +12,7 @@
                     <div class="flex items-center">
                         <button onclick="goBackWithReload()"
                             class="w-8 h-8 bg-[#f4f4fd] rounded-full flex items-center justify-center mr-4">
-                            <i class="fas fa-arrow-left text-sm"></i>
+                            <i class="fas fa-chevron-left text-sm"></i>
                         </button>
                         <h1 class="text-2xl md:text-3xl font-bold">Daftar Pasien</h1>
                     </div>
