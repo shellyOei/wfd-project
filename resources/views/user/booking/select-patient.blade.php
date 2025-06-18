@@ -65,7 +65,7 @@
 
         // Pass the doctor ID from Blade to JavaScript
         const doctorId = "{{ $doctor->id }}";
-        const bookingShowRoute = "{{ route('user.booking.show', ['doctor' => ':doctor_id', 'patient' => ':patient_id']) }}";
+         const bookingShowBaseUrl = "{{ route('user.booking.show', ['doctor' => $doctor->id, 'patient' => 'DUMMY_PATIENT_ID']) }}";
 
         selectPatientBtn.disabled = true;
 
@@ -77,7 +77,6 @@
 
                 const patientId = this.dataset.patientId;
                 selectedPatientIdInput.value = patientId;
-                console.log('Selected Patient ID:', patientId);
                 selectPatientBtn.disabled = false;
             });
 
@@ -90,16 +89,11 @@
         });
 
         selectPatientBtn.addEventListener('click', function() {
-            const selectedPatientId = selectedPatientIdInput.value;
-
+            const selectedPatientId = selectedPatientIdInput.value;   
+        
             if (selectedPatientId) {
-                let finalUrl = bookingShowRoute.replace(':doctor_id', doctorId);
-                finalUrl = finalUrl.replace(':patient_id', selectedPatientId);
-
-                console.log('Redirecting to:', finalUrl);
-
+                let finalUrl = bookingShowBaseUrl.replace('DUMMY_PATIENT_ID', selectedPatientId);
                 window.location.href = finalUrl;
-                
             }
         });
 
