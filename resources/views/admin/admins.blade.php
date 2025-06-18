@@ -293,6 +293,11 @@
         function closeAddAdminModal() {
             document.getElementById('addAdminModal').classList.add('hidden');
         }
+        $('#doctor_search').on('input', function () {
+            if ($(this).val().trim() === '') {
+                $('#doctor_id').val('');
+            }
+        });
 
         // Add Admin Form Submission
         $('#addAdminForm').on('submit', function (e) {
@@ -365,8 +370,8 @@
                             doctors.forEach(doctor => {
                                 doctorResultsDiv.append(
                                     ` <div class="p-2 cursor-pointer hover:bg-gray-100 select-doctor-item"
-                                                                                                 data-id="${doctor.id}" data-name="${doctor.name}" data-context="add">
-                                                                                                 ${doctor.name}</div>`
+                                                                                                             data-id="${doctor.id}" data-name="${doctor.name}" data-context="add">
+                                                                                                             ${doctor.name}</div>`
                                 );
                             });
                             doctorResultsDiv.removeClass('hidden');
@@ -428,19 +433,19 @@
             if (!deleted || deleted === 'null' || deleted === '') {
                 // active -> show deactivate button
                 adminAccountAction.innerHTML = `
-                                                                                                                            <button type="button" onclick="deactivateAdmin()"
-                                                                                                                                class="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200">
-                                                                                                                                Deactivate Account
-                                                                                                                            </button>
-                                                                                                                        `;
+                                                                                                                                        <button type="button" onclick="deactivateAdmin()"
+                                                                                                                                            class="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200">
+                                                                                                                                            Deactivate Account
+                                                                                                                                        </button>
+                                                                                                                                    `;
             } else {
                 // inactive -> show activate button
                 adminAccountAction.innerHTML = `
-                                                                                                                            <button type="button" onclick="activateAdmin()"
-                                                                                                                                class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
-                                                                                                                                Activate Account
-                                                                                                                            </button>
-                                                                                                                        `;
+                                                                                                                                        <button type="button" onclick="activateAdmin()"
+                                                                                                                                            class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
+                                                                                                                                            Activate Account
+                                                                                                                                        </button>
+                                                                                                                                    `;
             }
             document.getElementById('editAdminModal').classList.remove('hidden');
         }
@@ -468,10 +473,10 @@
                         if (doctors.length > 0) {
                             doctors.forEach(doctor => {
                                 doctorResultsDiv.append(`
-                                    <div class="p-2 cursor-pointer hover:bg-gray-100 select-doctor-item"
-                                         data-id="${doctor.id}" data-name="${doctor.name}" data-context="edit">
-                                         ${doctor.name}
-                                    </div>`
+                                                <div class="p-2 cursor-pointer hover:bg-gray-100 select-doctor-item"
+                                                     data-id="${doctor.id}" data-name="${doctor.name}" data-context="edit">
+                                                     ${doctor.name}
+                                                </div>`
                                 );
                             });
                             doctorResultsDiv.removeClass('hidden');
@@ -482,7 +487,11 @@
                 });
             }, 300);
         });
-
+        $('#edit_doctor_search').on('input', function () {
+            if ($(this).val().trim() === '') {
+                $('#edit_doctor_id').val('');
+            }
+        });
 
         // Edit Admin Form Submission
         $('#editAdminForm').on('submit', function (e) {
