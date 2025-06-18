@@ -232,8 +232,8 @@ class PatientController extends Controller
                 'date' => $datetime->translatedFormat('d F Y'),
                 'time' => $datetime->format('H:i'),
                 'title' => $appointment->type,
-                'doctor_name' => $schedule->doctor->name ?? '-',
-                'specialization' => $schedule->doctor->specialization->name ?? '-',
+                'doctor_name' => $schedule->dayAvailable->doctor->name ?? '-',
+                'specialization' => $schedule->dayAvailable->doctor->specialization->name ?? '-',
             ];
             if ($datetime->gt($now)) {
                 $activeAppointments->push($info);
