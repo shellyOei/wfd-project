@@ -167,7 +167,7 @@
                                     </div>
                                 </td>
                                 <td class="py-4 px-2 text-gray-700">
-                                    {{ $appointment->schedule->doctor->front_title }} {{ $appointment->schedule->doctor->name }} {{ $appointment->schedule->doctor->back_title }}
+                                    {{ $appointment->schedule->dayAvailable->doctor->front_title }} {{ $appointment->schedule->dayAvailable->doctor->name }} {{ $appointment->schedule->dayAvailable->doctor->back_title }}
                                 </td>
                                 <td class="py-4 px-2 text-gray-700">
                                     {{ \Carbon\Carbon::parse($appointment->schedule->Datetime)->format('M d, Y - g:i A') }}
