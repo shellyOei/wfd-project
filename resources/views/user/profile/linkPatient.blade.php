@@ -7,69 +7,177 @@
         }
     </style>
 @endsection
-
 @section('content')
-    <div class="bg-[#f4f4fd] flex justify-center w-full min-h-screen py-6 px-4">
-        <div class="w-full max-w-md relative bg-[#f4f4fd]">
-
-            <!-- Header -->
-            <div class="flex items-center justify-between my-4 mx-4">
-                <button onclick="goBackWithReload()" class="text-[#292929] text-xl">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <h1 class="text-xl font-bold text-[#292929]">Masukkan Pasien</h1>
-                <div class="w-6 h-6"></div>
-            </div>
-
-            <!-- Logo -->
-            <div class="w-full flex items-center justify-center my-4">
-                <img src="{{ asset('assets/ewaps-logo.png') }}" alt="Logo EWApps" class="w-[80px] h-auto">
-            </div>
-
-            <!-- Form -->
-            <form id="patientForm" action="{{ route('user.link-patient.post') }}" method="POST" class="space-y-5">
-                @csrf
-                <!-- Nama Pasien -->
-                <div>
-                    <label class="block text-[#303030] text-sm mb-1">Nama Pasien</label>
-                    <div class="relative">
-                        <input type="text" id="name" name="name" placeholder="-"
-                            class="w-full h-12 pl-10 pr-4 border border-[#497fff] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0e7afe] bg-white"
-                            required />
-                        <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    </div>
-                </div>
-
-                <!-- Tanggal Lahir -->
-                <div>
-                    <label class="block text-[#303030] text-sm mb-1">Tanggal Lahir</label>
-                    <input type="date" id="date_of_birth" name="date_of_birth"
-                        class="w-full h-12 px-4 border border-[#497fff] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0e7afe] bg-white"
-                        required />
-                </div>
-
-                <!-- Nomor MRN -->
-                <div>
-                    <label class="block text-[#303030] text-sm mb-1">Nomor MRN</label>
-                    <div class="relative">
-                        <input type="text" id="patient_number" name="patient_number" placeholder="-"
-                            class="w-full h-12 pl-10 pr-4 border border-[#497fff] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0e7afe] bg-white"
-                            required />
-                        <i class="fas fa-id-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    </div>
-                </div>
-
-                <div class="mt-8">
-                    <button id="submitFormBtn" type="submit"
-                        class="w-full h-12 bg-gradient-to-r from-[#4ADEDE] via-[#1CA7EC] to-[#1F2F98] text-white font-bold rounded-lg flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
-                        Masukkan Pasien
+    <div class="bg-[#f4f4fd] min-h-full flex justify-center items-center py-6 px-4">
+        <div class="w-full max-w-md lg:max-w-2xl xl:max-w-4xl relative">
+            <!-- Mobile Layout -->
+            <div class="lg:hidden pb-4 p-6">
+                <!-- Header -->
+                <div class="flex items-center justify-between mb-6">
+                    <button onclick="goBackWithReload()"
+                        class="text-gray-700 text-xl hover:text-blue-600 transition-colors">
+                        <i class="fas fa-chevron-left"></i>
                     </button>
+                    <h1 class="text-xl font-bold text-gray-800">Masukkan Pasien</h1>
+                    <div class="w-6 h-6"></div>
                 </div>
-            </form>
 
+                <!-- Logo -->
+                <div class="w-full flex items-center justify-center mb-8">
+                    <img src="{{ asset('assets/ewaps-logo.png') }}" alt="Logo EWApps" class="w-20 h-auto">
+                </div>
+
+                <!-- Form -->
+                <form id="patientForm" action="{{ route('user.link-patient.post') }}" method="POST" class="space-y-4">
+                    @csrf
+
+                    <!-- Nama Pasien -->
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Nama Pasien</label>
+                        <div class="relative">
+                            <input type="text" id="name" name="name" placeholder="Masukkan nama lengkap pasien"
+                                class="w-full h-12 pl-10 pr-4 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all duration-200"
+                                required />
+                            <i class="fas fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tanggal Lahir -->
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Tanggal Lahir</label>
+                        <input type="date" id="date_of_birth" name="date_of_birth"
+                            class="w-full h-12 px-4 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all duration-200"
+                            required />
+                    </div>
+
+                    <!-- Nomor MRN -->
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Nomor MRN</label>
+                        <div class="relative">
+                            <input type="text" id="patient_number" name="patient_number" placeholder="Masukkan nomor MRN"
+                                class="w-full h-12 pl-10 pr-4 border-2 border-blue-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white transition-all duration-200"
+                                required />
+                            <i class="fas fa-id-card absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <div class="pt-4">
+                        <button id="submitFormBtn" type="submit"
+                            class="w-full h-12 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-white font-bold rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                            <i class="fas fa-user-plus"></i>
+                            Masukkan Pasien
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Desktop Layout -->
+            <div class="hidden lg:block bg-white rounded-3xl shadow-2xl overflow-hidden">
+                <div class="lg:flex lg:min-h-[600px]">
+                    <!-- Left Side - Illustration/Info -->
+                    <div
+                        class="lg:w-1/2 bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 p-8 lg:p-12 flex flex-col justify-center items-center text-white relative overflow-hidden">
+                        <div class="absolute inset-0 bg-black bg-opacity-10"></div>
+                        <div class="relative z-10 text-center">
+                            <div class="mb-8">
+                                <img src="{{ asset('assets/ewaps-logo.png') }}" alt="Logo EWApps"
+                                    class="w-24 h-auto mx-auto mb-6 filter brightness-0 invert">
+                            </div>
+                            <h2 class="text-3xl xl:text-4xl font-bold mb-4">Hubungkan Pasien</h2>
+                            <p class="text-blue-100 text-lg mb-8 leading-relaxed">
+                                Masukkan data pasien dengan lengkap dan akurat untuk memulai layanan kesehatan digital
+                            </p>
+                            <div class="space-y-4 text-left">
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-shield-alt text-sm"></i>
+                                    </div>
+                                    <span class="text-blue-100">Data aman dan terenkripsi</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-clock text-sm"></i>
+                                    </div>
+                                    <span class="text-blue-100">Proses cepat dan mudah</span>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    <div
+                                        class="w-8 h-8 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                                        <i class="fas fa-user-md text-sm"></i>
+                                    </div>
+                                    <span class="text-blue-100">Akses ke layanan medis</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side - Form -->
+                    <div class="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
+                        <!-- Header -->
+                        <div class="flex flex-wrap">
+                            <button onclick="goBackWithReload()"
+                                class="mr-16 text-gray-600 hover:text-blue-600 transition-colors mb-4 flex items-center gap-2">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h1 class="text-2xl xl:text-2xl font-bold text-gray-800 mb-2">Hubungkan Pasien</h1>
+                        </div>
+                        <p class="text-gray-600 mb-2 text-sm">Lengkapi formulir di bawah ini dengan data yang valid</p>
+
+                        <!-- Form -->
+                        <form id="patientFormDesktop" action="{{ route('user.link-patient.post') }}" method="POST"
+                            class="space-y-6">
+                            @csrf
+
+                            <!-- Nama Pasien -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-3">Nama Lengkap Pasien</label>
+                                <div class="relative">
+                                    <input type="text" id="name_desktop" name="name"
+                                        placeholder="Masukkan nama lengkap pasien"
+                                        class="w-full h-14 pl-12 pr-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 hover:bg-white transition-all duration-200 text-gray-800"
+                                        required />
+                                    <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+
+                            <!-- Tanggal Lahir -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-3">Tanggal Lahir</label>
+                                <input type="date" id="date_of_birth_desktop" name="date_of_birth"
+                                    class="w-full h-14 px-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 hover:bg-white transition-all duration-200 text-gray-800"
+                                    required />
+                            </div>
+
+                            <!-- Nomor MRN -->
+                            <div>
+                                <label class="block text-gray-700 text-sm font-semibold mb-3">Nomor MRN (Medical Record
+                                    Number)</label>
+                                <div class="relative">
+                                    <input type="text" id="patient_number_desktop" name="patient_number"
+                                        placeholder="Masukkan nomor MRN"
+                                        class="w-full h-14 pl-12 pr-4 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 hover:bg-white transition-all duration-200 text-gray-800"
+                                        required />
+                                    <i class="fas fa-id-card absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                </div>
+                            </div>
+
+                            <div class="pt-6">
+                                <button id="submitFormBtnDesktop" type="submit"
+                                    class="w-full h-14 bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 text-white font-bold rounded-xl flex items-center justify-center gap-3 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 text-lg">
+                                    <i class="fas fa-user-plus"></i>
+                                    Masukkan Pasien
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
+
 
 @push('script')
     <script>

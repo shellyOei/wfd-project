@@ -57,9 +57,6 @@ Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });
-Route::get('/', function () {
-    return view('user.profile.index');
-});
 
 
 // admin
@@ -113,15 +110,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
         Route::delete('/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate'); 
         Route::put('/users/{user}/activate', [UserController::class, 'activate'])->name('users.activate');
+        Route::get('/users-export', [UserController::class, 'export'])->name('users.export');
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
         Route::get('/manage', [AdminController::class, 'manageAdmins'])->name('manage');
-        Route::get('/manage/store', [AdminController::class, 'manageAdmins'])->name('manage.store');
+        Route::post('/manage/store', [AdminController::class, 'store'])->name('manage.store');
+        Route::put('/manage/{admin}', [AdminController::class, 'update'])->name('manage.update');
         Route::delete('/manage/{admin}/deactivate', [AdminController::class, 'deactivate'])->name('manage.deactivate');
         Route::put('/manage/{admin}/activate', [AdminController::class, 'activate'])->name('manage.activate');
         Route::delete('/manage/{admin}', [AdminController::class, 'destroy'])->name('manage.destroy');
-        Route::get('/doctors/search', [AdminController::class, 'manageAdmins'])->name('doctors.search');
-
+        Route::get('/admins-export', [AdminController::class, 'export'])->name('manage.export');
     });
 });
 

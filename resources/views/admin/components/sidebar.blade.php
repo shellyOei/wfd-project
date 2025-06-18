@@ -87,6 +87,7 @@
 
         <!-- Settings & Logout -->
         <ul class="space-y-2">
+            @if(session('doctor_id') == NULL)
             <!-- Users -->
             <li>
                 <a href="{{ route('admin.users') }}"
@@ -96,7 +97,7 @@
                 </a>
             </li>
 
-            @if(session('doctor_id') == NULL)
+            
             <!-- Admins -->
             <li>
                 <a href="{{ route('admin.manage') }}"
