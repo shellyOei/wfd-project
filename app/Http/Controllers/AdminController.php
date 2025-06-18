@@ -235,7 +235,7 @@ class AdminController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|email|unique:admins,email,' . $admin->id,
-                'doctor_id' => 'nullable|exists:doctors,id|unique:admins,doctor_id',
+                'doctor_id' => 'nullable|exists:doctors,id|unique:admins,doctor_id,' . $admin->doctor_id,
             ]);
 
             $admin->update([
