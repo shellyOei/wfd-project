@@ -16,13 +16,14 @@ return new class extends Migration
             $table->uuid('patient_id'); 
             $table->uuid('schedule_id')->unique();
 
-            $table->integer('queue_number');
-            $table->longText('subjective');
-            $table->longText('objective');
-            $table->longText('assessment');
-            $table->longText('plan');
-            $table->string('type'); 
+            $table->integer('queue_number')->nullable();
+            $table->longText('subjective')->nullable();
+            $table->longText('objective')->nullable();
+            $table->longText('assessment')->nullable();
+            $table->longText('plan')->nullable();
+            $table->string('type')->default('general'); 
             $table->boolean('is_bpjs')->default(false);
+            $table->tinyInteger('status')->default(1); // 1=confirmed, 2=Cancelled, 3=Completed
             $table->longText('notes')->nullable();
 
             $table->timestamps();
