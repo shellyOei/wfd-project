@@ -47,12 +47,14 @@
             {{-- Loop untuk menampilkan slot waktu dari $times --}}
             @forelse ($times as $slot)
                 <div class="time-item
-                            @if(isset($selectedTime) && $selectedTime == $slot['time']) bg-gradient-to-r from-cyan-400 to-blue-600 text-white shadow-lg
-                            @else bg-blue-50 text-blue-900 hover:bg-blue-100 @endif
-                            text-sm font-semibold text-center py-3 rounded-xl cursor-pointer transition-all duration-300"
-                    data-time="{{ $slot['time'] }}"
-                    data-schedule-id="{{ $slot['schedule_id'] }}" {{-- Menyimpan schedule_id di sini --}}
-                >
+                        @if($slot['isBooked']) 
+                            bg-red-100 text-red-700 cursor-not-allowed opacity-60
+                        @elseif(isset($selectedTime) && $selectedTime == $slot['time']) 
+                            bg-gradient-to-r from-cyan-400 to-blue-600 text-white shadow-lg
+                        @else
+                            bg-blue-50 text-blue-900 hover:bg-blue-100 cursor-pointer
+                        @endif" 
+                    data-time="{{ $slot['time'] }}">
                     {{ $slot['time'] }}
                 </div>
             @empty
@@ -95,11 +97,11 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // Ambil CSRF token untuk permintaan POST Laravel
     const CSRF_TOKEN = '{{ csrf_token() }}';
 
     document.addEventListener('DOMContentLoaded', function() {
-    const patientId = "{{ $patient->id ?? 'null' }}";
+        const patientId = "{{ $patient->id ?? 'null' }}";
+        const dayAvailableId = "{{ $dayAvailable->id ?? null }}"; 
         const dateItems = document.querySelectorAll('.date-item');
         const timeGrid = document.getElementById('time-slots-grid');
         let noScheduleMessage = document.getElementById('no-schedule-message'); // Referensi pesan "tidak ada jadwal"
@@ -208,7 +210,7 @@
                             this.classList.add('bg-gradient-to-r', 'from-cyan-400', 'to-blue-600', 'text-white', 'shadow-lg');
 
                             currentSelectedTime = this.dataset.time;
-                            currentSelectedScheduleId = this.dataset.scheduleId; // Ambil schedule_id dari slot yang diklik
+                            // currentSelectedScheduleId = this.dataset.scheduleId; // Ambil schedule_id dari slot yang diklik
                             updateUrl(currentSelectedDate, currentSelectedTime); // Perbarui URL
                         });
 
@@ -303,13 +305,13 @@
             const scheduleId = currentSelectedScheduleId; // schedule_id yang akan dikirim ke backend
 
             // Validasi apakah tanggal, waktu, dan schedule_id sudah dipilih
-            if (!bookingDate || !bookingTime || !scheduleId) {
+            if (!bookingDate || !bookingTime) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Peringatan',
                     text: 'Mohon pilih tanggal dan waktu booking terlebih dahulu.',
                     confirmButtonColor: '#3085d6',
-                });
+                }); 
                 return; // Hentikan proses jika belum lengkap
             }
 
@@ -341,16 +343,17 @@
                         }
                     });
 
-                    // Kirim permintaan AJAX ke backend untuk menyimpan booking
                     fetch('{{ route('user.booking.store') }}', { // Pastikan rute ini benar
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': CSRF_TOKEN // Penting untuk POST request di Laravel
+                            'X-CSRF-TOKEN': CSRF_TOKEN 
                         },
                         body: JSON.stringify({
                             patient_id: patientId, 
-                            schedule_id: scheduleId // Kirim schedule_id
+                            day_available_id: dayAvailableId,
+                            date: bookingDate,
+                            time: bookingTime,
                         })
                     })
                     .then(response => response.json()) // Parse respons JSON
