@@ -14,7 +14,7 @@
             <span class="text-xs mt-1 font-medium">Appointment</span>
         </div>
         <div class="nav-item nav-sos flex flex-col items-center justify-center text-gray-500 hover:text-blue-800 transition-colors duration-200 p-2 w-20">
-            <a href="{{ route('user.emergency') }}" class="">
+            <a href="#" class="">
                 <i class="fa-solid fa-phone fa-xl"></i>
             </a>
             <span class="text-xs mt-1 font-medium">SOS</span>
