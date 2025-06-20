@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();  
             $table->string('frontend_uuid');
             $table->string('user_id')->nullable();
+            $table->boolean('is_served')->default(0);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

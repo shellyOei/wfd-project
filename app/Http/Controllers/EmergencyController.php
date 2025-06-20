@@ -61,21 +61,28 @@ class EmergencyController extends Controller
 
 
     function getNextCall () {
-        $emergencyCalls = EmergencyCallQueue::with('user')->where('created_at', '>=', Carbon::now()->subMinutes(20))->orderBy('created_at')->get();
+        $emergencyCalls = EmergencyCallQueue::with('user.patients')
+                        ->where('created_at', '>=', Carbon::now()->subMinutes(20))
+                        ->whereNot('is_served', 1)
+                        ->orderBy('created_at')->get();
 
         $onLineCount = sizeOf($emergencyCalls);
         $nextCall = isset($emergencyCalls[0]) ? $emergencyCalls[0] : 0;
+        
 
         $data = [
             'onLineCount' => $onLineCount,
-            'nextCall' => $nextCall
+            'nextCall' => $nextCall,
         ];
 
         return $data;
     }
 
     function countOnLine () {
-        $onLineCount = EmergencyCallQueue::with('user')->where('created_at', '>=', Carbon::now()->subMinutes(20))->orderBy('created_at')->count();
+        $onLineCount = EmergencyCallQueue::with('user')
+                        ->where('created_at', '>=', Carbon::now()->subMinutes(20))
+                        ->whereNot('is_served', 1)
+                        ->orderBy('created_at')->count();
 
         return $onLineCount;
     }

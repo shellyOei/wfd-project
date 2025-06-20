@@ -6,6 +6,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -52,5 +53,16 @@ class User extends Authenticatable
     public function profiles()
     {
         return $this->belongsToMany(Patient::class);
+    }
+
+    // ini relationship aku bikin sendiri soalnya mw pake pivot
+    public function patients(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Patient::class,
+            'profiles',    
+            'user_id',     
+            'patient_id'   
+        )->withTimestamps();
     }
 }

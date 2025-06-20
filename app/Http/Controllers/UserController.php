@@ -43,4 +43,9 @@ class UserController extends Controller
 
         return redirect()->route('user.dashboard')->with('success', 'Berhasil registrasi akun!');
     }
+
+    function getPatientProfiles (string $userId)
+    {
+        return User::where('id', $userId)->with('patients')->first();
+    }
 }

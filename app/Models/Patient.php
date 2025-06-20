@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Patient extends Model
 {
@@ -55,5 +56,15 @@ class Patient extends Model
     public function labResults()
     {
         return $this->hasMany(LabResult::class);
+    }
+
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            User::class,
+            'profiles',    
+            'patient_id',  
+            'user_id'      
+        )->withTimestamps(); 
     }
 }
