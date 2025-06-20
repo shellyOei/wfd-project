@@ -16,16 +16,16 @@ class EmergencyCall implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    // public ?User $user;
-    // public string $uuid;
+    public ?User $user;
+    public string $uuid;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(?User $user, string $uuid)
     {
-        // $this->user = $user;
-        // $this->uuid = $uuid;
+        $this->user = $user;
+        $this->uuid = $uuid;
         // Log::debug('Fetched users:', ['user' => $user]);
     }
 
