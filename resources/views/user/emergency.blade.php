@@ -53,7 +53,7 @@
 @endsection
 
 @section('content')
-    <div class="flex flex-col text-center  items-center h-screen pt-[90px] max-[400px]:pt-[55px] px-4">
+    <div class="flex flex-col text-center  items-center h-screen pt-[90px] max-[400px]:pt-[55px] px-4 lg:px-0">
         <div class="h-[95%] flex flex-col justify-between">
             <div>
                 <h2 class="font-bold text-xl mb-4">GAWAT DARURAT</h2>

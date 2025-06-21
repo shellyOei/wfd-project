@@ -1,4 +1,5 @@
 @include('partials.emergency-options')
+
 <nav class="bottom-navbar fixed bottom-4 left-1/2 -translate-x-1/2 w-[92%] bg-white shadow-xl border-t border-gray-200 z-50 md:hidden rounded-full">
     <div class="flex justify-around items-center h-16">
         <!-- Added space-y-3 to all links for vertical spacing -->
@@ -74,7 +75,8 @@
         document.getElementById('sos-button').addEventListener('click', () => {
             document.getElementById('emergency-bg').classList.remove('hidden');
             setTimeout(() => {
-                document.getElementById('emergency-modal').classList.add('!bottom-0');    
+                document.getElementById('emergency-modal').classList.remove('bottom-[-1000px]');
+                document.getElementById('emergency-modal').classList.add('bottom-0', 'sm:bottom-1/2');    
             }, 100);
             
             // document.getElementById('emergency-bg').style.opacity = 1;
