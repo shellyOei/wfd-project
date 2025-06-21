@@ -402,7 +402,7 @@
                     }
 
                     setTimeout(() => {
-                        window.location.href = "{{ route('user.dashboard') }}";
+                        window.location.href = "{{ route('home') }}";
                     }, 10000);
                     
                 } else {

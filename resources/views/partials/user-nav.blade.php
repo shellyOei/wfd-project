@@ -88,6 +88,8 @@
             setTimeout(() => {
                 document.getElementById('emergency-modal').classList.remove('bottom-[-1000px]');
                 document.getElementById('emergency-modal').classList.add('bottom-0', 'sm:bottom-1/2');    
+                document.body.style.maxHeight = '100vh';
+                document.body.style.overflow = 'hidden';
             }, 100);
             
             // document.getElementById('emergency-bg').style.opacity = 1;

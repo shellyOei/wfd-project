@@ -7,7 +7,7 @@
     
 @endpush
 
-<div id="emergency-bg" class="close-emergency-modal h-screen w-screen fixed top-0 left-0 z-[998] bg-gray-700/50 transition-all duration-600 relative hidden">
+<div id="emergency-bg" class="close-emergency-modal h-screen w-screen fixed top-0 left-0 z-[998] bg-gray-700/50 transition-all duration-600 hidden">
 <div id="emergency-modal" class="transition-all duration-500 absolute flex flex-col items-center  w-screen sm:w-fit h-fit px-12 py-8 bg-gray-300 z-[999] rounded-t-3xl sm:rounded-b-3xl drop-shadow-3xl bottom-[-1000px] sm:left-1/2 transform sm:-translate-x-1/2 sm:translate-y-1/2"> 
     <button class="close-emergency-modal bg-gray-600 hover:bg-gray-700 h-[13px] w-[140px] rounded-full drop-shadow-lg block sm:!hidden">
 
@@ -62,6 +62,8 @@
                 setTimeout(() => {
                     document.getElementById('emergency-modal').classList.add('bottom-[-1000px]');    
                     document.getElementById('emergency-modal').classList.remove('bottom-0', 'sm:bottom-1/2');
+                    document.body.style.maxHeight = ''; 
+                    document.body.style.overflow = ''; 
                 }, 100);
                 
                 // document.getElementById('emergency-bg').style.opacity = 0;
