@@ -53,7 +53,7 @@
 @endsection
 
 @section('content')
-    <div class="flex flex-col text-center  items-center h-screen pt-[90px] max-[400px]:pt-[75px] px-4">
+    <div class="flex flex-col text-center  items-center h-screen pt-[90px] max-[400px]:pt-[55px] px-4">
         <div class="h-[95%] flex flex-col justify-between">
             <div>
                 <h2 class="font-bold text-xl mb-2">GAWAT DARURAT</h2>
@@ -69,9 +69,9 @@
                 </div>
             </div>
 
-            <div id="button-area" class="flex flex-col items-center pt-auto min-[400px]:mb-8">
+            <div id="button-area" class="flex flex-col items-center h-auto min-[400px]:mb-8">
                 
-                <button id="button-action" class="relative bg-red-600 hover:bg-red-700 rounded-full h-[100px] w-[100px] mb-4 drop-shadow-4xl">
+                <button onclick="window.history.back()" id="button-action" class="relative bg-red-600 hover:bg-red-700 rounded-full h-[100px] w-[100px] mb-4 drop-shadow-4xl">
                     <div class="absolute w-[70px] rounded bg-gray-200 h-2 rotate-[-45deg] top-[50px] left-[15px] drop-shadow-xl"></div>
                     <div class="absolute w-[70px] rounded bg-gray-200 h-2 rotate-[45deg] top-[50px] left-[15px] drop-shadow-xl"></div>
                 </button>
@@ -117,6 +117,21 @@
 
 
             // });    
+
+            const closeButtons = document.querySelectorAll('.close-emergency-modal');
+
+            closeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    setTimeout(() => {
+                        document.getElementById('emergency-modal').classList.remove('!bottom-0');
+                    }, 100);
+                    
+                    // document.getElementById('emergency-bg').style.opacity = 0;
+                    setTimeout(() => {
+                        document.getElementById('emergency-bg').classList.add('hidden');
+                    }, 550);
+                }) 
+            });
             
         });
         
@@ -192,8 +207,8 @@
 
             if (errorMessage !== "") {
                 Swal.fire({
-                    title: "Fail to read GPS location.",
-                    text: 'Please tell our staff your location.',
+                    title: "Gagal membaca lokasi GPS.",
+                    text: 'Mohon beritahu lokasi anda kepada staff kami.',
                     icon: "error"
                 }).then(() => {
                     rejectCallback(error)
@@ -264,7 +279,7 @@
         function ambulanceTracking () {
 
 
-            visualization.innerHTML = `<div id="map" class="h-[40vh] w-[90vw] md:w-[40vw]"></div>`;
+            visualization.innerHTML = `<div id="map" class="h-[45vh] sm:h-[40vh] w-[90vw] md:w-[40vw]"></div>`;
             map = L.map('map').setView([ambulanceCoordinate[0], ambulanceCoordinate[1]], 14);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
