@@ -4,7 +4,7 @@
 <div class="max-w-md mx-auto bg-gray-50 min-h-screen">
     {{-- Header --}}
     <div class="flex items-center p-4 bg-white shadow-sm">
-        <a href="{{ route('history.index') }}" class="text-gray-600">
+        <a href="{{ route('user.history.index') }}" class="text-gray-600">
             <i class="fa-solid fa-arrow-left fa-lg"></i>
         </a>
         <h1 class="text-xl font-bold text-gray-800 flex-grow text-center">Record #{{ substr($appointment->id, 0, 8) }}</h1>

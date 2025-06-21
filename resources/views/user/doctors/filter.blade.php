@@ -129,3 +129,9 @@
     });
 </script>
 @endsection
+
+@push('script')
+<script>
+    highlightActiveMenu('book');
+</script>
+@endpush

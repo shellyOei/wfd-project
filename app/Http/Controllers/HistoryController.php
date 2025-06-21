@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -49,12 +50,15 @@ class HistoryController extends Controller
         $appointments = collect();
 
         if (Auth::check()) {
+            dd('User is authenticated');
             $user = Auth::user();
 
             $query = Appointment::with(['schedule.doctor'])
                 ->whereHas('patient.profiles', function ($q) use ($user) {
                     $q->where('user_id', $user->id);
                 });
+
+            dd($query);
 
             // Filter status
             if ($request->filled('status') && in_array($request->status, ['completed', 'canceled'])) {

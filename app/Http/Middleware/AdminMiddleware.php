@@ -20,6 +20,6 @@ class AdminMiddleware
             return $next($request);
         }
 
-        return redirect()->route('admin.login')->with('error', 'Not authorized! You must be logged in as an admin.');
+        return redirect()->route('admin.login')->with('error', 'Maaf, Anda tidak memiliki izin untuk mengakses halaman ini.');
     }
 }

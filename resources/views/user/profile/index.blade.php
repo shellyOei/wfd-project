@@ -185,3 +185,9 @@
         </main>
     </div>
 @endsection
+
+@push('script')
+<script>
+    highlightActiveMenu('profile');
+</script>
+@endpush

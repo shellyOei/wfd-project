@@ -121,6 +121,51 @@
 
     @include('partials.footer')
     
+    <script>
+        const navItems = document.querySelectorAll('.nav-item')
+        const activeColor = '#007bff'; 
+        const defaultColor = '#AAAAAA';
+
+        function highlightActiveMenu(currentPage) {
+            navItems.forEach(item => {
+                const svgPath = item.querySelector('svg path');
+                const spanText = item.querySelector('span');
+                if (svgPath) {
+                    svgPath.setAttribute('stroke', defaultColor);
+                }
+                if (spanText) {
+                    spanText.style.color = defaultColor; // Direct style manipulation for text
+                }
+            });
+
+            let currentNavItem = null;
+
+            if (currentPage === 'home') {
+                currentNavItem = document.querySelector('.nav-home');
+            } else if (currentPage === 'appointment') {
+                currentNavItem = document.querySelector('.nav-appointment');
+            } else if (currentPage === 'sos') {
+                currentNavItem = document.querySelector('.nav-sos');
+            } else if (currentPage === 'book') {
+                currentNavItem = document.querySelector('.nav-book');
+            } else if (currentPage === 'profile') {
+                currentNavItem = document.querySelector('.nav-profile');
+            }
+
+            if (currentNavItem) {
+                const activeSvgPath = currentNavItem.querySelector('svg path');
+                const activeSpanText = currentNavItem.querySelector('span');
+
+                if (activeSvgPath) {
+                    activeSvgPath.setAttribute('stroke', activeColor);
+                }
+                if (activeSpanText) {
+                    activeSpanText.style.color = activeColor;
+                }
+            }
+        }
+    </script>
+
     @yield('script')
     @stack('script')
 

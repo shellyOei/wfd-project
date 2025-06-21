@@ -4,7 +4,7 @@
 <div class="max-w-md mx-auto p-4 bg-[#F4F4FD] min-h-screen pb-20">
     {{-- Search Bar --}}
     <div class= "rounded-xl shadow-md relative mb-4">
-        <form action="{{ route('history.index') }}" method="GET">
+        <form action="{{ route('user.history.index') }}" method="GET">
             <input type="text" name="search" placeholder="Temukan Dokter" value="{{ request('search') }}" class="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-300">
             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <i class="fa-solid fa-search text-gray-400"></i>
@@ -14,14 +14,14 @@
 
     {{-- Filter Buttons --}}
     <div class="flex items-center gap-x-3 mb-4">
-        <a href="{{ route('history.index', ['search' => request('search')]) }}" class=" shadow-md flex-1 text-center px-6 py-2 rounded-lg text-sm font-medium {{ !request('status') ? 'bg-blue-600 text-white' : 'bg-white text-gray-600' }}">Semua</a>
-        <a href="{{ route('history.index', ['status' => 'completed', 'search' => request('search')]) }}" class="shadow-md flex-1 text-center px-6 py-2 rounded-lg text-sm font-medium {{ request('status') == 'completed' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600' }}">Selesai</a>
-        <a href="{{ route('history.index', ['status' => 'canceled', 'search' => request('search')]) }}" class="shadow-md flex-1 text-center px-6 py-2 rounded-lg text-sm font-medium {{ request('status') == 'canceled' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600' }}">Dibatalkan</a>
+        <a href="{{ route('user.history.index', ['search' => request('search')]) }}" class=" shadow-md flex-1 text-center px-6 py-2 rounded-lg text-sm font-medium {{ !request('status') ? 'bg-blue-600 text-white' : 'bg-white text-gray-600' }}">Semua</a>
+        <a href="{{ route('user.history.index', ['status' => 'completed', 'search' => request('search')]) }}" class="shadow-md flex-1 text-center px-6 py-2 rounded-lg text-sm font-medium {{ request('status') == 'completed' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600' }}">Selesai</a>
+        <a href="{{ route('user.history.index', ['status' => 'canceled', 'search' => request('search')]) }}" class="shadow-md flex-1 text-center px-6 py-2 rounded-lg text-sm font-medium {{ request('status') == 'canceled' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600' }}">Dibatalkan</a>
     </div>
 
     {{-- Time Filter Dropdown --}}
     <div class="mb-4">
-        <form action="{{ route('history.index') }}" method="GET" id="timeFilterForm">
+        <form action="{{ route('user.history.index') }}" method="GET" id="timeFilterForm">
             {{-- Hidden input untuk mempertahankan filter lain --}}
             <input type="hidden" name="search" value="{{ request('search') }}">
             <input type="hidden" name="status" value="{{ request('status') }}">
@@ -38,7 +38,7 @@
     {{-- Appointment List --}}
     <div class="space-y-3">
         @forelse ($appointments as $app)
-        <a href="{{ route('history.show', $app->id) }}" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition">
+        <a href="{{ route('user.history.show', $app->id) }}" class="block bg-white p-4 rounded-xl shadow-sm hover:shadow-md transition">
             <div class="flex justify-between items-center">
                 <div>
                     <p class="text-sm font-semibold text-gray-800">

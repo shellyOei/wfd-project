@@ -83,3 +83,9 @@
         setupPasswordToggle(confirmPasswordInput, toggleConfirmPassword);
 </script>
 @endsection
+
+@push('script')
+<script>
+    highlightActiveMenu('profile');
+</script>
+@endpush

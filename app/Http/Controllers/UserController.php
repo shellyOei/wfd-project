@@ -32,7 +32,7 @@ class UserController extends Controller
     public function index()
     {
         $user = Auth::guard('user')->user(); 
-        return view('user.dashboard', compact('user'));
+        return view('user.home', compact('user'));
     }
 
 
@@ -102,7 +102,7 @@ class UserController extends Controller
         $user = User::create($validated);
         auth()->guard('user')->login($user);
 
-        return redirect()->route('user.dashboard')->with('success', 'Berhasil registrasi akun!');
+        return redirect()->route('home')->with('success', 'Berhasil registrasi akun!');
     }
 
     public function users()

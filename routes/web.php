@@ -9,9 +9,13 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
+
+
+Route::get('/', [UserController::class, 'index'])->name('home');
 
 // user login
 Route::get('/login', [LoginController::class, 'showUser'])->name('login');
@@ -22,8 +26,6 @@ Route::post('/register', [RegisterController::class, 'registerUser'])->name('reg
 
 
 Route::middleware('user')->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
-
     // patient registration
     Route::post('/register-patient', [PatientController::class, 'registerPatient'])->name('register.patient.post');
     Route::get('/register-patient', [PatientController::class, 'showPatientRegistrationForm'])->name('register.patient');
@@ -55,12 +57,11 @@ Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     Route::get('/doctor/{doctor}/select-patient', [BookingController::class, 'selectPatient'])->name('booking.selectPatient');
     Route::post('/book/store', [BookingController::class, 'store'])->name('booking.store');
     
+    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+    Route::get('/history/{appointment}', [HistoryController::class, 'show'])->name('history.show');
+
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });
-Route::get('/', function () {
-    return view('user.profile.index');
-});
-
 
 // admin
 Route::prefix('admin')->name('admin.')->group(function () {
