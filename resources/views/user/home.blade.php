@@ -34,9 +34,12 @@
         <div class="relative bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)] rounded-3xl p-6 flex flex-col md:flex-row items-center text-white mb-8">
             <div class="md:w-1/2 md:mb-0">
                 <h2 class="text-xl font-semibold">Layanan</h2>
-                <h2 class="text-xl font-semibold">Pemeriksaan Laboratorium</h2>
-                <p class="text-sm mt-2 text-[var(--gray1)]">Dapatkan hasil lab yang akurat dan terpercaya kapan saja, di mana saja</p>
-                <button class="mt-4 bg-white text-blue-600 font-semibold px-4 py-2 rounded-3xl shadow-xl">Book Now</button>
+                <h2 class="text-xl font-semibold">Pemeriksaan Dokter</h2>
+                <p class="text-sm mt-2 text-[var(--gray1)]">Dapatkan layanan yang akurat dan terpercaya kapan saja, di mana saja</p>
+                <a href="{{ route('doctors.filter')}}"
+                    class="inline-block mt-4 bg-white text-blue-600 font-semibold px-4 py-2 rounded-3xl shadow-xl text-center">
+                    Book Now
+                </a>
             </div>
             <img class="absolute opacity-50 bottom-0 right-0 h-full" src="{{ asset('assets/doctor.png')}}" alt="">
             {{-- <div class="md:w-1/2 flex justify-center">

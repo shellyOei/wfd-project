@@ -63,6 +63,8 @@ Route::middleware('user')->prefix('user')->name('user.')->group(function () {
 
     // Appointment
     Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
+    Route::post('/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
+    Route::post('/appointments/{appointment}/save-notes', [AppointmentController::class, 'saveNotes'])->name('appointments.saveNotes');
 
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });
