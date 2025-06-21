@@ -19,6 +19,7 @@ return new class extends Migration
             $table->uuid('doctor_id')->nullable();
 
             $table->foreign('doctor_id')->references('id')->on('doctors')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

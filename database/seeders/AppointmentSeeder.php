@@ -39,6 +39,7 @@ class AppointmentSeeder extends Seeder
                 'type' => $appointmentTypes[array_rand($appointmentTypes)],
                 'is_bpjs' => rand(0, 1) == 1,
                 'notes' => 'Patient advised to rest and avoid strenuous activities.',
+                'status' => rand(1, 3), // 1=confirmed, 2=Cancelled, 3=Completed
             ]);
         }
     }

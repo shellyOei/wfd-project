@@ -1,92 +1,74 @@
-@push('head')
-    <style>
-        /* Optional: Custom utility for iOS safe area if needed and not handled by Tailwind variants */
-        @supports (padding-bottom: env(safe-area-inset-bottom)) {
-            .pb-safe {
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-        }
-    </style>
-@endpush
+<div id="patient-modal" class="fixed inset-0 z-[99] flex items-end justify-center pointer-events-none">
+  <!-- BACKDROP  -->
+  <div id="patient-backdrop" class="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 ease-in-out">
+  </div>
+
+  <div id="patient-content"
+    class="relative w-full max-w-md bg-gray-200 rounded-t-[32px] py-6 px-5 shadow-md transform translate-y-full transition-transform duration-300 ease-in-out">
+    <!-- Garis hitam atas -->
+    <div class="w-40 h-3 bg-neutral-700 rounded-full mx-auto mb-6"></div>
+
+    <!-- Pertanyaan -->
+    <p class="text-center text-base font-bold text-black leading-snug mb-8">
+      Apakah Anda memiliki nomor<br />
+      rekam medis <span class="bg-yellow-300 rounded px-1">MRN</span> di Rumah<br />
+      Sakit Endang Widayat?
+    </p>
+
+    <!-- Box Pasien Lama -->
+    <a href="{{ route('user.link-patient') }}"
+      class="block bg-white rounded-2xl shadow-md px-4 py-5 mb-5 cursor-pointer">
+      <p class="text-center text-black font-semibold text-sm">Ya, saya pasien lama</p>
+      <p class="text-center text-gray-500 text-xs mt-1">
+        Saya sudah terdaftar dan sudah<br />
+        memiliki nomor rekam medis MRN sebelumnya
+      </p>
+    </a>
+
+    <!-- Box Pasien Baru -->
+    <a href="{{ route('user.register.patient') }}"
+      class="block bg-white rounded-2xl shadow-md px-4 py-5 cursor-pointer">
+      <p class="text-center text-black font-semibold text-sm">Tidak, saya pasien baru</p>
+      <p class="text-center text-gray-500 text-xs mt-1">
+        Saya belum terdaftar dan belum<br />
+        memiliki nomor rekam medis
+      </p>
+    </a>
 
 
-    <div class="content text-center max-w-xl bg-white p-8 rounded-lg shadow-lg">
-        <h1 class="text-3xl font-bold mb-4">Welcome to My Page</h1>
-        <p class="text-gray-700 mb-6">This is some main content. Click the button below to see the bottom sheet modal!</p>
-        <button id="openModalBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow transition-colors duration-200">
-            Open Bottom Sheet
-        </button>
-    </div>
+  </div>
+</div>
 
-    <div id="bottomSheetOverlay" class="fixed inset-0 bg-black/50 flex justify-center items-end z-[1000] invisible opacity-0 transition-opacity duration-300">
-        <div id="bottomSheetContent" class="bg-white w-full max-w-md rounded-t-xl shadow-2xl transform translate-y-full transition-transform duration-300 ease-out-expo pb-safe">
-            <div class="flex justify-between items-center p-4 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800">Modal Title</h2>
-                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700 text-3xl leading-none">&times;</button>
-            </div>
-            <div class="p-5 max-h-[70vh] overflow-y-auto">
-                <p class="text-gray-600 mb-4">This is the content that slides up from the bottom.</p>
-                <p class="text-gray-600 mb-4">You can put forms, lists, or any other interactive elements here.</p>
-                <ul class="list-none p-0 m-0 mb-5">
-                    <li class="py-2 border-b border-dotted border-gray-200 last:border-b-0 text-gray-700">Item 1</li>
-                    <li class="py-2 border-b border-dotted border-gray-200 last:border-b-0 text-gray-700">Item 2</li>
-                    <li class="py-2 last:border-b-0 text-gray-700">Item 3</li>
-                </ul>
-                <button class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-lg shadow-md transition-colors duration-200">
-                    Perform Action
-                </button>
-            </div>
-        </div>
-    </div>
+<script>
+  const modalBtn = document.getElementById("patient-modal-btn");
+  const modal = document.getElementById("patient-modal");
+  const backdrop = document.getElementById("patient-backdrop");
+  const content = document.getElementById("patient-content");
 
-@push('script')
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const openModalBtn = document.getElementById('openModalBtn');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const bottomSheetOverlay = document.getElementById('bottomSheetOverlay');
-            const bottomSheetContent = document.getElementById('bottomSheetContent'); // Get content to manipulate transform
+  modalBtn.addEventListener("click", () => {
+    modal.classList.remove("pointer-events-none");
 
-            function openBottomSheet() {
-                bottomSheetOverlay.classList.remove('invisible', 'opacity-0');
-                bottomSheetOverlay.classList.add('visible', 'opacity-100');
-                bottomSheetContent.classList.remove('translate-y-full');
-                bottomSheetContent.classList.add('translate-y-0');
-                document.body.style.overflow = 'hidden'; // Prevent scrolling of background content
-            }
+    // show backdrop
+    backdrop.classList.remove("opacity-0");
+    backdrop.classList.add("opacity-50");
 
-            function closeBottomSheet() {
-                bottomSheetContent.classList.remove('translate-y-0');
-                bottomSheetContent.classList.add('translate-y-full');
-                // Wait for the slide-down transition to complete before hiding the overlay
-                bottomSheetContent.addEventListener('transitionend', function handler() {
-                    bottomSheetOverlay.classList.remove('visible', 'opacity-100');
-                    bottomSheetOverlay.classList.add('invisible', 'opacity-0');
-                    document.body.style.overflow = ''; // Restore scrolling
-                    bottomSheetContent.removeEventListener('transitionend', handler); // Clean up
-                }, { once: true });
-            }
+    // slide-up modal
+    content.classList.remove("translate-y-full");
+    content.classList.add("translate-y-0");
+  });
 
-            // Open button click
-            openModalBtn.addEventListener('click', openBottomSheet);
+  backdrop.addEventListener("click", () => {
+    // hide backdrop
+    backdrop.classList.add("opacity-0");
+    backdrop.classList.remove("opacity-50");
 
-            // Close button click
-            closeModalBtn.addEventListener('click', closeBottomSheet);
+    // slide-down modal
+    content.classList.add("translate-y-full");
+    content.classList.remove("translate-y-0");
 
-            // Close when clicking outside the content (on the overlay)
-            bottomSheetOverlay.addEventListener('click', (event) => {
-                // Check if the click occurred directly on the overlay, not its children
-                if (event.target === bottomSheetOverlay) {
-                    closeBottomSheet();
-                }
-            });
-
-            // Optional: Close with Escape key
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape' && bottomSheetOverlay.classList.contains('opacity-100')) {
-                    closeBottomSheet();
-                }
-            });
-        });
-    </script>
-@endpush
+    // disable pointer event ketika sudah animasi selesai
+    setTimeout(() => {
+      modal.classList.add("pointer-events-none");
+    }, 300);
+  });
+</script>

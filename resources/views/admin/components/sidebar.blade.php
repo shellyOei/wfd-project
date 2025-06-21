@@ -1,5 +1,6 @@
 <!-- Sidebar -->
-<div class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-indigo-900 to-purple-900 shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0" id="sidebar">
+<div class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-indigo-900 to-purple-900 shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0"
+    id="sidebar">
     <!-- Sidebar Header -->
     <div class="flex items-center justify-between h-16 px-6 bg-black/20">
         <div class="flex items-center">
@@ -19,8 +20,8 @@
         <ul class="space-y-2">
             <!-- Dashboard -->
             <li>
-                <a href="{{ route('admin.dashboard') ?? '#' }}" 
-                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                <a href="{{ route('admin.dashboard') ?? '#' }}"
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.dashboard') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-tachometer-alt text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Dashboard</span>
                 </a>
@@ -28,35 +29,53 @@
 
             <!-- Doctors -->
             <li>
-                <a href=""
-                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.doctors*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                <a href="{{ route('admin.doctors.index') }}"
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.doctors*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-user-md text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
-                    <span class="font-medium">Doctors</span>
+                    <span class="foPnt-medium">Doctors</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ route('admin.day-availables.index') }}"
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.day-availables*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    <i class="fas fa-calendar-week text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
+                    <span class="font-medium">Doctor Availability</span>
+                </a>
+            </li>
+
+            {{-- <li>
+                <a href="{{ route('admin.practice-schedules.index') }}"
+                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.practice-schedules*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    <i class="fas fa-clipboard-list text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
+                    <span class="font-medium">Reservations & Slots</span>
+                </a>
+            </li> --}}
+
+            <!-- Appointments -->
+            <li>
+                <a href="{{ route('admin.practice-schedules.index') }}"
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    <i class="fas fa-calendar-check text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
+                    <span class="font-medium">Appointments</span>
                 </a>
             </li>
 
             <!-- Patients -->
             <li>
                 <a href="{{ route('admin.patients') ?? '#' }}"
-                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.patients*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.patients*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-users text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Patients</span>
                 </a>
             </li>
 
-            <!-- Appointments -->
-            <li>
-                <a href=""
-                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
-                    <i class="fas fa-calendar-check text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
-                    <span class="font-medium">Appointments</span>
-                </a>
-            </li>
+
 
             <!-- Reports -->
             <li>
                 <a href=""
-                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.reports*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.reports*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-chart-bar text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Reports</span>
                 </a>
@@ -68,10 +87,30 @@
 
         <!-- Settings & Logout -->
         <ul class="space-y-2">
+            <!-- Users -->
+            <li>
+                <a href="{{ route('admin.users') }}"
+                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    <i class="fas fa-users-gear text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
+                    <span class="font-medium">Users</span>
+                </a>
+            </li>
+
+            @if(session('doctor_id') == NULL)
+            <!-- Admins -->
+            <li>
+                <a href="{{ route('admin.manage') }}"
+                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    <i class="fas fa-user-tie text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
+                    <span class="font-medium">Admins</span>
+                </a>
+            </li>
+            @endif
+
             <!-- Settings -->
             <li>
                 <a href=""
-                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group">
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group">
                     <i class="fas fa-cog text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Settings</span>
                 </a>
@@ -81,8 +120,8 @@
             <li>
                 <form action="{{ route('admin.logout') ?? '#' }}" class="w-full">
                     @csrf
-                    <button type="submit" 
-                            class="flex items-center w-full px-4 py-3 text-white rounded-lg hover:bg-red-500/20 transition duration-200 group">
+                    <button type="submit"
+                        class="flex items-center w-full px-4 py-3 text-white rounded-lg hover:bg-red-500/20 transition duration-200 group">
                         <i class="fas fa-sign-out-alt text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                         <span class="font-medium">Logout</span>
                     </button>
@@ -113,7 +152,9 @@
 <div class="fixed inset-0 z-40 bg-black/50 lg:hidden hidden" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
 <!-- Mobile Menu Button -->
-<button class="fixed top-4 left-4 z-50 lg:hidden bg-indigo-600 text-white p-3 rounded-lg shadow-lg hover:bg-indigo-700 transition duration-200" onclick="toggleSidebar()">
+<button
+    class="fixed top-4 left-4 z-50 lg:hidden bg-indigo-600 text-white p-3 rounded-lg shadow-lg hover:bg-indigo-700 transition duration-200"
+    onclick="toggleSidebar()">
     <i class="fas fa-bars text-lg"></i>
 </button>
 
@@ -121,7 +162,7 @@
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        
+
         sidebar.classList.toggle('-translate-x-full');
         overlay.classList.toggle('hidden');
     }
@@ -131,7 +172,7 @@
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const menuButton = event.target.closest('button');
-        
+
         if (window.innerWidth < 1024 && !sidebar.contains(event.target) && !menuButton) {
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');
@@ -142,7 +183,7 @@
     window.addEventListener('resize', function() {
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        
+
         if (window.innerWidth >= 1024) {
             sidebar.classList.remove('-translate-x-full');
             overlay.classList.add('hidden');

@@ -20,6 +20,7 @@ class Appointment extends Model
         'type',
         'is_bpjs',
         'notes',
+        'status', // 1=confirmed, 2=Cancelled, 3=Completed
     ];
 
     protected $casts = [

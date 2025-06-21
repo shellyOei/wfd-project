@@ -18,6 +18,8 @@ class Patient extends Model
         'date_of_birth',
         'address',
         'occupation',
+        'emergency_contact',
+        'allergy',
         'blood_type',
         'rhesus_factor',
         'id_card_number',
@@ -45,6 +47,10 @@ class Patient extends Model
     public function profiles()
     {
         return $this->hasMany(Profile::class);
+    }
+     public function users()
+    {
+        return $this->belongsToMany(User::class, 'profiles', 'patient_id', 'user_id');
     }
 
     public function appointments()

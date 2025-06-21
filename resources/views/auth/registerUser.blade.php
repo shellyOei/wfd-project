@@ -131,16 +131,16 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Check for success message from session (for initial page load, if redirected conventionally)
-            const successMessage = "{{ session('success') }}";
-            if (successMessage.trim() !== '') {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Registrasi Berhasil!',
-                    text: successMessage,
-                    showConfirmButton: false,
-                    timer: 3000
-                });
-            }
+            // const successMessage = "{{ session('success') }}";
+            // if (successMessage.trim() !== '') {
+            //     Swal.fire({
+            //         icon: 'success',
+            //         title: 'Registrasi Berhasil!',
+            //         text: successMessage,
+            //         showConfirmButton: false,
+            //         timer: 3000
+            //     });
+            // }
 
             // Function to clear all error highlights and messages from inputs
             function clearErrorState() {
@@ -156,9 +156,9 @@
             const registerForm = document.getElementById('registerForm');
             if (registerForm) {
                 registerForm.addEventListener('submit', async function(event) {
-                    event.preventDefault(); // Prevent default form submission
+                    event.preventDefault(); 
 
-                    clearErrorState(); // Clear all error states on new submission
+                    clearErrorState(); 
 
                     Swal.fire({
                         title: 'Mohon Tunggu...',
@@ -175,18 +175,17 @@
                             method: 'POST',
                             body: formData,
                             headers: {
-                                'X-Requested-With': 'XMLHttpRequest', // Identify as AJAX request for Laravel
-                                'Accept': 'application/json' // Explicitly tell Laravel we expect JSON
+                                'X-Requested-With': 'XMLHttpRequest', 
+                                'Accept': 'application/json' 
                             }
                         });
 
-                        const data = await response.json(); // Always expect JSON response from server
+                        const data = await response.json(); 
 
-                        Swal.close(); // Close loading indicator immediately
+                        Swal.close(); 
 
-                        if (response.ok) { // HTTP status 200-299 (success)
+                        if (response.ok) { 
                             if (data.success) {
-                                // Show success alert and wait for it to close/timer to finish
                                 await Swal.fire({
                                     icon: 'success',
                                     title: 'Registrasi Berhasil!',
@@ -194,12 +193,10 @@
                                     showConfirmButton: false,
                                     timer: 3000
                                 });
-                                // Then redirect after the SweetAlert is shown
                                 if (data.redirect) {
                                     window.location.href = data.redirect;
                                 }
                             } else {
-                                // This case for specific non-validation errors returned with 200 status
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Terjadi Kesalahan!',
@@ -207,9 +204,8 @@
                                     showConfirmButton: true,
                                 });
                             }
-                        } else { // HTTP status 4xx, 5xx (errors like 422 for validation, 500 for server error)
+                        } else {
                             if (response.status === 422 && data.errors) {
-                                // Handle validation errors directly under fields
                                 for (const field in data.errors) {
                                     const inputField = document.getElementById(field);
                                     const errorSpan = document.getElementById(`${field}-error`);
@@ -217,11 +213,9 @@
                                         inputField.classList.add('border-red-500');
                                     }
                                     if (errorSpan) {
-                                        // Display only the first error message for the field
                                         errorSpan.textContent = data.errors[field][0];
                                     }
                                 }
-                                // Optionally show a general "Validation Failed" SweetAlert without listing all errors
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Validasi Gagal!',
@@ -229,7 +223,6 @@
                                     showConfirmButton: true,
                                 });
                             } else {
-                                // Fallback for general server errors (e.g., 500)
                                 Swal.fire({
                                     icon: 'error',
                                     title: 'Terjadi Kesalahan!',
@@ -240,7 +233,7 @@
                         }
 
                     } catch (error) {
-                        Swal.close(); // Close loading indicator on network/parsing error
+                        Swal.close(); 
                         console.error('Error during registration:', error);
                         Swal.fire({
                             icon: 'error',
@@ -271,9 +264,8 @@
             setupPasswordToggle(passwordInput, togglePassword);
             setupPasswordToggle(confirmPasswordInput, toggleConfirmPassword);
 
-            // --- Initial Page Load Error Handling (for conventional redirects) ---
             @if ($errors->any())
-                clearErrorState(); // Clear any previous AJAX error states if page reloaded
+                clearErrorState(); 
 
                 const initialErrorContainer = document.getElementById('initial-error-container');
                 const initialErrorList = document.getElementById('initial-error-list');

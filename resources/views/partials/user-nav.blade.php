@@ -26,7 +26,7 @@
             <span class="text-xs mt-1 font-medium">Booking</span>
         </div>
          <div class="nav-item nav-profile flex flex-col items-center justify-center text-gray-500 hover:text-blue-800 transition-colors duration-200 p-2 w-20">
-            <a href="#" class="">
+            <a href="{{ route('user.profile') }}" class="">
                 <i class="fa-solid fa-user fa-xl"></i>
             </a>
             <span class="text-xs mt-1 font-medium">Profile</span>
