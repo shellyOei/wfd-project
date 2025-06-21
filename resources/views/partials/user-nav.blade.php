@@ -22,7 +22,7 @@
             <span class="text-xs mt-1 font-medium">Home</span>
         </div>
         <div class="nav-item nav-appointment flex flex-col items-center justify-center text-gray-500 hover:text-blue-800 transition-colors duration-200 p-2 w-20">
-            <a href="#" class="">
+            <a href="{{ route('user.appointments.index')}}" class="">
                 <svg width="26" height="30" viewBox="0 0 26 30" fill="none" xmlns="http://www.w3.org/2000/svg">
                  <path d="M18.5 4.3665H21.25C21.9793 4.3665 22.6788 4.65097 23.1945 5.15732C23.7103 5.66366 24 6.35042 24 7.0665V25.9665C24 26.6826 23.7103 27.3693 23.1945 27.8757C22.6788 28.382 21.9793 28.6665 21.25 28.6665H4.75C4.02065 28.6665 3.32118 28.382 2.80546 27.8757C2.28973 27.3693 2 26.6826 2 25.9665V7.0665C2 6.35042 2.28973 5.66366 2.80546 5.15732C3.32118 4.65097 4.02065 4.3665 4.75 4.3665H7.5M8.875 1.6665H17.125C17.8844 1.6665 18.5 2.27092 18.5 3.0165V5.7165C18.5 6.46209 17.8844 7.0665 17.125 7.0665H8.875C8.11561 7.0665 7.5 6.46209 7.5 5.7165V3.0165C7.5 2.27092 8.11561 1.6665 8.875 1.6665Z" stroke="#AAAAAA" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>

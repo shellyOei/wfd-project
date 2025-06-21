@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\DayAvailableController;
 use App\Http\Controllers\Admin\PracticeScheduleController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ProfileController;
@@ -59,6 +60,9 @@ Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     
     Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
     Route::get('/history/{appointment}', [HistoryController::class, 'show'])->name('history.show');
+
+    // Appointment
+    Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
 
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });

@@ -1,7 +1,7 @@
-@extends('layout') {{-- Pastikan ini mengarah ke layout utama Anda --}}
+@extends('layout') 
 
 @section('content')
-<div class="max-w-xl mx-auto p-4 min-h-screen font-sans antialiased pb-24">
+<div class="max-w-xl mx-auto p-4 min-h-screen antialiased pb-24">
     <div class="flex items-center mb-6 mt-4">
         <a href="{{ url()->previous() }}" class="mr-2 text-gray-600 hover:text-gray-800 transition duration-300 ease-in-out">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -9,7 +9,7 @@
             </svg>
         </a>
         <h1 class="text-xl font-bold flex-grow text-center text-gray-800">Pilih Tanggal & Waktu</h1>
-        <div class="w-6"></div> {{-- Placeholder untuk keseimbangan layout --}}
+        <div class="w-6"></div> 
     </div>
 
     <div class="bg-white p-4 rounded-xl shadow-md mb-6">

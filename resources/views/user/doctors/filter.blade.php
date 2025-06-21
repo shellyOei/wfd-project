@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-<div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen font-sans antialiased pb-24">
+<div class="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 min-h-screen antialiased pb-24">
     <div class="flex items-center justify-between mb-6">
         <button onclick="history.back()" class="text-gray-600 hover:text-gray-800 transition duration-300 ease-in-out p-1 -ml-1">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">

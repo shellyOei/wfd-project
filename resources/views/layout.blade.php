@@ -36,6 +36,7 @@
     <style>
         :root {
             --blue1: #4980ff; 
+            --blue2: #005FCF;
             --gray-inactive: #AAAAAA; 
             --gray1: #D9D9D9;
             --blueGradient1: #4DD7E2;
