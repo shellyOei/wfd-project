@@ -427,7 +427,7 @@
                 }
                 currentStep = stepNumber;
                 updateStepperUI();
-                clearErrorState();
+                // clearErrorState();
             }
 
             // function checkRequiredFields(stepElement) {
@@ -553,9 +553,8 @@
                                     const inputField = document.getElementById(field);  
                                     if (inputField) {
                                         const errorSpan = document.getElementById(`${field}-error`);
-                                        inputField.classList.remove('border-[var(--blue1)]');
-                                        inputField.classList.add('!border-red-500');
-                                        console.log('Setting error state for:', inputField);
+                                        inputField.classList.add('border-red-500');
+                                        console.log('Setting error state for:', errorSpan);
                                         if (errorSpan) {
                                             console.log('Setting error text for:');
                                             errorSpan.textContent = data.errors[field][0];
@@ -629,22 +628,22 @@
                     }
                 }
 
-                // @foreach ($errors->keys() as $field)
-                //     const errorField = document.getElementById('{{ $field }}');
-                //     const errorSpan = document.getElementById('{{ $field }}-error');
-                //     if (errorField) {
-                //         errorField.classList.add('border-red-500');
-                //     }
-                //     if (errorSpan) {
-                //         errorSpan.textContent = "{{ $errors->first($field) }}";
-                //     }
-                // @endforeach
+                @foreach ($errors->keys() as $field)
+                    const errorField = document.getElementById('{{ $field }}');
+                    const errorSpan = document.getElementById('{{ $field }}-error');
+                    if (errorField) {
+                        errorField.classList.add('border-red-500');
+                    }
+                    if (errorSpan) {
+                        errorSpan.textContent = "{{ $errors->first($field) }}";
+                    }
+                @endforeach
 
-                // if (!hasStep1LaravelErrors && Object.keys(laravelErrors).length > 0) {
-                //     showStep(2); // If errors are only in step 2, show step 2
-                // } else {
-                //     showStep(1); // Otherwise, show step 1 (default or if step 1 errors exist)
-                // }
+                if (!hasStep1LaravelErrors && Object.keys(laravelErrors).length > 0) {
+                    showStep(2); // If errors are only in step 2, show step 2
+                } else {
+                    showStep(1); // Otherwise, show step 1 (default or if step 1 errors exist)
+                }
 
                 Swal.fire({
                     icon: 'error',
