@@ -33,6 +33,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 
+    {{-- @vite('resources/js/app.js') --}}
+
     <style>
         :root {
             --blue1: #4980ff; 
@@ -83,13 +85,19 @@
         };
     </script>
 
+
     @yield('head')
     @stack('head')
 
 </head>
 @stack('scripts')
 <body class="bg-[var(--background)]">
-    @include('partials.user-nav')
+    @if (isset($no_nav) && $no_nav)
+        @include('partials.user-back')
+    @else
+        @include('partials.user-nav')
+    @endif
+    
 
     @if (session()->has('error'))
         <script>
@@ -170,7 +178,7 @@
     @yield('script')
     @stack('script')
 
-    @include('partials.add-patient-modal')
+    {{-- @include('partials.add-patient-modal') --}}
 
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/js/tw-elements.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.umd.min.js"></script>

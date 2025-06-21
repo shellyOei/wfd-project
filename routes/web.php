@@ -10,6 +10,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\EmergencyController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ScheduleController;
@@ -30,6 +31,13 @@ Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     // patient registration
     Route::post('/register-patient', [PatientController::class, 'registerPatient'])->name('register.patient.post');
     Route::get('/register-patient', [PatientController::class, 'showPatientRegistrationForm'])->name('register.patient');
+
+    // emergency
+    Route::controller(EmergencyController::class)->group(function () {
+        Route::get('/emergency', 'viewUser')->name('emergency')->withoutMiddleware('user');
+        // Route::post('/request-emergency-call', 'requestEmergencyCall')->name('emergency.request')->withoutMiddleware('user');
+    });
+    
     Route::post('/link-patient', [ProfileController::class, 'linkPatient'])->name('link-patient.post');
     Route::get('/link-patient', [PatientController::class, 'showExistingPatientRegistrationForm'])->name('link-patient');
 
