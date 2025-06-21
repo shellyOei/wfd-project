@@ -53,7 +53,7 @@
 @endsection
 
 @section('content')
-    <div class="flex flex-col text-center  items-center h-screen pt-[90px] max-[400px]:pt-[55px] px-4 lg:px-0">
+    <div class="flex flex-col text-center  items-center h-screen pt-[70px] max-[400px]:pt-[55px] px-4 lg:px-0">
         <div class="h-[95%] flex flex-col justify-between">
             <div>
                 <h2 class="font-bold text-xl mb-4">GAWAT DARURAT</h2>
@@ -280,6 +280,10 @@
 
 
             visualization.innerHTML = `<div id="map" class="h-[45vh] sm:h-[40vh] w-[90vw] md:w-[40vw]"></div>`;
+
+            setTimeout(() => {
+                
+            
             map = L.map('map').setView([ambulanceCoordinate[0], ambulanceCoordinate[1]], 14);
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
@@ -312,7 +316,7 @@
                 userCoordinate
             ];
 
-            var polyline = L.polyline(latlngs, {color: 'red'}).addTo(map);
+            var polyline = L.polyline(latlngs, {color: 'red', opacity: 0.2}).addTo(map);
 
             // zoom the map to the polyline
             map.fitBounds(polyline.getBounds());
@@ -417,6 +421,8 @@
                 map.fitBounds(bounds, { padding: [50, 50] });
 
             }, intervalMilliseconds); 
+
+            }, 50);
         }
 
 
