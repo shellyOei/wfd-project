@@ -143,6 +143,7 @@ class BookingController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Booking berhasil disimpan.',
+                'redirect_url' => route('user.appointments.index') 
             ]);
         } catch (ValidationException $e) {
             return response()->json([

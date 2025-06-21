@@ -6,6 +6,7 @@ use App\Models\Appointment;
 use App\Models\Patient;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AppointmentController extends Controller
 {
@@ -54,5 +55,41 @@ class AppointmentController extends Controller
             'groupedAppointments' => $groupedAppointments,
             'selectedPatientId' => $selectedPatientId,
         ]);
+    }
+
+    public function destroy(Appointment $appointment)
+    {
+        try {
+            $appointment->status = 2;  //cancelled
+            $appointment->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Status janji temu berhasil diperbarui menjadi Dibatalkan.'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error("Failed to update appointment status for ID {$appointment->id}: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat memperbarui status janji temu.'], 500);
+        }
+    }
+
+    public function saveNotes(Request $request, Appointment $appointment)
+    {
+        $request->validate([
+            'notes' => 'required|string|max:500',
+        ]);
+        try {
+            $appointment->notes = $request->input('notes');
+            $appointment->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Catatan berhasil disimpan.'
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Failed to save notes for appointment ID {$appointment->id}: " . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menyimpan catatan.'], 500);
+        }
     }
 }
