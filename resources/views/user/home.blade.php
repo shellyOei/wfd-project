@@ -22,7 +22,7 @@
 <div class="max-w-7xl mx-auto p-4 pb-20">
         <!-- Layanan -->
         <div class="relative bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)] rounded-3xl p-6 flex flex-col md:flex-row items-center text-white mb-8">
-            <div class="md:w-1/2 md:mb-0">
+            <div class="relative md:w-1/2 md:mb-0 z-[20]">
                 <h2 class="text-xl font-semibold">Layanan</h2>
                 <h2 class="text-xl font-semibold">Pemeriksaan Dokter</h2>
                 <p class="text-sm mt-2 text-[var(--gray1)]">Dapatkan layanan yang akurat dan terpercaya kapan saja, di mana saja</p>
