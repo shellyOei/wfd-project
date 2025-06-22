@@ -2,33 +2,23 @@
 
 @section('content')
 <!-- Selamat Datang -->
-@auth
-    {{-- Content for authenticated users --}}
-    <div class="text-black flex justify-between items-center mb-6 w-full bg-white p-4 shadow-md">
-        <div class="flex items-center space-x-3">
-            <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center">
-                <img src="/assets/ewaps-logo.png" alt="Logo" class="w-full h-full mx-auto rounded-full ">
-            </div>
-            <div>
-                <p class="text-gray-500 text-sm">Selamat Datang,</p>
-                <p class="font-bold text-xl">{{ Auth::user()->name }}</p>
-            </div>
+{{-- Content for authenticated users --}}
+<div class="text-black flex justify-between items-center mb-6 w-full bg-white p-4 shadow-md">
+    <div class="flex items-center space-x-3">
+        <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center">
+            <img src="/assets/ewaps-logo.png" alt="Logo" class="w-full h-full mx-auto rounded-full ">
+        </div>
+        <div>
+            <p class="text-gray-500 text-sm">Selamat Datang,</p>
+            @if($user)
+                <p class="font-bold text-xl">{{ $user->name }}</p>
+            @else
+                <p class="font-bold text-xl">Tamu</p>
+            @endif
         </div>
     </div>
-@else
-    {{-- Content for unauthenticated users --}}
-    <div class="text-black flex justify-between items-center mb-6 w-full bg-white p-4 shadow-md">
-        <div class="flex items-center space-x-3">
-            <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center">
-                <img src="/assets/ewaps-logo.png" alt="Logo" class="w-full h-full mx-auto rounded-full ">
-            </div>
-            <div>
-                <p class="text-gray-500 text-sm">Selamat Datang,</p>
-                <p class="font-bold text-xl">Tamu</p> {{-- Or "Silakan Login" or similar --}}
-            </div>
-        </div>
-    </div>
-@endauth
+</div>
+
 <div class="max-w-7xl mx-auto p-4 pb-20">
         <!-- Layanan -->
         <div class="relative bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)] rounded-3xl p-6 flex flex-col md:flex-row items-center text-white mb-8">
