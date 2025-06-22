@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-<div class="max-w-md mx-auto p-5 bg-gray-50 min-h-screen pb-24">
+<div class="max-w-md mx-auto p-5 min-h-screen pb-24">
     <div class="flex justify-evenly mb-10 mt-4">
         <a href="{{ url()->previous() }}" class="mr-2 text-gray-600 hover:text-gray-800 transition duration-300 ease-in-out">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -9,7 +9,7 @@
             </svg>
         </a>
         <h1 class="text-xl font-bold flex-grow text-center text-gray-800">Pilih Pasien</h1>
-        <a id="openModalBtn" href="javascript:void(0)" class="text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out">
+        <a id="patient-modal-btn" href="javascript:void(0)" class="text-blue-600 hover:text-blue-800 transition duration-300 ease-in-out">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20v-1a4 4 0 014-4h4a4 4 0 014 4v1"/>
             </svg>
@@ -108,6 +108,9 @@
         }
     });
 </script>
+
+@include('partials.add-patient-modal')
+
 @endsection
 
 @push('script')

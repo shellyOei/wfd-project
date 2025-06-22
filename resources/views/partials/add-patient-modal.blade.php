@@ -4,7 +4,7 @@
   </div>
 
   <div id="patient-content"
-    class="relative w-full max-w-md bg-gray-200 rounded-t-[32px] py-6 px-5 shadow-md transform translate-y-full transition-transform duration-300 ease-in-out">
+    class="relative w-full max-w-md bg-gray-200 rounded-t-[32px] py-10 px-5 shadow-md transform translate-y-full transition-transform duration-300 ease-in-out">
     <!-- Garis hitam atas -->
     <div class="w-40 h-3 bg-neutral-700 rounded-full mx-auto mb-6"></div>
 
@@ -39,9 +39,14 @@
   </div>
 </div>
 
+@push('script')
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+    
   const modalBtn = document.getElementById("patient-modal-btn");
   const modal = document.getElementById("patient-modal");
+
+  console.log(modalBtn, modal);
   const backdrop = document.getElementById("patient-backdrop");
   const content = document.getElementById("patient-content");
 
@@ -71,4 +76,9 @@
       modal.classList.add("pointer-events-none");
     }, 300);
   });
+});   
+
+  
 </script>
+@endpush
+

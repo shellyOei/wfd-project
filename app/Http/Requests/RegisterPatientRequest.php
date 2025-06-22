@@ -40,8 +40,8 @@ class RegisterPatientRequest extends FormRequest
             'allergy' => 'nullable|string|max:500',
             'occupation' => 'required|string|max:255',
             'address' => 'required|string|max:500',
-            'blood_type' => 'required|in:A,B,AB,O',
-            'rhesus_factor' => 'required|in:Positif,Negatif',
+            'blood_type' => 'required|in:A,B,AB,O,Belum tahu',
+            'rhesus_factor' => 'required|in:Positif,Negatif,Belum tahu',
             'BPJS_number' => [
                 'nullable',
                 'string',

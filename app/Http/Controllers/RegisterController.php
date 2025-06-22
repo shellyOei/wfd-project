@@ -28,7 +28,7 @@ class RegisterController extends Controller
         return view('auth.registerUser');
     }
 
-    public function registerUser(RegisterUserRequest $r)
+    public function store(RegisterUserRequest $r)
     {
         $valid = $r->validated();
 

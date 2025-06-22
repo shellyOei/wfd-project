@@ -23,8 +23,8 @@ Route::get('/', [UserController::class, 'index'])->name('home');
 Route::get('/login', [LoginController::class, 'showUser'])->name('login');
 Route::post('/login', [LoginController::class, 'loginAsUser'])->name('login.post');
 // user registration
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
-Route::post('/register', [RegisterController::class, 'registerUser'])->name('register.post');
+Route::get('/register', [RegisterController::class, 'show'])->name('register.index');
+Route::post('/register', [RegisterController::class, 'store'])->name('register.post');
 
 
 Route::middleware('user')->prefix('user')->name('user.')->group(function () {

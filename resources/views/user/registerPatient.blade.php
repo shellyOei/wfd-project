@@ -103,7 +103,7 @@
 @endsection
 
 @section('content')
-    <div class="flex flex-col h-screen w-screen overflow-x-hidden items-center pt-5 pb-20 text-black">
+    <div class="flex flex-col h-screen w-screen overflow-x-hidden items-center pt-5 pb-24 text-black">
         {{-- logo --}}
         <img class="w-[35%]" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
 
@@ -139,7 +139,7 @@
             </div>
 
             <!-- Step 1-->
-            <div id="step-1-content" class="form-section">
+            <div id="step-1-content" class="form-section space-y-3">
                 <h2 class="text-xl font-bold mb-4 text-center">
                     {{ $isEdit ? 'Ubah Data Pasien' : 'Langkah 1: Informasi Pribadi' }}
                 </h2>
@@ -282,7 +282,7 @@
                         <select name="blood_type" id="blood_type" required
                             class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Golongan Darah</option>
-                             @foreach(['A', 'B', 'AB', 'O'] as $bt)
+                            @foreach(['A', 'B', 'AB', 'O', 'Belum tahu'] as $bt)
                                 <option value="{{ $bt }}" {{ (old('blood_type', $patient->blood_type ?? '') == $bt) ? 'selected' : '' }}>{{ $bt }}</option>
                             @endforeach
                         </select>
@@ -301,6 +301,7 @@
                             <option value="">Pilih Rhesus</option>
                             <option value="Positif" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '+') ? 'selected' : '' }}>Positif</option>
                             <option value="Negatif" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Negatif</option>
+                            <option value="Belum tahu" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Belum tahu</option>
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-plus-minus text-gray-400"></i>

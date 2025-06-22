@@ -44,6 +44,14 @@ class PatientController extends Controller
         try {
             $valid = $request->validated();
 
+            if (isset($valid['blood_type']) == 'Belum tahu') {
+                $valid['blood_type'] = null; 
+            }
+
+            if (isset($valid['rhesus_factor']) == 'Belum tahu') {
+                $valid['rhesus_factor'] = null; 
+            }
+
             // Generate patient number
             $lastPatient = Patient::orderBy('patient_number', 'desc')->first();
             if ($lastPatient && $lastPatient->patient_number) {
@@ -96,6 +104,14 @@ class PatientController extends Controller
     {
         $valid = $request->validated();
 
+        if (isset($valid['blood_type']) == 'Belum tahu') {
+            $valid['blood_type'] = null; 
+        }
+
+        if (isset($valid['rhesus_factor']) == 'Belum tahu') {
+            $valid['rhesus_factor'] = null; 
+        }
+        
         $patient->update($valid);
 
         return response()->json([
@@ -184,6 +200,14 @@ class PatientController extends Controller
 
         $valid = $r->validated();
 
+        if (isset($valid['blood_type']) == 'Belum tahu') {
+            $valid['blood_type'] = null; 
+        }
+
+        if (isset($valid['rhesus_factor']) == 'Belum tahu') {
+            $valid['rhesus_factor'] = null; 
+        }
+        
         try {  
             $patient = $this->patientService->registerPatient($valid, $user);
 
@@ -218,7 +242,9 @@ class PatientController extends Controller
 
     public function getAppointments($patientId)
     {
-        $patient = Patient::with(['appointments.schedule.doctor.specialization'])->findOrFail($patientId);
+        $patient = Patient::with(['appointments' => function ($query) {
+            $query->where('status', 1);
+        }, 'appointments.schedule.doctor.specialization'])->findOrFail($patientId);
 
         $activeAppointments = collect();
         $historyAppointments = collect();

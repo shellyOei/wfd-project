@@ -41,7 +41,7 @@
                         <div
                             class="flex items-center bg-white rounded-2xl p-4 md:p-6 mb-4 shadow-sm hover:shadow-md transition-shadow">
                             <img class="w-[88px] h-[87px] md:w-20 md:h-20 rounded-full mr-4 md:mr-6"
-                                src="img/mask-group.png" alt="User avatar" />
+                                src="{{ asset('assets/profile-avatar.jpg')}}" alt="User avatar" />
                             <div class="flex-grow">
                                 <h3 class="text-xl md:text-2xl font-bold">{{ $user->name }}</h3>
                                 <p class="text-[#7a7a7a] md:text-lg">{{ $user->email }}</p>
@@ -184,7 +184,11 @@
             </div>
         </main>
     </div>
+
+@include('partials.add-patient-modal')
+
 @endsection
+
 
 @push('script')
 <script>
