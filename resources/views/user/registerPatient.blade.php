@@ -538,9 +538,13 @@
                                 if (isEditMode) {
                                     window.location.href = '{{ route('user.patients') }}';
                                 } else {
-                                    // form.reset();
-                                    // showStep(1);
-                                    window.history.back();
+                                    const previousUrl = document.referrer;
+
+                                    if (previousUrl) {
+                                        window.location.replace(previousUrl);
+                                    } else {
+                                        window.history.back();
+                                    }
                                 }
                             });
                         } else {
