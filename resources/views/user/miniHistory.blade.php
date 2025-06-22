@@ -135,7 +135,7 @@
             <section class="px-6">
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="text-lg font-semibold text-[#373737]">Riwayat</h2>
-                    <a href="{{ route('history.index') }}" class="text-xs font-bold text-black underline flex items-center whitespace-nowrap">
+                    <a href="{{ route('user.history.index') }}" class="text-xs font-bold text-black underline flex items-center whitespace-nowrap">
                         Lihat Selengkapnya
                         <i class="fas fa-chevron-right ml-1 text-xs"></i>
                     </a>
