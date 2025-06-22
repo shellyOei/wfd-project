@@ -132,7 +132,7 @@ class DoctorSeeder extends Seeder
                 'back_title' => '',
                 'phone' => '081355443322',
                 'address' => 'Jl. Kesehatan Umum No.20, Pontianak',
-                'photo' => 'doctors/kurnia_fitri.png',
+                'photo' => 'doctors/doctor.png',
                 'specialization_id' => 'Umum',
                 'description' => 'Dokter umum yang memberikan pelayanan kesehatan komprehensif, mulai dari pemeriksaan rutin hingga penanganan penyakit ringan.',
             ],

@@ -28,7 +28,7 @@ class RegisterController extends Controller
         return view('auth.registerUser');
     }
 
-    public function registerUser(RegisterUserRequest $r)
+    public function store(RegisterUserRequest $r)
     {
         $valid = $r->validated();
 
@@ -40,7 +40,7 @@ class RegisterController extends Controller
             return response()->json([
                 'success' => true, 
                 'message' => 'Registrasi akun berhasil', 
-                'redirect' => route('user.dashboard')
+                'redirect' => route('home')
             ]);
 
         } catch (ValidationException $e) {

@@ -103,7 +103,7 @@
 @endsection
 
 @section('content')
-    <div class="flex flex-col h-screen w-screen overflow-x-hidden items-center pt-5 pb-20 text-black">
+    <div class="flex flex-col h-screen w-screen overflow-x-hidden items-center pt-5 pb-24 text-black">
         {{-- logo --}}
         <img class="w-[35%]" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
 
@@ -139,7 +139,7 @@
             </div>
 
             <!-- Step 1-->
-            <div id="step-1-content" class="form-section">
+            <div id="step-1-content" class="form-section space-y-3">
                 <h2 class="text-xl font-bold mb-4 text-center">
                     {{ $isEdit ? 'Ubah Data Pasien' : 'Langkah 1: Informasi Pribadi' }}
                 </h2>
@@ -282,7 +282,7 @@
                         <select name="blood_type" id="blood_type" required
                             class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Golongan Darah</option>
-                             @foreach(['A', 'B', 'AB', 'O'] as $bt)
+                            @foreach(['A', 'B', 'AB', 'O', 'Belum tahu'] as $bt)
                                 <option value="{{ $bt }}" {{ (old('blood_type', $patient->blood_type ?? '') == $bt) ? 'selected' : '' }}>{{ $bt }}</option>
                             @endforeach
                         </select>
@@ -299,8 +299,9 @@
                         <select name="rhesus_factor" id="rhesus_factor" required
                             class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Rhesus</option>
-                            <option value="Positif" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '+') ? 'selected' : '' }}>Positif</option>
-                            <option value="Negatif" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Negatif</option>
+                            <option value="+" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '+') ? 'selected' : '' }}>Positif</option>
+                            <option value="-" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Negatif</option>
+                            <option value="Belum tahu" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Belum tahu</option>
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                             <i class="fa-solid fa-plus-minus text-gray-400"></i>
@@ -427,7 +428,7 @@
                 }
                 currentStep = stepNumber;
                 updateStepperUI();
-                clearErrorState();
+                // clearErrorState();
             }
 
             // function checkRequiredFields(stepElement) {
@@ -537,9 +538,13 @@
                                 if (isEditMode) {
                                     window.location.href = '{{ route('user.patients') }}';
                                 } else {
-                                    // form.reset();
-                                    // showStep(1);
-                                    window.history.back();
+                                    const previousUrl = document.referrer;
+
+                                    if (previousUrl) {
+                                        window.location.replace(previousUrl);
+                                    } else {
+                                        window.history.back();
+                                    }
                                 }
                             });
                         } else {
@@ -553,9 +558,8 @@
                                     const inputField = document.getElementById(field);  
                                     if (inputField) {
                                         const errorSpan = document.getElementById(`${field}-error`);
-                                        inputField.classList.remove('border-[var(--blue1)]');
-                                        inputField.classList.add('!border-red-500');
-                                        console.log('Setting error state for:', inputField);
+                                        inputField.classList.add('border-red-500');
+                                        console.log('Setting error state for:', errorSpan);
                                         if (errorSpan) {
                                             console.log('Setting error text for:');
                                             errorSpan.textContent = data.errors[field][0];
@@ -629,22 +633,22 @@
                     }
                 }
 
-                // @foreach ($errors->keys() as $field)
-                //     const errorField = document.getElementById('{{ $field }}');
-                //     const errorSpan = document.getElementById('{{ $field }}-error');
-                //     if (errorField) {
-                //         errorField.classList.add('border-red-500');
-                //     }
-                //     if (errorSpan) {
-                //         errorSpan.textContent = "{{ $errors->first($field) }}";
-                //     }
-                // @endforeach
+                @foreach ($errors->keys() as $field)
+                    const errorField = document.getElementById('{{ $field }}');
+                    const errorSpan = document.getElementById('{{ $field }}-error');
+                    if (errorField) {
+                        errorField.classList.add('border-red-500');
+                    }
+                    if (errorSpan) {
+                        errorSpan.textContent = "{{ $errors->first($field) }}";
+                    }
+                @endforeach
 
-                // if (!hasStep1LaravelErrors && Object.keys(laravelErrors).length > 0) {
-                //     showStep(2); // If errors are only in step 2, show step 2
-                // } else {
-                //     showStep(1); // Otherwise, show step 1 (default or if step 1 errors exist)
-                // }
+                if (!hasStep1LaravelErrors && Object.keys(laravelErrors).length > 0) {
+                    showStep(2); // If errors are only in step 2, show step 2
+                } else {
+                    showStep(1); // Otherwise, show step 1 (default or if step 1 errors exist)
+                }
 
                 Swal.fire({
                     icon: 'error',

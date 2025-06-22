@@ -23,13 +23,30 @@ class PracticeSchedule extends Model
         return $this->belongsTo(DayAvailable::class);
     }
 
-    public function appointment()
-    {
-        return $this->hasOne(Appointment::class, 'schedule_id');
-    }
+    // public function appointment()
+    // {
+    //     return $this->hasOne(Appointment::class, 'schedule_id');
+    // }
+
+    public function appointments()
+{
+    return $this->hasMany(Appointment::class, 'schedule_id');
+}
+
+    // public function doctor()
+    // {
+    //     return $this->belongsTo(Doctor::class);
+    // }
 
     public function doctor()
     {
-        return $this->belongsTo(Doctor::class);
+        return $this->hasOneThrough(
+            Doctor::class,         
+            DayAvailable::class,   
+            'id',                  
+            'id',               
+            'day_available_id',     
+            'doctor_id'             
+        );
     }
 }

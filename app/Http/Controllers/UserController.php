@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
 // use App\UserRepositoryInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -30,7 +31,8 @@ class UserController extends Controller
 
     public function index()
     {
-        return view('user.dashboard');
+        $user = Auth::guard('user')->user(); 
+        return view('user.home', compact('user'));
     }
 
 
@@ -100,7 +102,7 @@ class UserController extends Controller
         $user = User::create($validated);
         auth()->guard('user')->login($user);
 
-        return redirect()->route('user.dashboard')->with('success', 'Berhasil registrasi akun!');
+        return redirect()->route('home')->with('success', 'Berhasil registrasi akun!');
     }
 
     public function users()

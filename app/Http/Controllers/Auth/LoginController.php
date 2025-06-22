@@ -37,7 +37,7 @@ class LoginController extends Controller
         }
         if ($this->authService->login($credentials, 'user')) {
 
-            return redirect()->route('user.dashboard');
+            return redirect()->route('home')->with('success', 'Login berhasil!');
         }
 
         return back()->with('error', 'Invalid credentials!');

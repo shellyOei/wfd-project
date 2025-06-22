@@ -3,30 +3,41 @@
 use App\Http\Controllers\Admin\DayAvailableController;
 use App\Http\Controllers\Admin\PracticeScheduleController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\PatientController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DoctorController;
+use App\Http\Controllers\EmergencyController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ScheduleController;
 use Illuminate\Support\Facades\Route;
+
+
+Route::get('/', [UserController::class, 'index'])->name('home');
 
 // user login
 Route::get('/login', [LoginController::class, 'showUser'])->name('login');
 Route::post('/login', [LoginController::class, 'loginAsUser'])->name('login.post');
 // user registration
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register.index');
-Route::post('/register', [RegisterController::class, 'registerUser'])->name('register.post');
+Route::get('/register', [RegisterController::class, 'show'])->name('register.index');
+Route::post('/register', [RegisterController::class, 'store'])->name('register.post');
 
 
 Route::middleware('user')->prefix('user')->name('user.')->group(function () {
-    Route::get('/dashboard', [UserController::class, 'index'])->name('dashboard');
-
     // patient registration
     Route::post('/register-patient', [PatientController::class, 'registerPatient'])->name('register.patient.post');
     Route::get('/register-patient', [PatientController::class, 'showPatientRegistrationForm'])->name('register.patient');
+
+    // emergency
+    Route::controller(EmergencyController::class)->group(function () {
+        Route::get('/emergency', 'viewUser')->name('emergency')->withoutMiddleware('user');
+        // Route::post('/request-emergency-call', 'requestEmergencyCall')->name('emergency.request')->withoutMiddleware('user');
+    });
+    
     Route::post('/link-patient', [ProfileController::class, 'linkPatient'])->name('link-patient.post');
     Route::get('/link-patient', [PatientController::class, 'showExistingPatientRegistrationForm'])->name('link-patient');
 
@@ -51,16 +62,20 @@ Route::middleware('user')->prefix('user')->name('user.')->group(function () {
     Route::get('/mini-history/data/{patientId}', [PatientController::class, 'getAppointments'])->name('miniHistory.data');
 
     // form.blade.php
-    Route::get('/doctor/{doctor}/{patient)/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
+    Route::get('/doctor/{doctor}/{patient}/book', [BookingController::class, 'showBookingForm'])->name('booking.show');
     Route::get('/doctor/{doctor}/select-patient', [BookingController::class, 'selectPatient'])->name('booking.selectPatient');
     Route::post('/book/store', [BookingController::class, 'store'])->name('booking.store');
     
+    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+    Route::get('/history/{appointment}', [HistoryController::class, 'show'])->name('history.show');
+
+    // Appointment
+    Route::get('/appointments', [AppointmentController::class, 'index'])->name('appointments.index');
+    Route::post('/appointments/{appointment}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
+    Route::post('/appointments/{appointment}/save-notes', [AppointmentController::class, 'saveNotes'])->name('appointments.saveNotes');
+
     Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 });
-Route::get('/', function () {
-    return view('user.profile.index');
-});
-
 
 // admin
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -68,7 +83,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [LoginController::class, 'loginAsAdmin'])->name('login.post');
     Route::middleware(['admin'])->group(function () {
         // protected routes for admin
-        Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+        Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
         // Patient routes
         Route::get('/patients', [PatientController::class, 'index'])->name('patients');
@@ -111,13 +126,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/users', [UserController::class, 'users'])->name('users');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
-        Route::delete('/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('users.destroy');
+        Route::delete('/users/{user}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate'); 
         Route::put('/users/{user}/activate', [UserController::class, 'activate'])->name('users.activate');
         Route::get('/logout', [LoginController::class, 'logout'])->name('logout');
 
         Route::get('/manage', [AdminController::class, 'manageAdmins'])->name('manage');
         Route::get('/manage/store', [AdminController::class, 'manageAdmins'])->name('manage.store');
-        Route::delete('/manage/{admin}/deactivate', [AdminController::class, 'deactivate'])->name('manage.destroy');
+        Route::delete('/manage/{admin}/deactivate', [AdminController::class, 'deactivate'])->name('manage.deactivate');
         Route::put('/manage/{admin}/activate', [AdminController::class, 'activate'])->name('manage.activate');
         Route::delete('/manage/{admin}', [AdminController::class, 'destroy'])->name('manage.destroy');
         Route::get('/doctors/search', [AdminController::class, 'manageAdmins'])->name('doctors.search');
