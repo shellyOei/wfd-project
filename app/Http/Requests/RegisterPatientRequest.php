@@ -41,7 +41,7 @@ class RegisterPatientRequest extends FormRequest
             'occupation' => 'required|string|max:255',
             'address' => 'required|string|max:500',
             'blood_type' => 'required|in:A,B,AB,O,Belum tahu',
-            'rhesus_factor' => 'required|in:Positif,Negatif,Belum tahu',
+            'rhesus_factor' => 'required|in:+,-,Belum tahu',
             'BPJS_number' => [
                 'nullable',
                 'string',
@@ -93,7 +93,7 @@ class RegisterPatientRequest extends FormRequest
             'blood_type.in' => 'Golongan darah tidak valid. Pilihan yang tersedia: A, B, AB, O.',
 
             'rhesus_factor.required' => 'Rhesus wajib diisi.',
-            'rhesus_factor.in' => 'Rhesus tidak valid. Pilihan yang tersedia: Positif, Negatif.', // Adjusted for 'rhesus_factor'
+            'rhesus_factor.in' => 'Rhesus tidak valid. Pilihan yang tersedia: Positif (+), Negatif (-), Belum tahu.', 
 
             'BPJS_number.string' => 'Nomor BPJS harus berupa teks.',
             'BPJS_number.max' => 'Nomor BPJS tidak boleh lebih dari 20 karakter.',

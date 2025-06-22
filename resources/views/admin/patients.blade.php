@@ -216,6 +216,7 @@
                                 <option value="B">B</option>
                                 <option value="AB">AB</option>
                                 <option value="O">O</option>
+                                <option value="Belum tahu">Doesn't know</option>
                             </select>
                         </div>
 
@@ -227,6 +228,7 @@
                                 <option value="">Select Rhesus</option>
                                 <option value="+">Positive (+)</option>
                                 <option value="-">Negative (-)</option>
+                                <option value="Belum tahu">Doesn't know</option>
                             </select>
                         </div>
 
@@ -253,7 +255,7 @@
 
                         <!-- Emergency Contact -->
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Emergency Contact</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Emergency Contact (Optional)</label>
                             <input type="text" name="emergency_contact" id="add_emergency_contact"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 placeholder="Name and phone number">
