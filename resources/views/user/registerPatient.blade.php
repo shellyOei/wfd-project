@@ -299,8 +299,8 @@
                         <select name="rhesus_factor" id="rhesus_factor" required
                             class="block appearance-none w-full bg-white border border-2 border-[var(--blue1)] text-gray-700 py-3 pl-10 pr-8 rounded-lg leading-tight focus:outline-none focus:bg-white focus:border-[var(--blue1)]">
                             <option value="">Pilih Rhesus</option>
-                            <option value="Positif" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '+') ? 'selected' : '' }}>Positif</option>
-                            <option value="Negatif" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Negatif</option>
+                            <option value="+" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '+') ? 'selected' : '' }}>Positif</option>
+                            <option value="-" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Negatif</option>
                             <option value="Belum tahu" {{ (old('rhesus_factor', $patient->rhesus_factor ?? '') == '-') ? 'selected' : '' }}>Belum tahu</option>
                         </select>
                         <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
