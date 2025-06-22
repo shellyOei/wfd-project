@@ -83,7 +83,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/login', [LoginController::class, 'loginAsAdmin'])->name('login.post');
     Route::middleware(['admin'])->group(function () {
         // protected routes for admin
-        Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+        Route::get('/', [AdminController::class, 'index'])->name('dashboard');
 
         // Patient routes
         Route::get('/patients', [PatientController::class, 'index'])->name('patients');
