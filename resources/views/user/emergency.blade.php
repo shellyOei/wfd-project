@@ -354,8 +354,20 @@
             var audio = new Audio('{{ asset('assets/emergency/ambulance_en_route.mp3') }}');
             audio.play();
             description.innerHTML = `<p>Ambulance dalam perjalanan</p>
-                                    <p class="text-gray-400">Anda masih terhubung dengan pusat darurat kami.</p>   
+                             
+            <p class="text-gray-400">Anda masih terhubung dengan pusat darurat kami.</p>   
                                     `;
+
+
+            // calculation for initial timer
+            let newAmbulancePos = [currentAmbulanceLat, currentAmbulanceLng];
+            let distance = L.latLng(newAmbulancePos).distanceTo(L.latLng(userCoordinate));
+            let remainingMinutes = Math.round((distance / 60) / 50); 
+
+            const currentTime = new Date();
+            const arrivalTime = new Date(currentTime.getTime() + remainingMinutes * 60 * 1000); 
+            const formattedArrivalTime = arrivalTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
 
             simulationInterval = setInterval(() => {
                 stepCount++;
@@ -364,7 +376,7 @@
                 currentAmbulanceLat += latStep;
                 currentAmbulanceLng += lngStep;
 
-                const newAmbulancePos = [currentAmbulanceLat, currentAmbulanceLng];
+                newAmbulancePos = [currentAmbulanceLat, currentAmbulanceLng];
                 ambulanceMarker.setLatLng(newAmbulancePos); // Update marker position
 
                 // Update the path line
@@ -376,13 +388,13 @@
 
                 // Check if ambulance is very close to the user's location
                 // Using Leaflet's distanceTo for more accurate "closeness" check
-                const distance = L.latLng(newAmbulancePos).distanceTo(L.latLng(userCoordinate));
+                distance = L.latLng(newAmbulancePos).distanceTo(L.latLng(userCoordinate));
                 const proximityThreshold = 10; // meters
 
-                const remainingMinutes = Math.round((distance / 60) / 50); 
-                const currentTime = new Date();
-                const arrivalTime = new Date(currentTime.getTime() + remainingMinutes * 60 * 1000); // Add minutes in milliseconds
-                const formattedArrivalTime = arrivalTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                remainingMinutes = Math.round((distance / 60) / 50); 
+
+                
+                
 
                 if (distance < proximityThreshold || stepCount >= totalSteps) {
                     clearInterval(simulationInterval); // Stop simulation

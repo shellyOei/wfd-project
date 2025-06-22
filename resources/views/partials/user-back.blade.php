@@ -8,6 +8,9 @@
         function quitEmergency () {
             Swal.fire({
                 heightAuto: false,
+                showDenyButton: true,
+                denyButtonText: `Ya, keluar.`,
+                cancelButtonText: `Tidak, batal.`,
                 icon: 'question',
                 title: 'Keluar?',
                 text: 'Apakah anda ingin berhenti menggunakan layanan gawat darurat?',
