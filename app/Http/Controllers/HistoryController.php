@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Patient;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,65 +48,53 @@ class HistoryController extends Controller
     // Function ini hanya untuk debugging, yang diatas harusnya butuh auth login dulu - Anto
     public function index(Request $request)
     {
-        $appointments = collect();
+        // Dapatkan user yang sedang login
+        $user = Auth::guard('user')->user();
 
-        if (Auth::check()) {
-            dd('User is authenticated');
-            $user = Auth::user();
+        // Mengambil daftar pasien yang terhubung dengan user untuk dropdown filter
+        $userPatients = Patient::whereHas('profiles', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->get();
 
-            $query = Appointment::with(['schedule.doctor'])
-                ->whereHas('patient.profiles', function ($q) use ($user) {
-                    $q->where('user_id', $user->id);
-                });
+        // Query dasar untuk mengambil appointment milik user
+        $query = Appointment::with(['schedule.doctor', 'schedule.doctor.specialization', 'patient'])
+            ->whereHas('patient.profiles', function ($q) use ($user) {
+                $q->where('user_id', $user->id);
+            });
 
-            dd($query);
-
-            // Filter status
-            if ($request->filled('status') && in_array($request->status, ['completed', 'canceled'])) {
-                $query->where('status', $request->status);
-            }
-
-            // Filter pencarian nama dokter
-            if ($request->filled('search')) {
-                $searchTerm = $request->search;
-                $query->whereHas('schedule.doctor', function ($q) use ($searchTerm) {
-                    $q->where('name', 'like', '%' . $searchTerm . '%');
-                });
-            }
-
-            // **LOGIKA BARU UNTUK FILTER WAKTU**
-            if ($request->filled('time_filter')) {
-                $filter = $request->time_filter;
-                $now = Carbon::now();
-
-                $query->whereHas('schedule', function($q) use ($filter, $now) {
-                    if ($filter == 'today') {
-                        $q->whereDate('Datetime', $now->toDateString());
-                    } elseif ($filter == 'month') {
-                        $q->whereMonth('Datetime', $now->month)->whereYear('Datetime', $now->year);
-                    } elseif ($filter == 'year') {
-                        $q->whereYear('Datetime', $now->year);
-                    }
-                });
-            }
-            
-            $appointments = $query->latest('updated_at')->get();
+        // Terapkan filter status (Selesai/Dibatalkan/Semua)
+        if ($request->filled('status') && in_array($request->status, [3, 2])) {
+            $query->where('status', $request->status);
+        } else {
+            // Jika "Semua", tampilkan yang sudah selesai atau dibatalkan
+            $query->whereIn('status', [3, 2]);
         }
-
-        return view('history.index', compact('appointments'));
+        
+        // Terapkan filter pasien jika dipilih dari dropdown
+        if ($request->filled('patient_id')) {
+            // Validasi untuk memastikan user hanya bisa memfilter pasien miliknya
+            if ($userPatients->contains('id', $request->patient_id)) {
+                $query->where('patient_id', $request->patient_id);
+            }
+        }
+        
+        // Urutkan berdasarkan tanggal janji temu terbaru
+        $appointments = $query->join('practice_schedules', 'appointments.schedule_id', '=', 'practice_schedules.id')
+                               ->orderBy('practice_schedules.Datetime', 'desc')
+                               ->select('appointments.*')
+                               ->get();
+        
+        // Kirim data appointments dan daftar pasien ke view
+        return view('history.index', compact('appointments', 'userPatients'));
     }
 
-    /**
-     * Menampilkan halaman detail riwayat konsultasi.
-     */
     public function show(Appointment $appointment)
-    {
-        // Pastikan user hanya bisa melihat detail appointment miliknya sendiri
-        $this->authorize('view', $appointment);
-
-        // Load relasi yang dibutuhkan untuk halaman detail
-        $appointment->load(['schedule.doctor.specialization', 'documents']);
-
-        return view('history.show', compact('appointment'));
-    }
+{
+    $appointment->load([
+        'schedule.dayAvailable.doctor', 
+        'schedule.dayAvailable.doctor.specialization',
+        'patient',
+    ]);
+    return view('history.show', compact('appointment'));
+}
 }

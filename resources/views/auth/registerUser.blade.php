@@ -1,10 +1,16 @@
 @extends('layout')
 
 @section('content')
-    <div class="flex flex-col h-screen w-screen overflow-x-hidden items-center pt-5 pb-20 text-black">
-    {{-- logo --}}
-        <img class="w-[35%]" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
+   <div class="flex max-md:flex-col md:justify-center md:items-center md:h-screen w-screen overflow-x-hidden text-black max-md:pb-24">
+        {{-- Left: Logo (only visible on desktop) --}}
+        <div class="hidden md:flex md:w-1/2 justify-center items-center bg-white">
+            <img class="w-3/4 max-w-md" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
+        </div>
 
+        <div class="flex flex-col w-full md:w-1/2 h-screen md:h-auto items-center pt-5 pb-20 md:py-10">
+        {{-- Mobile-only Logo --}}
+        <img class="w-[35%] md:hidden" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
+        
         <form class="w-[85%] space-y-4" action="{{ route('register.post')}}" method="POST" id="registerForm">
             @csrf
             {{-- This general error div is no longer needed for AJAX validation errors but kept for conventional Laravel redirects if desired --}}
