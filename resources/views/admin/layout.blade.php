@@ -111,21 +111,14 @@
 
             <!-- Top Right Navigation -->
             <div class="flex items-center space-x-4">
-                <!-- Notifications -->
-                <button class="relative p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition duration-200">
-                    <i class="fas fa-bell text-lg"></i>
-                    <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
-                </button>
-
                 <!-- User Profile Dropdown -->
                 <div class="relative">
-                    <button class="flex items-center space-x-2 p-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition duration-200">
+                    <div class="flex items-center space-x-2 p-2 text-gray-600 rounded-lg transition duration-200">
                         <div class="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center">
                             <i class="fas fa-user text-white text-sm"></i>
                         </div>
                         <span class="hidden md:block font-medium">{{ session('name') ?? 'Admin' }}</span>
-                        <i class="fas fa-chevron-down text-sm"></i>
-                    </button>
+                    </div>
                 </div>
             </div>
         </header>
