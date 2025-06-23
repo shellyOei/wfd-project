@@ -30,24 +30,34 @@ class Appointment extends Model
         parent::boot();
 
         static::creating(function ($appointment) {
-            $appointment->id = (string) Str::uuid();
+            // Set the UUID if it's not already set
+            if (empty($appointment->id)) {
+                $appointment->id = (string) Str::uuid();
+            }
 
-            // Generate appointment number like: APPT-20250622-001
-            $datePrefix = now()->format('Ymd'); 
-            $last = self::whereDate('created_at', now()->toDateString())
-                ->orderBy('created_at', 'desc')
+            // The save() method in Laravel automatically wraps this in a transaction.
+            // We just need to ensure our read operation within that transaction is locked.
+
+            $datePrefix = now()->format('Ymd');
+            $prefix = 'APPT-' . $datePrefix;
+
+            // 1. Lock the latest record matching today's prefix.
+            //    This forces other requests to wait until the current transaction is finished.
+            // 2. We sort by the appointment_number itself for maximum reliability.
+            $last = self::where('appointment_number', 'LIKE', $prefix . '%')
+                ->orderBy('appointment_number', 'desc')
+                ->lockForUpdate() // This is the crucial lock
                 ->first();
 
             $nextNumber = 1;
-
-            if ($last && isset($last->appointment_number)) {
+            if ($last) {
+                // Extract the numeric part from the last appointment number and increment it.
                 $parts = explode('-', $last->appointment_number);
-                if (isset($parts[2])) {
-                    $nextNumber = (int)$parts[2] + 1;
-                }
+                $nextNumber = (int)end($parts) + 1;
             }
 
-            $appointment->appointment_number = 'APPT-' . $datePrefix . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+            // Pad the number with leading zeros and assign it.
+            $appointment->appointment_number = $prefix . '-' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
         });
     }
 
