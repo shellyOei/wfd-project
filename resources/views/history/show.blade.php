@@ -86,3 +86,11 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        highlightActiveMenu('appointment');
+    });
+</script>
+@endpush
