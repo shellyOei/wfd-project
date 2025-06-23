@@ -72,6 +72,8 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    highlightActiveMenu('book');
+
     // === KONSTANTA & VARIABEL ===
     const CSRF_TOKEN = '{{ csrf_token() }}';
     const DOCTOR_ID = '{{ $doctor->id }}';

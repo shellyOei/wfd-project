@@ -3,7 +3,7 @@
 @section('content')
 <!-- Selamat Datang -->
 {{-- Content for authenticated users --}}
-<div class="text-black flex justify-between items-center mb-6 w-full bg-white p-4 shadow-md">
+<div class="text-black flex justify-between items-center mb-6 w-full bg-white p-4 shadow-md overflow-hidden">
     <div class="flex items-center space-x-3">
         <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center">
             <img src="/assets/ewaps-logo.png" alt="Logo" class="w-full h-full mx-auto rounded-full ">

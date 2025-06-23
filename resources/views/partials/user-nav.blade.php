@@ -50,36 +50,35 @@
 @push('script')
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            document.addEventListener('DOMContentLoaded', () => {
-            const navItems = document.querySelectorAll('.nav-item');
+            // document.addEventListener('DOMContentLoaded', () => {
+            // const navItems = document.querySelectorAll('.nav-item');
 
-            function highlightActiveMenu() {
-                const currentHash = window.location.hash.substring(1) || 'home';
+            // function highlightActiveMenu() {
+            //     const currentHash = window.location.hash.substring(1) || 'home';
 
-                navItems.forEach(item => {
-                    // Get the target page from the <a> tag's href inside the nav-item div
-                    const link = item.querySelector('a');
-                    if (link) {
-                        const targetPage = link.getAttribute('href').substring(1); // Get "home", "appointment" etc.
+            //     navItems.forEach(item => {
+            //         // Get the target page from the <a> tag's href inside the nav-item div
+            //         const link = item.querySelector('a');
+            //         if (link) {
+            //             const targetPage = link.getAttribute('href').substring(1); // Get "home", "appointment" etc.
 
-                        // Remove active classes from all items first, using variable syntax for colors
-                        item.classList.remove('font-bold', 'bg-[var(--primary-bg-light)]');
-                        item.classList.add('text-[var(--text-default-color)]'); // Set default color
+            //             // Remove active classes from all items first, using variable syntax for colors
+            //             item.classList.remove('font-bold', 'bg-[var(--primary-bg-light)]');
+            //             item.classList.add('text-[var(--text-default-color)]'); // Set default color
 
-                        // If the current hash matches the target page, add active classes
-                        if (currentHash === targetPage) {
-                            item.classList.add('font-bold', 'bg-[var(--primary-bg-light)]'); // Add active background and font weight
-                            item.classList.remove('text-[var(--text-default-color)]'); // Remove default color
-                            item.classList.add('text-[var(--primary-color)]'); // Add active text/icon color
-                        }
-                    }
-                });
-            }
+            //             // If the current hash matches the target page, add active classes
+            //             if (currentHash === targetPage) {
+            //                 item.classList.add('font-bold', 'bg-[var(--primary-bg-light)]'); // Add active background and font weight
+            //                 item.classList.remove('text-[var(--text-default-color)]'); // Remove default color
+            //                 item.classList.add('text-[var(--primary-color)]'); // Add active text/icon color
+            //             }
+            //         }
+            //     });
+            // }
 
-            highlightActiveMenu();
+            // highlightActiveMenu();
 
-            window.addEventListener('hashchange', highlightActiveMenu);
-        });
+            // window.addEventListener('hashchange', highlightActiveMenu);
         });
 
 

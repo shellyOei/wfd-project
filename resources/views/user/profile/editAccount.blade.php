@@ -26,7 +26,7 @@
                 <div class="bg-white rounded-2xl p-6 shadow-sm">
                     <div class="flex items-center justify-center mb-4">
                         <div class="relative">
-                            <img src="img/mask-group.png" alt="Profile"
+                            <img src="{{ asset('assets/profile-avatar.jpg')}}" alt="Profile"
                                 class="w-24 h-24 rounded-full border-4 border-blue-100" />
                             <button
                                 class="absolute -bottom-1 -right-1 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors">

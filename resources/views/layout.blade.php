@@ -123,7 +123,7 @@
         </script>
     @endif
 
-    <main class="w-screen overflow-x-hidden">
+    <main class="w-screen min-h-screen overflow-x-hidden">
         @yield('content')
         @stack('content')
     </main>
