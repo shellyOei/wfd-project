@@ -94,8 +94,8 @@
             <section class="px-6 mb-6">
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="text-lg font-semibold text-[#373737]">Janji Temu Aktif</h2>
-                    <!-- BLM arahin route ke full history n booking -->
-                    <a href="#" class="text-xs font-bold text-black underline flex items-center whitespace-nowrap">
+                    <!-- BLM arahin route ke full history n booking (DONE)-->
+                    <a href="{{ route('user.appointments.index')}}" class="text-xs font-bold text-black underline flex items-center whitespace-nowrap">
                         Lihat Selengkapnya
                         <i class="fas fa-chevron-right ml-1 text-xs"></i>
                     </a>
@@ -135,7 +135,7 @@
             <section class="px-6">
                 <div class="flex justify-between items-center mb-2">
                     <h2 class="text-lg font-semibold text-[#373737]">Riwayat</h2>
-                    <a href="#" class="text-xs font-bold text-black underline flex items-center whitespace-nowrap">
+                    <a href="{{ route('user.history.index')}}" class="text-xs font-bold text-black underline flex items-center whitespace-nowrap">
                         Lihat Selengkapnya
                         <i class="fas fa-chevron-right ml-1 text-xs"></i>
                     </a>

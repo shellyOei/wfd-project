@@ -9,7 +9,7 @@
             </svg>
         </button>
         <h1 class="text-2xl md:text-3xl font-bold text-gray-800 text-center">Janji Temu</h1>
-        <a href="#"class=" text-[var(--blue1)] font-medium py-1 px-2 rounded-md hover:text-blue-300 transition duration-150 cursor-pointer flex items-center space-x-1 flex-1 justify-end">
+        <a href="{{ route('user.history.index')}}"class=" text-[var(--blue1)] font-medium py-1 px-2 rounded-md hover:text-blue-300 transition duration-150 cursor-pointer flex items-center space-x-1 flex-1 justify-end">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
