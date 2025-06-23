@@ -132,7 +132,7 @@
                     </div>
                 </div>
 
-                <div id="noteModal" class="fixed inset-0 bg-gray-600 bg-opacity-75 flex items-center justify-center z-50 hidden">
+                <div id="noteModal" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-50 hidden">
                     <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-sm mx-auto relative">
                         <button id="closeNoteModalButton" class="absolute top-3 right-3 text-red-500 hover:text-red-700 transition duration-150 p-2 rounded-full hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-red-500">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
