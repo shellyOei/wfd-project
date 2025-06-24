@@ -229,12 +229,21 @@ Appointments
                                     @endforeach
                                 </select>
                             </div>
+                            {{-- MODIFIED SECTION: Date and Time selection --}}
                             <div>
-                                <label for="new-schedule-select" class="block text-sm font-medium text-gray-700">Schedule</label>
-                                <select id="new-schedule-select" name="day_available_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled required>
-                                    <option value="">Select a doctor first</option>
+                                <label for="new-date-select" class="block text-sm font-medium text-gray-700">Date</label>
+                                <input type="date" id="new-date-select" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled required>
+                            </div>
+
+                            <div>
+                                <label for="new-time-select" class="block text-sm font-medium text-gray-700">Time</label>
+                                <select id="new-time-select" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled required>
+                                    <option value="">Select a date first</option>
                                 </select>
                             </div>
+                            {{-- This hidden input will hold the final schedule ID for the form submission --}}
+                            <input type="hidden" name="day_available_id" id="hidden-schedule-id" required>
+                            {{-- END MODIFIED SECTION --}}
                             <div>
                                 <label for="new-type" class="block text-sm font-medium text-gray-700">Appointment Type</label>
                                 <input type="text" id="new-type" name="type" placeholder="e.g., Check-up, Consultation" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
@@ -428,6 +437,16 @@ Appointments
 
     // --- Modal Functions (No changes needed here) ---
     function openNewAppointmentModal() {
+        document.getElementById('new-doctor-select').value = '';
+        const dateSelect = document.getElementById('new-date-select');
+        const timeSelect = document.getElementById('new-time-select');
+        dateSelect.disabled = true;
+        dateSelect.value = '';
+        timeSelect.disabled = true;
+        timeSelect.innerHTML = '<option value="">Select a doctor first</option>';
+        document.getElementById('hidden-schedule-id').value = '';
+
+        newAppointmentModal.classList.remove('hidden');
         newAppointmentModal.classList.remove('hidden');
     }
 
@@ -510,46 +529,85 @@ Appointments
         }
     });
 
-    // Dependent dropdown logic for creating new appointments
     document.addEventListener('DOMContentLoaded', () => {
         const doctorSelect = document.getElementById('new-doctor-select');
-        const scheduleSelect = document.getElementById('new-schedule-select');
+        const dateSelect = document.getElementById('new-date-select');
+        const timeSelect = document.getElementById('new-time-select');
+        const hiddenScheduleInput = document.getElementById('hidden-schedule-id');
 
+        let availableSchedules = []; // To store schedules for the selected doctor
+
+        // Step 1: Doctor selection fetches all available schedules
         doctorSelect.addEventListener('change', function() {
-            // ... (this logic can remain here, as it's for a modal outside the table) ...
             const doctorId = this.value;
-            scheduleSelect.innerHTML = '<option value="">Loading schedules...</option>';
-            scheduleSelect.disabled = true;
+
+            // Reset date and time fields
+            dateSelect.disabled = true;
+            dateSelect.value = '';
+            timeSelect.innerHTML = '<option value="">Select a date first</option>';
+            timeSelect.disabled = true;
+            hiddenScheduleInput.value = '';
 
             if (!doctorId) {
-                scheduleSelect.innerHTML = '<option value="">Select a doctor first</option>';
                 return;
             }
 
+            // Fetch all schedules for the selected doctor
             const urlTemplate = "{{ route('admin.appointments.schedules', ['doctor' => ':doctorId']) }}";
             const url = urlTemplate.replace(':doctorId', doctorId);
             
             fetch(url)
                 .then(response => response.json())
                 .then(schedules => {
-                    scheduleSelect.innerHTML = '';
                     if (schedules.length > 0) {
-                        scheduleSelect.innerHTML = '<option value="">Select an available slot</option>';
-                        schedules.forEach(schedule => {
-                            const option = document.createElement('option');
-                            option.value = schedule.value;
-                            option.textContent = schedule.text;
-                            scheduleSelect.appendChild(option);
-                        });
-                        scheduleSelect.disabled = false;
+                        availableSchedules = schedules;
+                        dateSelect.disabled = false;
+                        // Set min date to today
+                        dateSelect.min = new Date().toISOString().split("T")[0];
+                        timeSelect.innerHTML = '<option value="">Select a date</option>';
                     } else {
-                        scheduleSelect.innerHTML = '<option value="">No available schedules found for this doctor</option>';
+                        availableSchedules = [];
+                        timeSelect.innerHTML = '<option value="">No schedules found for this doctor</option>';
                     }
                 })
                 .catch(error => {
                     console.error('Error fetching schedules:', error);
-                    scheduleSelect.innerHTML = '<option value="">Could not load schedules</option>';
+                    timeSelect.innerHTML = '<option value="">Could not load schedules</option>';
                 });
+        });
+
+        // Step 2: Date selection filters available times
+        dateSelect.addEventListener('change', function() {
+            const selectedDate = this.value; // Format: YYYY-MM-DD
+            timeSelect.innerHTML = '';
+            timeSelect.disabled = true;
+            hiddenScheduleInput.value = '';
+
+            const timesForDate = availableSchedules.filter(schedule => {
+                // Assuming schedule.text is in a format like 'YYYY-MM-DD HH:MM...'
+                return schedule.text.startsWith(selectedDate);
+            });
+
+            if (timesForDate.length > 0) {
+                timeSelect.innerHTML = '<option value="">Select an available time</option>';
+                timesForDate.forEach(schedule => {
+                    const option = document.createElement('option');
+                    // The value is the schedule ID
+                    option.value = schedule.value; 
+                    // The text is the formatted time
+                    const dateTime = new Date(schedule.text);
+                    option.textContent = dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+                    timeSelect.appendChild(option);
+                });
+                timeSelect.disabled = false;
+            } else {
+                timeSelect.innerHTML = '<option value="">No available times for this date</option>';
+            }
+        });
+
+        // Step 3: Time selection sets the hidden input value
+        timeSelect.addEventListener('change', function() {
+            hiddenScheduleInput.value = this.value;
         });
     });
 </script>
