@@ -55,16 +55,16 @@
             <!-- Appointments -->
             <li>
                 <a href="{{ route('admin.practice-schedules.index') }}"
-                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.practice*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-calendar-check text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
-                    <span class="font-medium">Appointments</span>
+                    <span class="font-medium">Reservations</span>
                 </a>
             </li>
 
             <li>
                 <a href="{{ route('admin.appointments.index') ?? '#' }}"
-                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.patients*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
-                    <i class="fas fa-users text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments.index') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    <i class="fa-solid fa-calendar text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Appointments</span>
                 </a>
             </li>
@@ -80,13 +80,13 @@
 
 
             <!-- Reports -->
-            <li>
+            {{-- <li>
                 <a href=""
                     class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.reports*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-chart-bar text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Reports</span>
                 </a>
-            </li>
+            </li> --}}
         </ul>
 
         <!-- Divider -->
@@ -98,7 +98,7 @@
             <!-- Users -->
             <li>
                 <a href="{{ route('admin.users') }}"
-                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.users*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-users-gear text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Users</span>
                 </a>
@@ -108,7 +108,7 @@
             <!-- Admins -->
             <li>
                 <a href="{{ route('admin.manage') }}"
-                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.appointments*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                   class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.manage*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
                     <i class="fas fa-user-tie text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Admins</span>
                 </a>
@@ -116,13 +116,13 @@
             @endif
 
             <!-- Settings -->
-            <li>
+            {{-- <li>
                 <a href=""
                     class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group">
                     <i class="fas fa-cog text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
                     <span class="font-medium">Settings</span>
                 </a>
-            </li>
+            </li> --}}
 
             <!-- Logout -->
             <li>
