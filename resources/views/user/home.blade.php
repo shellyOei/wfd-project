@@ -88,7 +88,7 @@
             <h3 class="font-bold text-lg mb-3">Artikel Terkait</h3>
             <div class="bg-white rounded-lg shadow overflow-hidden">
                 <div class="w-full h-55 flex items-center justify-center">
-                   <img src="/Artikel/Artikel.png" alt="Artikel 1" class="w-full h-full mx-auto object-cover object-top">
+                   <img src="{{ asset('artikel/Artikel.png') }}" alt="Artikel 1" class="w-full h-full mx-auto object-cover object-top">
                 </div>
                 <div class="p-4">
                     <p class="font-semibold">Ditemukan Covid-25</p>
