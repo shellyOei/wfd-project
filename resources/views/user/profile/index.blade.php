@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="min-h-screen pb-20">
+    <div class="min-h-screen pb-20 px-4">
         <!-- Header - Mobile Only -->
         <!-- <header class="fixed top-0 left-0 right-0 h-[63px] bg-[#f4f4fd] z-10 md:hidden">
                                                 <div class="flex justify-between items-center px-7 pt-6">
@@ -20,17 +20,6 @@
 
         <!-- Main Content -->
         <main class="max-w-[440px] md:max-w-7xl mx-auto md:pt-8 pb-[61px] md:pb-8">
-            <!-- Desktop Header -->
-            <!-- <div class="hidden md:block mb-8">
-                                                    <div class="flex items-center justify-between">
-                                                        <h1 class="text-4xl font-bold text-gray-800">Dashboard</h1>
-                                                        <div class="flex items-center space-x-4">
-                                                            <span class="text-gray-600">Welcome back, Angel</span>
-                                                            <img class="w-10 h-10 rounded-full" src="img/mask-group.png" alt="User avatar" />
-                                                        </div>
-                                                    </div>
-                                                </div> -->
-
             <!-- Desktop Grid Layout -->
             <div class="md:grid md:grid-cols-12 md:gap-8">
                 <!-- Left Column - Account & Patient List -->
@@ -54,7 +43,7 @@
                         <div class="flex justify-between items-center mb-5">
                             <h2 class="text-2xl md:text-3xl font-bold">Daftar Pasien</h2>
                             <a href="{{ route('user.patients') }}"
-                                class="text-xs md:text-sm font-bold underline flex items-center text-blue-600 hover:text-blue-800">
+                                class="text-sm md:text-lg font-bold underline flex items-center text-blue-600 hover:text-blue-800">
                                 Edit
                                 <i class="fas fa-chevron-right text-[10px] ml-1"></i>
                             </a>
@@ -124,7 +113,7 @@
                     <!-- Settings Section -->
                     <section class="mt-8 md:mt-0">
                         <h2 class="text-2xl md:text-3xl font-bold mb-5">Pengaturan</h2>
-                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm">
+                        <div class="bg-white rounded-2xl overflow-hidden shadow-sm ">
                             <a href="{{ route('user.miniHistory') }}"
                                 class="flex items-center ml-2 p-4 md:p-5 border-b border-gray-100 hover:bg-gray-50 transition-colors">
                                 <i class="fas fa-history text-2xl mr-4 text-gray-600"></i>
@@ -188,10 +177,7 @@
 @include('partials.add-patient-modal')
 
 @endsection
-
-
-@push('script')
+@push('scripts')
 <script>
-    highlightActiveMenu('profile');
+    sessionStorage.setItem('prevUrl', window.location.href);
 </script>
-@endpush

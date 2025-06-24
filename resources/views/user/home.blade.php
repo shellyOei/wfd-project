@@ -3,7 +3,7 @@
 @section('content')
 <!-- Selamat Datang -->
 {{-- Content for authenticated users --}}
-<div class="text-black flex justify-between items-center mb-6 w-full bg-white p-4 shadow-md overflow-hidden">
+<div class="text-black flex justify-between items-center mb-6 bg-white p-4 shadow-md">
     <div class="flex items-center space-x-3">
         <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center">
             <img src="{{ asset('assets/ewaps-logo.png') }}" alt="Logo" class="w-full h-full mx-auto rounded-full ">
@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<div class="max-w-7xl mx-auto p-4 pb-20">
+<div class="max-w-7xl md:w-3/4 mx-auto p-4 pb-20">
         <!-- Layanan -->
         <div class="relative bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)] rounded-3xl p-6 flex flex-col md:flex-row items-center text-white mb-8">
             <div class="relative md:w-1/2 md:mb-0 z-[20]">
@@ -58,7 +58,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div class="bg-white rounded-lg shadow p-3 text-center">
                     <div class="w-20 h-20 bg-blue-100 rounded-full mx-auto flex items-center justify-center">
-                        <img src="/doctors/Andrew.png" alt="Profil Dr. Andrew" class="w-full h-full mx-auto rounded-full object-cover object-top">
+                        <img src="{{ asset('doctors/Andrew.png') }}" alt="Profil Dr. Andrew" class="w-full h-full mx-auto rounded-full object-cover object-top">
                     </div>
                     <p class="font-semibold mt-2">dr. Andrew</p>
                     <p class="text-sm text-gray-500">Dokter Umum</p>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="bg-white rounded-lg shadow p-3 text-center">
                     <div class="w-20 h-20 bg-blue-100 rounded-full mx-auto flex overflow-hidden items-center justify-center">
-                        <img src="/doctors/Amba.png" alt="Profil Dr. Amba" class="w-full h-full mx-auto rounded-full object-cover object-top scale-125">
+                        <img src="{{ asset('doctors/Amba.png') }}" alt="Profil Dr. Amba" class="w-full h-full mx-auto rounded-full object-cover object-top scale-125">
                     </div>
                     <p class="font-semibold mt-2">dr. Amba</p>
                     <p class="text-sm text-gray-500">Kardiologi</p>
@@ -74,7 +74,7 @@
                 </div>
                 <div class="bg-white rounded-lg shadow p-3 text-center">
                     <div class="w-20 h-20 bg-blue-100 rounded-full mx-auto flex items-center justify-center">
-                        <img src="/doctors/Jessi.png" alt="Profil Dr. Jessi" class="w-full h-full mx-auto rounded-full object-top object-cover">
+                        <img src="{{ asset('doctors/Jessi.png') }}" alt="Profil Dr. Jessi" class="w-full h-full mx-auto rounded-full object-top object-cover">
                     </div>
                     <p class="font-semibold mt-2">dr. Jessi</p>
                     <p class="text-sm text-gray-500">Dermatologi</p>
@@ -88,7 +88,7 @@
             <h3 class="font-bold text-lg mb-3">Artikel Terkait</h3>
             <div class="bg-white rounded-lg shadow overflow-hidden">
                 <div class="w-full h-55 flex items-center justify-center">
-                   <img src="/Artikel/Artikel.png" alt="Artikel 1" class="w-full h-full mx-auto object-cover object-top">
+                   <img src="{{ asset('artikel/Artikel.png') }}" alt="Artikel 1" class="w-full h-full mx-auto object-cover object-top">
                 </div>
                 <div class="p-4">
                     <p class="font-semibold">Ditemukan Covid-25</p>

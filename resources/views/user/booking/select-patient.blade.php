@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-<div class="max-w-md mx-auto p-5 min-h-screen pb-24">
+<div class="max-md:max-w-md md:w-screen mx-auto p-5 min-h-screen pb-24 md:px-10">
     <div class="flex justify-evenly mb-10 mt-4">
         <a href="{{ url()->previous() }}" class="mr-2 text-gray-600 hover:text-gray-800 transition duration-300 ease-in-out">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -17,7 +17,7 @@
     </div>
 
     @if ($patients->isNotEmpty())
-    <div class="flex flex-col w-[95%] mx-auto">
+    <div class="flex flex-col max-md:w-[95%] md:w-[50%] mx-auto">
         <form class="space-y-6" id="selectPatientForm" method="GET" action="#">
             <input type="hidden" name="patient_id" id="selectedPatientId">
 

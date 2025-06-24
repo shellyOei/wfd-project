@@ -3,7 +3,7 @@
 @section('content')
    <div class="flex max-md:flex-col md:justify-center md:items-center md:h-screen w-screen overflow-x-hidden text-black max-md:pb-24">
         {{-- Left: Logo (only visible on desktop) --}}
-        <div class="hidden md:flex md:w-1/2 justify-center items-center bg-white">
+        <div class="hidden md:flex md:w-1/2 justify-center items-center">
             <img class="w-3/4 max-w-md" src="{{ asset('assets/ewaps-logo.png')}}" alt="">
         </div>
 

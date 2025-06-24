@@ -36,13 +36,14 @@
             </div>
             <div class="flex space-x-3">
                 <!-- <button onclick="openAddModal()"
-                                                                                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 flex items-center">
-                                                                                    <i class="fas fa-plus mr-2"></i>Add New User
-                                                                                </button> -->
-                <button
+                                                                                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 flex items-center">
+                                                                                        <i class="fas fa-plus mr-2"></i>Add New User
+                                                                                    </button> -->
+                <a href="{{ route('admin.users.export') }}"
                     class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 flex items-center">
                     <i class="fas fa-download mr-2"></i>Export
-                </button>
+                </a>
+
             </div>
         </div>
     </div>
@@ -99,12 +100,12 @@
                             <td class="py-4 px-6 text-center">
                                 <div class="flex items-center justify-center space-x-2">
                                     <!-- <button class="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition duration-200"
-                                                                                                                                            title="Reset Password" onclick="viewUser('{{ $user->id }}')">
-                                                                                                                                            <i class="fas fa-key text-sm"></i>
-                                                                                                                                        </button> -->
+                                                                                                                                                    title="Reset Password" onclick="viewUser('{{ $user->id }}')">
+                                                                                                                                                    <i class="fas fa-key text-sm"></i>
+                                                                                                                                                </button> -->
                                     <button class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition duration-200"
                                         title="Edit User"
-                                        onclick="editUser('{{ $user->id }}', '{{ $user->email }}', '{{ $user->deleted_at }}')">
+                                        onclick="editUser('{{ $user->id }}','{{ $user->name }}', '{{ $user->email }}', '{{ $user->deleted_at }}')">
                                         <i class="fas fa-edit text-sm"></i>
                                     </button>
                                     <button class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200"
@@ -147,6 +148,11 @@
                 <form id="editUserForm" method="POST">
                     @csrf
                     @method('PUT')
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
+                        <input type="name" name="name" id="edit_name" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
 
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
@@ -327,9 +333,10 @@
         function closeEditModal() {
             document.getElementById('editUserModal').classList.add('hidden');
         }
-        function editUser(userId, email, deleted) {
+        function editUser(userId, name, email, deleted) {
             const user = users.find(p => p.id === userId);
             if (!user) return;
+            document.getElementById('edit_name').value = name;
             document.getElementById('edit_email').value = email;
             const accountAction = document.getElementById('accountAction');
 
@@ -337,19 +344,19 @@
             if (!deleted || deleted === 'null' || deleted === '') {
                 // aktif -> tampilkan tombol deactivate
                 accountAction.innerHTML = `
-                            <button type="button" onclick="deactivateUser()"
-                                class="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200">
-                                Deactivate Account
-                            </button>
-                        `;
+                                <button type="button" onclick="deactivateUser()"
+                                    class="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200">
+                                    Deactivate Account
+                                </button>
+                            `;
             } else {
                 // nonaktif -> tampilkan tombol activate
                 accountAction.innerHTML = `
-                            <button type="button" onclick="activateUser()"
-                                class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
-                                Activate Account
-                            </button>
-                        `;
+                                <button type="button" onclick="activateUser()"
+                                    class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
+                                    Activate Account
+                                </button>
+                            `;
             }
             document.getElementById('editUserModal').classList.remove('hidden');
             document.getElementById('editUserForm').dataset.userId = userId;
@@ -472,19 +479,19 @@
                 const patients = user.profiles?.map(profile => profile.patient) || [];
 
                 document.getElementById('viewPatientsContent').innerHTML = `
-                                                                            <div>
-                                                                                <h4 class="font-semibold text-gray-900 mb-3">Connected Patients</h4>
-                                                                                ${patients.length > 0 ? `
-                                                                                    <ul class="list-disc list-inside space-y-1 max-h-60 overflow-y-auto border border-gray-200 rounded p-3">
-                                                                                        ${patients.map(patient => `
-                                                                                            <li><strong>${patient.name || 'Unnamed Patient'}</strong> (ID: ${patient.id})</li>
-                                                                                        `).join('')}
-                                                                                    </ul>
-                                                                                ` : `
-                                                                                    <p class="text-gray-500 italic">No patients connected to this user.</p>
-                                                                                `}
-                                                                            </div>
-                                                                        `;
+                                                                                <div>
+                                                                                    <h4 class="font-semibold text-gray-900 mb-3">Connected Patients</h4>
+                                                                                    ${patients.length > 0 ? `
+                                                                                        <ul class="list-disc list-inside space-y-1 max-h-60 overflow-y-auto border border-gray-200 rounded p-3">
+                                                                                            ${patients.map(patient => `
+                                                                                                <li><strong>${patient.name || 'Unnamed Patient'}</strong> (ID: ${patient.id})</li>
+                                                                                            `).join('')}
+                                                                                        </ul>
+                                                                                    ` : `
+                                                                                        <p class="text-gray-500 italic">No patients connected to this user.</p>
+                                                                                    `}
+                                                                                </div>
+                                                                            `;
             }, 500);
         }
 
