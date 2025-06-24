@@ -269,6 +269,7 @@ class PatientController extends Controller
                 $historyAppointments->push($info);
             }
         }
+
         return response()->json([
             'activeAppointments' => $activeAppointments->sortBy('date')->values(),
             'historyAppointments' => $historyAppointments->sortByDesc('date')->values(),

@@ -201,7 +201,7 @@ Appointments
     </main>
 
     <div id="newAppointmentModal" class="fixed inset-0 z-50 flex items-center justify-center hidden modal-backdrop">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl w-3/4 max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
             <form action="{{ route('admin.appointments.store') }}" method="POST">
                 @csrf
                 <div class="flex justify-between items-center p-5 border-b">
@@ -209,7 +209,7 @@ Appointments
                     <button type="button" onclick="closeNewAppointmentModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times fa-lg"></i></button>
                 </div>
                 <div class="p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="">
                         <div class="space-y-4">
                             <div>
                                 <label for="new-patient-select" class="block text-sm font-medium text-gray-700">Patient</label>

@@ -491,7 +491,7 @@
             console.log('Submitting form data:', formData);
 
             $.ajax({
-                url: '/admin/patients',
+                url: `{{route('admin.patients.store')}}`,
                 method: 'POST',
                 data: formData,
                 processData: false,
@@ -579,7 +579,7 @@
             submitBtn.prop('disabled', true).text('Updating...');
 
             $.ajax({
-                url: `/admin/patients/${patientId}`,
+                url: `{{route('admin.patients.update', '') }}/${patientId}`,
                 method: 'POST',
                 data: formData,
                 processData: false,
@@ -632,7 +632,7 @@
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        url: `/admin/patients/${patientId}`,
+                        url: `{{ route('admin.patients.destroy', ':id') }}`.replace(':id', patientId),
                         method: 'DELETE',
                         success: function(response) {
                             if (response.success) {
@@ -675,7 +675,7 @@
 
             // Create a temporary link to download the file
             const link = document.createElement('a');
-            link.href = '/admin/patients-export';
+            link.href = `{{route('admin.patients.export')}}`;
             link.target = '_blank';
 
             // Trigger download

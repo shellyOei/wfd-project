@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<div class="fixed inset-y-0 left-0 z-50 w-64 bg-gradient-to-b from-indigo-900 to-purple-900 shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0"
+<div class="fixed  inset-y-0 overflow-auto left-0 z-50 w-64 h-lvh bg-gradient-to-b from-indigo-900 to-purple-900 shadow-2xl transform transition-transform duration-300 ease-in-out lg:translate-x-0"
     id="sidebar">
     <!-- Sidebar Header -->
     <div class="flex items-center justify-between h-16 px-6 bg-black/20">
@@ -61,6 +61,14 @@
                 </a>
             </li>
 
+            <li>
+                <a href="{{ route('admin.appointments.index') ?? '#' }}"
+                    class="flex items-center px-4 py-3 text-white rounded-lg hover:bg-white/10 transition duration-200 group {{ request()->routeIs('admin.patients*') ? 'bg-white/20 border-r-4 border-white' : '' }}">
+                    <i class="fas fa-users text-lg mr-3 group-hover:scale-110 transition duration-200"></i>
+                    <span class="font-medium">Appointments</span>
+                </a>
+            </li>
+
             <!-- Patients -->
             <li>
                 <a href="{{ route('admin.patients') ?? '#' }}"
@@ -69,7 +77,6 @@
                     <span class="font-medium">Patients</span>
                 </a>
             </li>
-
 
 
             <!-- Reports -->
@@ -128,11 +135,7 @@
                 </form>
             </li>
         </ul>
-    </nav>
-
-    <!-- User Info at Bottom -->
-    <div class="absolute bottom-0 left-0 right-0 p-4 bg-black/20">
-        <div class="flex items-center">
+        <div class="flex items-center my-4">
             <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center mr-3">
                 <i class="fas fa-user text-indigo-600"></i>
             </div>
@@ -145,7 +148,7 @@
                 </p>
             </div>
         </div>
-    </div>
+    </nav>
 </div>
 
 <!-- Mobile Sidebar Overlay -->

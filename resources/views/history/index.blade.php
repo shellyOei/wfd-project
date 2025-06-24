@@ -16,7 +16,9 @@
         </h1>
         <div class="w-7"></div> {{-- Spacer untuk menyeimbangkan header --}}
     </div>
+    @dd($activeAppointments)
 
+    {{-- PERBAIKAN: Pastikan $userPatients didefinisikan sebelum digunakan --}}
     {{-- Filter Status Buttons --}}
     <div class="flex items-center gap-x-3 mb-4">
         {{-- Tombol "Semua" tidak mengirim parameter status --}}
