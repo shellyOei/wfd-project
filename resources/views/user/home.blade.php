@@ -58,7 +58,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <div class="bg-white rounded-lg shadow p-3 text-center">
                     <div class="w-20 h-20 bg-blue-100 rounded-full mx-auto flex items-center justify-center">
-                        <img src="/doctors/Andrew.png" alt="Profil Dr. Andrew" class="w-full h-full mx-auto rounded-full object-cover object-top">
+                        <img src="{{ asset('doctors/Andrew.png') }}" alt="Profil Dr. Andrew" class="w-full h-full mx-auto rounded-full object-cover object-top">
                     </div>
                     <p class="font-semibold mt-2">dr. Andrew</p>
                     <p class="text-sm text-gray-500">Dokter Umum</p>
@@ -66,7 +66,7 @@
                 </div>
                 <div class="bg-white rounded-lg shadow p-3 text-center">
                     <div class="w-20 h-20 bg-blue-100 rounded-full mx-auto flex overflow-hidden items-center justify-center">
-                        <img src="/doctors/Amba.png" alt="Profil Dr. Amba" class="w-full h-full mx-auto rounded-full object-cover object-top scale-125">
+                        <img src="{{ asset('doctors/Amba.png') }}" alt="Profil Dr. Amba" class="w-full h-full mx-auto rounded-full object-cover object-top scale-125">
                     </div>
                     <p class="font-semibold mt-2">dr. Amba</p>
                     <p class="text-sm text-gray-500">Kardiologi</p>
@@ -74,7 +74,7 @@
                 </div>
                 <div class="bg-white rounded-lg shadow p-3 text-center">
                     <div class="w-20 h-20 bg-blue-100 rounded-full mx-auto flex items-center justify-center">
-                        <img src="/doctors/Jessi.png" alt="Profil Dr. Jessi" class="w-full h-full mx-auto rounded-full object-top object-cover">
+                        <img src="{{ asset('doctors/Jessi.png') }}" alt="Profil Dr. Jessi" class="w-full h-full mx-auto rounded-full object-top object-cover">
                     </div>
                     <p class="font-semibold mt-2">dr. Jessi</p>
                     <p class="text-sm text-gray-500">Dermatologi</p>
