@@ -579,7 +579,7 @@
             submitBtn.prop('disabled', true).text('Updating...');
 
             $.ajax({
-                url: `{{route('admin.patients.update', '') }}/${patientId}`,
+                url: `{{ route('admin.patients.update', ':id') }}`.replace(':id', patientId),
                 method: 'POST',
                 data: formData,
                 processData: false,
