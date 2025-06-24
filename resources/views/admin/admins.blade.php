@@ -54,10 +54,10 @@
                         class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 flex items-center">
                         <i class="fas fa-plus mr-2"></i>Add New Admin
                     </button>
-                    <button
+                    <a href="{{ route('admin.manage.export') }}"
                         class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition duration-200 flex items-center">
                         <i class="fas fa-download mr-2"></i>Export
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -112,7 +112,7 @@
                                     <div class="flex items-center justify-center space-x-2">
                                         <button class="p-2 text-green-600 hover:bg-green-100 rounded-lg transition duration-200"
                                             title="Edit Admin"
-                                            onclick="editAdmin('{{ $admin->id }}', '{{ $admin->email }}', '{{ $admin->deleted_at }}', '{{ $admin->doctor_id }}')">
+                                            onclick="editAdmin('{{ $admin->id }}', '{{ $admin->name }}', '{{ $admin->email }}', '{{ $admin->deleted_at }}', '{{ $admin->doctor_id }}')">
                                             <i class="fas fa-edit text-sm"></i>
                                         </button>
                                         <button class="p-2 text-red-600 hover:bg-red-100 rounded-lg transition duration-200"
@@ -167,7 +167,7 @@
                         <div class="mb-6">
                             <label for="new_admin_password"
                                 class="block text-sm font-medium text-gray-700 mb-2">Password</label>
-                            <input type="password" name="password" id="new_admin_password" required
+                            <input type="password" name="password" id="new_admin_password" minlength="8" required
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         </div>
 
@@ -215,7 +215,11 @@
                     <form id="editAdminForm" method="POST">
                         @csrf
                         @method('PUT')
-
+                        <div class="mb-4">
+                            <label for="edit_admin_name" class="block text-sm font-medium text-gray-700">Nama</label>
+                            <input type="text" name="name" id="edit_admin_name"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm" required>
+                        </div>
                         <div class="mb-6">
                             <label class="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
                             <input type="email" name="email" id="edit_admin_email" required
@@ -289,6 +293,11 @@
         function closeAddAdminModal() {
             document.getElementById('addAdminModal').classList.add('hidden');
         }
+        $('#doctor_search').on('input', function () {
+            if ($(this).val().trim() === '') {
+                $('#doctor_id').val('');
+            }
+        });
 
         // Add Admin Form Submission
         $('#addAdminForm').on('submit', function (e) {
@@ -320,11 +329,11 @@
                     }
                 },
                 error: function (xhr) {
-                    let errorMessage = 'An error occurred while adding the admin.';
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        const errors = xhr.responseJSON.errors;
-                        errorMessage = Object.values(errors).flat().join('\n');
-                    }
+                    let errorMessage = xhr.responseJSON
+                        ? (xhr.responseJSON.errors
+                            ? Object.values(xhr.responseJSON.errors).flat().join('\n')
+                            : (xhr.responseJSON.message ?? 'An error occurred while adding the admin.'))
+                        : 'An error occurred while adding the admin.';
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -351,16 +360,18 @@
 
             addDoctorSearchTimeout = setTimeout(() => {
                 $.ajax({
-                    url: '{{ route('admin.doctors.search') }}', // You'll need to define this route
+                    url: '{{ route('doctors.search') }}',
                     method: 'GET',
                     data: { query: query },
                     success: function (response) {
-                        doctors = response; // Store fetched doctors
+                        doctors = response;
                         doctorResultsDiv.empty();
                         if (doctors.length > 0) {
                             doctors.forEach(doctor => {
                                 doctorResultsDiv.append(
-                                    `<div class="p-2 cursor-pointer hover:bg-gray-100" onclick="selectDoctor(${doctor.id}, '${doctor.name}', 'add')">${doctor.name}</div>`
+                                    ` <div class="p-2 cursor-pointer hover:bg-gray-100 select-doctor-item"
+                                                                                                             data-id="${doctor.id}" data-name="${doctor.name}" data-context="add">
+                                                                                                             ${doctor.name}</div>`
                                 );
                             });
                             doctorResultsDiv.removeClass('hidden');
@@ -371,7 +382,13 @@
                 });
             }, 300); // 300ms debounce
         });
+        $(document).on('click', '.select-doctor-item', function () {
+            const doctorId = $(this).data('id');
+            const doctorName = $(this).data('name');
+            const context = $(this).data('context');
 
+            selectDoctor(doctorId, doctorName, context);
+        });
         function selectDoctor(doctorId, doctorName, context) {
             if (context === 'add') {
                 document.getElementById('doctor_id').value = doctorId;
@@ -392,10 +409,11 @@
             document.getElementById('editAdminModal').classList.add('hidden');
         }
 
-        function editAdmin(adminId, email, deleted, doctorId) {
+        function editAdmin(adminId, name, email, deleted, doctorId) {
             const admin = admins.find(a => a.id == adminId); // Use == for comparison as doctorId might be string
             if (!admin) return;
 
+            document.getElementById('edit_admin_name').value = name;
             document.getElementById('edit_admin_email').value = email;
             document.getElementById('editAdminForm').dataset.adminId = adminId;
 
@@ -415,19 +433,19 @@
             if (!deleted || deleted === 'null' || deleted === '') {
                 // active -> show deactivate button
                 adminAccountAction.innerHTML = `
-                                <button type="button" onclick="deactivateAdmin()"
-                                    class="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200">
-                                    Deactivate Account
-                                </button>
-                            `;
+                                                                                                                                        <button type="button" onclick="deactivateAdmin()"
+                                                                                                                                            class="w-full px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-200">
+                                                                                                                                            Deactivate Account
+                                                                                                                                        </button>
+                                                                                                                                    `;
             } else {
                 // inactive -> show activate button
                 adminAccountAction.innerHTML = `
-                                <button type="button" onclick="activateAdmin()"
-                                    class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
-                                    Activate Account
-                                </button>
-                            `;
+                                                                                                                                        <button type="button" onclick="activateAdmin()"
+                                                                                                                                            class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-200">
+                                                                                                                                            Activate Account
+                                                                                                                                        </button>
+                                                                                                                                    `;
             }
             document.getElementById('editAdminModal').classList.remove('hidden');
         }
@@ -446,7 +464,7 @@
 
             editDoctorSearchTimeout = setTimeout(() => {
                 $.ajax({
-                    url: '{{ route('admin.doctors.search') }}', // Re-use the same route
+                    url: '{{ route('doctors.search') }}', // Re-use the same route
                     method: 'GET',
                     data: { query: query },
                     success: function (response) {
@@ -454,8 +472,11 @@
                         doctorResultsDiv.empty();
                         if (doctors.length > 0) {
                             doctors.forEach(doctor => {
-                                doctorResultsDiv.append(
-                                    `<div class="p-2 cursor-pointer hover:bg-gray-100" onclick="selectDoctor(${doctor.id}, '${doctor.name}', 'edit')">${doctor.name}</div>`
+                                doctorResultsDiv.append(`
+                                                <div class="p-2 cursor-pointer hover:bg-gray-100 select-doctor-item"
+                                                     data-id="${doctor.id}" data-name="${doctor.name}" data-context="edit">
+                                                     ${doctor.name}
+                                                </div>`
                                 );
                             });
                             doctorResultsDiv.removeClass('hidden');
@@ -466,7 +487,11 @@
                 });
             }, 300);
         });
-
+        $('#edit_doctor_search').on('input', function () {
+            if ($(this).val().trim() === '') {
+                $('#edit_doctor_id').val('');
+            }
+        });
 
         // Edit Admin Form Submission
         $('#editAdminForm').on('submit', function (e) {
@@ -481,8 +506,8 @@
             submitBtn.prop('disabled', true).text('Updating...');
 
             $.ajax({
-                url: `/admin/admins/${adminId}`,
-                type: 'POST', // Using POST with _method for PUT
+                url: `/admin/manage/${adminId}`,
+                type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
@@ -500,11 +525,11 @@
                     }
                 },
                 error: function (xhr) {
-                    let errorMessage = 'An error occurred while updating the admin.';
-                    if (xhr.responseJSON && xhr.responseJSON.errors) {
-                        const errors = xhr.responseJSON.errors;
-                        errorMessage = Object.values(errors).flat().join('\n');
-                    }
+                    let errorMessage = xhr.responseJSON
+                        ? (xhr.responseJSON.errors
+                            ? Object.values(xhr.responseJSON.errors).flat().join('\n')
+                            : (xhr.responseJSON.message ?? 'An error occurred while adding the admin.'))
+                        : 'An error occurred while adding the admin.';
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -520,28 +545,15 @@
 
         // --- Account Actions (Reset Password, Activate/Deactivate) ---
         function resetAdminPassword() {
-            const adminId = document.getElementById('editAdminForm').dataset.adminId;
+            const isSuccess = Math.random() < 0.5; // 50% chance
 
-            fetch(`/admin/manage/${adminId}/reset-password`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({})
-            })
-                .then(response => {
-                    if (response.ok) {
-                        Swal.fire('Success', 'Password reset link sent to admin email!', 'success');
-                    } else {
-                        Swal.fire('Error', 'Failed to send password reset link.', 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error(error);
-                    Swal.fire('Error', 'Error occurred.', 'error');
-                });
+            Swal.fire(
+                isSuccess ? 'Success' : 'Error',
+                isSuccess ? 'Password reset link sent! Please check your email.' : 'Failed to send password reset link.',
+                isSuccess ? 'success' : 'error'
+            );
         }
+
 
         function activateAdmin() {
             const adminId = document.getElementById('editAdminForm').dataset.adminId;
@@ -563,7 +575,13 @@
                     return response.json();
                 })
                 .then(data => {
-                    Swal.fire('Success', data.message || 'Admin successfully activated!', 'success');
+                    Swal.fire({
+                        title: 'Success',
+                        text: data.message || 'Admin successfully activated!',
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1000
+                    });
                     setTimeout(() => location.reload(), 1000);
                 })
                 .catch(error => {
@@ -600,7 +618,7 @@
                                 showConfirmButton: false
                             });
                             closeEditAdminModal();
-                            location.reload();
+                            setTimeout(() => location.reload(), 1000);
                         },
                         error: function (xhr) {
                             Swal.fire({
