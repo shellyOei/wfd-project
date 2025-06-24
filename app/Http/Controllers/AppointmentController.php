@@ -170,8 +170,8 @@ class AppointmentController extends Controller
                 'day_available_id' => 'required|exists:day_availables,id', 
             ]);
 
-            $dateString = $request->input('date'); // e.g., "2025-06-20"
-            $timeString = $request->input('time'); // e.g., "12:00"
+            $dateString = $request->input('date'); 
+            $timeString = $request->input('time'); 
 
             $dateTimeString = $dateString . ' ' . $timeString;
             $appointmentDateTime = Carbon::parse($dateTimeString);
@@ -210,6 +210,76 @@ class AppointmentController extends Controller
                 'success' => true,
                 'message' => 'Booking berhasil disimpan.',
                 'redirect_url' => route('user.appointments.index') 
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data yang dikirim tidak valid.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            Log::error("Error storing appointment: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan pada server. Silakan coba lagi nanti.'
+            ], 500);
+        }
+    }
+
+    public function storeAdmin(Request $request)
+    {
+        try {
+            $request->validate([
+                'date' => 'required|date_format:Y-m-d',
+                'time' => 'required|date_format:H:i',
+                'patient_id' => 'required|exists:patients,id',
+                'day_available_id' => 'required|exists:day_availables,id', 
+                'bpjs' => 'boolean',
+                'type' => 'required|string|max:255',
+            ]);
+
+            $dateString = $request->input('date'); // e.g., "2025-06-20"
+            $timeString = $request->input('time'); // e.g., "12:00"
+
+            $dateTimeString = $dateString . ' ' . $timeString;
+            $appointmentDateTime = Carbon::parse($dateTimeString);
+
+            if ($appointmentDateTime->isPast()) {
+                return response()->json(['success' => false, 'message' => 'Cannot book an appointment in the past.'], 400);
+            }
+
+            DB::beginTransaction();
+            
+            $existingSchedule = PracticeSchedule::where('day_available_id', $request->input('day_available_id'))
+                ->where('Datetime', $appointmentDateTime)
+                ->first();
+
+            if ($existingSchedule) {
+                DB::rollBack(); 
+                return response()->json(['success' => false, 'message' => 'Slot waktu ini sudah dibooking.'], 400);
+            }      
+
+            // create practice schedule 
+            $newSchedule = PracticeSchedule::create([
+                'day_available_id' => $request->input('day_available_id'),
+                'Datetime' => $appointmentDateTime,
+            ]);    
+
+            // Buat appointment baru
+            Appointment::create([
+                'schedule_id' => $newSchedule->id,
+                'queue_number' => 1, // Atau logika queue_number yang sesuai
+                'patient_id' => $request->input('patient_id'),
+                'is_bpjs' => $request->input('bpjs', false),
+                'type' => $request->input('type'),
+            ]);
+
+            DB::commit(); 
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Booking berhasil disimpan.',
+                'redirect_url' => route('admin.appointments.index') 
             ]);
         } catch (ValidationException $e) {
             return response()->json([
@@ -303,5 +373,57 @@ class AppointmentController extends Controller
             Log::error("Failed to save notes for appointment ID {$appointment->id}: " . $e->getMessage());
             return response()->json(['success' => false, 'message' => 'Terjadi kesalahan saat menyimpan catatan.'], 500);
         }
+    }
+
+    public function getDoctorAvailability(Doctor $doctor)
+    {
+        $dayOfWeekMap = ['Monday' => 1, 'Tuesday' => 2, 'Wednesday' => 3, 'Thursday' => 4, 'Friday' => 5, 'Saturday' => 6, 'Sunday' => 0];
+        
+        $availableDays = $doctor->dayAvailables()
+            ->pluck('day')
+            ->map(function ($dayName) use ($dayOfWeekMap) {
+                return $dayOfWeekMap[$dayName] ?? null;
+            })
+            ->filter()
+            ->unique()
+            ->values();
+
+        return response()->json($availableDays);
+    }
+
+    public function getAvailableTimes(Request $request, Doctor $doctor)
+    {
+        $request->validate(['date' => 'required|date_format:Y-m-d']);
+        $date = Carbon::parse($request->input('date'));
+        $dayName = $date->format('l');
+
+        $dayAvailable = $doctor->dayAvailables()->where('day', $dayName)->first();
+
+        if (!$dayAvailable) {
+            return response()->json(['available_slots' => [], 'day_available_id' => null]);
+        }
+
+        $startTime = Carbon::parse($date->format('Y-m-d') . ' ' . $dayAvailable->start_time);
+        $endTime = Carbon::parse($date->format('Y-m-d') . ' ' . $dayAvailable->end_time);
+        
+        $bookedSlots = PracticeSchedule::where('day_available_id', $dayAvailable->id)
+            ->whereDate('Datetime', $date->toDateString())
+            ->get()
+            ->map(fn($schedule) => Carbon::parse($schedule->Datetime)->format('H:i'))
+            ->flip();
+
+        $availableSlots = [];
+        while ($startTime < $endTime) {
+            $slot = $startTime->format('H:i');
+            if (!isset($bookedSlots[$slot])) {
+                $availableSlots[] = $slot;
+            }
+            $startTime->addMinutes(30);
+        }
+
+        return response()->json([
+            'available_slots' => $availableSlots,
+            'day_available_id' => $dayAvailable->id,
+        ]);
     }
 }

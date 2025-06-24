@@ -1,5 +1,15 @@
 @extends('admin.layout')
 
+@section('head')
+{{-- searchable dropdown --}}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+{{-- advanced date picker --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+@endsection
+
 @section('page-title')
 Appointments
 @endsection
@@ -94,18 +104,17 @@ Appointments
         </div>
 
         <div class="bg-white rounded-xl shadow-sm p-6">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-4">
+           <div class="flex flex-col md:flex-row justify-between items-center mb-4">
                 <h2 class="text-xl font-bold text-gray-800 mb-4 md:mb-0">All Appointments</h2>
                 <div class="flex items-center space-x-2 w-full md:w-auto">
-                     <select class="border rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option>All Status</option>
-                        <option>Ongoing</option>
-                        <option>Cancelled</option>
-                        <option>Completed</option>
+                    <select id="appointment-status-filter" class="border rounded-lg py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Status</option> <option value="Ongoing">Ongoing</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="Completed">Completed</option>
                     </select>
                 </div>
             </div>
-            
+                        
             <div class="overflow-x-auto">
                 <table id="appointments-table" class="w-full text-sm text-left text-gray-500 mt-2">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
@@ -187,77 +196,67 @@ Appointments
 
                 </table>
             </div>
-
-             <nav class="flex items-center justify-between pt-4" aria-label="Table navigation">
-                <span class="text-sm font-normal text-gray-500">Showing <span class="font-semibold text-gray-900">1-3</span> of <span class="font-semibold text-gray-900">100</span></span>
-                <ul class="inline-flex -space-x-px text-sm h-8">
-                    <li><a href="#" class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 hover:text-gray-700">Previous</a></li>
-                    <li><a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700">1</a></li>
-                    <li><a href="#" aria-current="page" class="flex items-center justify-center px-3 h-8 text-blue-600 border border-gray-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700">2</a></li>
-                    <li><a href="#" class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700">Next</a></li>
-                </ul>
-            </nav>
         </div>
     </main>
 
     <div id="newAppointmentModal" class="fixed inset-0 z-50 flex items-center justify-center hidden modal-backdrop">
         <div class="bg-white rounded-xl shadow-2xl w-3/4 max-w-3xl mx-4 max-h-[90vh] overflow-y-auto">
-            <form action="{{ route('admin.appointments.store') }}" method="POST">
+            <form id="newAppointmentForm" action="{{ route('admin.appointments.store') }}" method="POST">
                 @csrf
                 <div class="flex justify-between items-center p-5 border-b">
                     <h3 class="text-xl font-bold text-gray-800">Create New Appointment</h3>
                     <button type="button" onclick="closeNewAppointmentModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times fa-lg"></i></button>
                 </div>
                 <div class="p-6">
-                    <div class="">
-                        <div class="space-y-4">
-                            <div>
-                                <label for="new-patient-select" class="block text-sm font-medium text-gray-700">Patient</label>
-                                <select id="new-patient-select" name="patient_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
-                                    <option value="">Select a patient...</option>
-                                    @foreach($patients as $patient)
-                                        <option value="{{ $patient->id }}">{{ $patient->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label for="new-doctor-select" class="block text-sm font-medium text-gray-700">Doctor</label>
-                                <select id="new-doctor-select" name="doctor_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
-                                    <option value="">Select a doctor...</option>
-                                    @foreach($doctors as $doctor)
-                                        <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            {{-- MODIFIED SECTION: Date and Time selection --}}
-                            <div>
-                                <label for="new-date-select" class="block text-sm font-medium text-gray-700">Date</label>
-                                <input type="date" id="new-date-select" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled required>
-                            </div>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="new-patient-select" class="block text-sm font-medium text-gray-700">Patient (Search by Name or Patient Number)</label>
+                            {{-- This select will be enhanced by Select2 --}}
+                            <select id="new-patient-select" name="patient_id" class="mt-1 block w-full" required>
+                                <option value="">Select a patient...</option>
+                                @foreach($patients as $patient)
+                                    <option value="{{ $patient->id }}">{{ $patient->name }} - ({{ $patient->patient_number }})</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="new-doctor-select" class="block text-sm font-medium text-gray-700">Doctor</label>
+                            <select id="new-doctor-select" name="doctor_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                <option value="">Select a doctor...</option>
+                                @foreach($doctors as $doctor)
+                                    <option value="{{ $doctor->id }}">{{ $doctor->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="appointment-date" class="block text-sm font-medium text-gray-700">Appointment Date</label>
+                            {{-- This input will be replaced by Flatpickr --}}
+                            <input type="text" id="appointment-date" name="date" placeholder="Select a doctor first" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" disabled required>
+                        </div>
 
-                            <div>
-                                <label for="new-time-select" class="block text-sm font-medium text-gray-700">Time</label>
-                                <select id="new-time-select" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" disabled required>
-                                    <option value="">Select a date first</option>
-                                </select>
-                            </div>
-                            {{-- This hidden input will hold the final schedule ID for the form submission --}}
-                            <input type="hidden" name="day_available_id" id="hidden-schedule-id" required>
-                            {{-- END MODIFIED SECTION --}}
-                            <div>
-                                <label for="new-type" class="block text-sm font-medium text-gray-700">Appointment Type</label>
-                                <input type="text" id="new-type" name="type" placeholder="e.g., Check-up, Consultation" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required>
-                            </div>
-                            <div class="flex items-center">
-                                <input id="new-bpjs" name="is_bpjs" type="checkbox" value="1" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
-                                <label for="new-bpjs" class="ml-2 block text-sm text-gray-900">Patient is using BPJS</label>
-                            </div>
+                        <div>
+                            <label for="time-select" class="block text-sm font-medium text-gray-700">Available Time</label>
+                            <select id="time-select" name="time" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" disabled required>
+                                <option value="">Select a date first</option>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="day_available_id" id="day_available_id">
+
+                        <div>
+                            <label for="new-type" class="block text-sm font-medium text-gray-700">Appointment Type</label>
+                            <input type="text" id="new-type" name="type" placeholder="e.g., Check-up, Consultation" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                        </div>
+                        <div class="flex items-center">
+                            <input id="new-bpjs" name="is_bpjs" type="checkbox" value="true" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                            <label for="new-bpjs" class="ml-2 block text-sm text-gray-900">Patient is using BPJS</label>
                         </div>
                     </div>
                 </div>
                 <div class="flex justify-end items-center p-5 border-t bg-gray-50 rounded-b-xl">
-                    <button type="button" onclick="closeNewAppointmentModal()" class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg hover:bg-gray-300 transition duration-300 mr-2">Cancel</button>
-                    <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-700 transition duration-300"><i class="fas fa-plus mr-2"></i>Create Appointment</button>
+                    <button type="button" onclick="closeNewAppointmentModal()" class="bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg">Cancel</button>
+                    <button type="submit" class="bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md"><i class="fas fa-plus mr-2"></i>Create Appointment</button>
                 </div>
             </form>
         </div>
@@ -348,13 +347,174 @@ Appointments
     </div>
 @endsection
 
+
 @section('script')
 {{-- Make sure SweetAlert2 is included --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{{-- Make sure Flatpickr CSS is included if not already --}}
+{{-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> --}}
+{{-- Make sure Flatpickr JS is included --}}
+{{-- <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script> --}}
 
 <script>
+    // --- Global Variables (Accessible to all functions in this script) ---
+    let datePicker = null; // Flatpickr instance
+    let newAppointmentForm, doctorSelect, dateInput, timeSelect, dayAvailableIdInput;
+    let newAppointmentModal, viewModal, editModal; // Modal elements
+
+    // --- Helper Functions (Defined outside $(document).ready for global accessibility) ---
+
+    function resetDateAndTime() {
+        if (datePicker) {
+            datePicker.destroy(); // Remove old datepicker instance
+            datePicker = null;
+        }
+        if (dateInput) { // Ensure dateInput exists before accessing
+            dateInput.value = '';
+            dateInput.placeholder = 'Select a doctor first';
+            dateInput.disabled = true;
+        }
+        resetTime();
+    }
+
+    function resetTime() {
+        if (timeSelect) { // Ensure timeSelect exists before accessing
+            timeSelect.innerHTML = '<option value="">Select a date first</option>';
+            timeSelect.disabled = true;
+        }
+        if (dayAvailableIdInput) { // Ensure dayAvailableIdInput exists before accessing
+            dayAvailableIdInput.value = '';
+        }
+    }
+
+    function fetchAvailableTimes(doctorId, dateStr) {
+        resetTime();
+        if (!dateStr) return;
+
+        timeSelect.innerHTML = '<option value="">Loading times...</option>';
+
+        const baseUrl = "{{ route('admin.doctors.available-times', ['doctor' => '__DOCTOR_ID__', 'date' => '__DATE__']) }}";
+
+        let url = baseUrl.replace('__DOCTOR_ID__', doctorId);
+        url = url.replace('__DATE__', dateStr); 
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.available_slots && data.available_slots.length > 0) {
+                    timeSelect.innerHTML = '<option value="">Select an available time</option>';
+                    data.available_slots.forEach(time => {
+                        const option = new Option(time, time);
+                        timeSelect.appendChild(option);
+                    });
+                    timeSelect.disabled = false;
+                    dayAvailableIdInput.value = data.day_available_id; // IMPORTANT
+                } else {
+                    timeSelect.innerHTML = '<option value="">No available times for this date</option>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching available times:', error);
+                timeSelect.innerHTML = '<option value="">Error loading times</option>';
+            });
+    }
+
+    // --- Modal Functions ---
+    // Make sure these modal elements are correctly identified in the DOM.
+    function openNewAppointmentModal() {
+        // Reset form fields
+        if (newAppointmentForm) newAppointmentForm.reset();
+        // Reset Select2 for patient dropdown
+        if ($('#new-patient-select').length) {
+            $('#new-patient-select').val(null).trigger('change');
+        }
+        // Reset date and time fields via helper function
+        resetDateAndTime();
+        // Show the modal
+        if (newAppointmentModal) newAppointmentModal.classList.remove('hidden');
+    }
+
+    function closeNewAppointmentModal() {
+        if (newAppointmentModal) newAppointmentModal.classList.add('hidden');
+    }
+
+    function openViewModal(buttonElement) {
+        const appointmentJson = buttonElement.dataset.appointment;
+        const appointment = JSON.parse(appointmentJson);
+
+        // ... (your existing view modal population logic) ...
+        document.getElementById('view-patient-name').innerText = appointment.patient?.name ?? 'N/A';
+        const scheduleDate = new Date(appointment.schedule?.Datetime).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+        document.getElementById('view-schedule').innerText = `${appointment.schedule?.day_available?.doctor?.name ?? 'Unknown Doctor'} - ${scheduleDate}`;
+        document.getElementById('view-queue-type').innerHTML = `<span class="font-mono bg-gray-100 px-2 py-1 rounded">${appointment.queue_number ?? '-'}</span> / ${appointment.type ?? 'N/A'}`;
+        document.getElementById('view-insurance').innerHTML = appointment.is_bpjs ? 'BPJS <span class="text-green-600">(Yes)</span>' : 'General <span class="text-gray-600">(No)</span>';
+        document.getElementById('view-appointment-number').innerText = appointment.appointment_number ?? 'N/A';
+        document.getElementById('view-subjective').innerText = appointment.subjective ?? 'No subjective notes provided.';
+        document.getElementById('view-objective').innerText = appointment.objective ?? 'No objective notes provided.';
+        document.getElementById('view-assessment').innerText = appointment.assessment ?? 'No assessment provided.';
+        document.getElementById('view-plan').innerText = appointment.plan ?? 'No plan provided.';
+
+        // Status logic can remain here
+        let statusDetails = { label: 'Unknown', bg: 'bg-gray-100', text: 'text-gray-800', dot: 'bg-gray-400' };
+        switch (appointment.status) {
+            case 1: statusDetails = { label: 'Ongoing', bg: 'bg-blue-100', text: 'text-blue-800', dot: 'bg-blue-500' }; break;
+            case 2: statusDetails = { label: 'Cancelled', bg: 'bg-red-100', text: 'text-red-800', dot: 'bg-red-500' }; break;
+            case 3: statusDetails = { label: 'Completed', bg: 'bg-green-100', text: 'text-green-800', dot: 'bg-green-500' }; break;
+        }
+        document.getElementById('view-status-container').innerHTML = `<p class="text-md font-semibold"><span class="inline-flex items-center ${statusDetails.bg} ${statusDetails.text} text-md font-medium px-3 py-1 rounded-full"><span class="w-2 h-2 mr-2 ${statusDetails.dot} rounded-full"></span>${statusDetails.label}</span></p>`;
+
+        const editButton = document.getElementById('view-modal-edit-button');
+        if (editButton) editButton.onclick = () => openEditModal(appointment);
+        if (viewModal) viewModal.classList.remove('hidden');
+    }
+
+    function closeViewModal() {
+        if (viewModal) viewModal.classList.add('hidden');
+    }
+
+    function openEditModal(appointment) {
+        closeViewModal();
+        const editForm = document.getElementById('edit-appointment-form');
+        if (editForm) {
+            const urlTemplate = "{{ route('admin.appointments.update', ['appointment' => ':id']) }}";
+            const actionUrl = urlTemplate.replace(':id', appointment.id);
+            editForm.action = actionUrl;
+
+            // ... (your existing edit modal population logic) ...
+            document.getElementById('edit-patient').value = appointment.patient?.name ?? 'N/A';
+            const scheduleDate = new Date(appointment.schedule?.Datetime).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
+            document.getElementById('edit-schedule-display').value = `${appointment.schedule?.day_available?.doctor?.name} - ${scheduleDate}`;
+            document.getElementById('edit-type').value = appointment.type ?? '';
+            document.getElementById('edit-status').value = appointment.status;
+            document.getElementById('edit-bpjs').checked = appointment.is_bpjs;
+            document.getElementById('edit-subjective').value = appointment.subjective ?? '';
+            document.getElementById('edit-objective').value = appointment.objective ?? '';
+            document.getElementById('edit-assessment').value = appointment.assessment ?? '';
+            document.getElementById('edit-plan').value = appointment.plan ?? '';
+        }
+        if (editModal) editModal.classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+        if (editModal) editModal.classList.add('hidden');
+    }
+
+
+    // --- Document Ready / DOMContentLoaded equivalent (using jQuery's ready) ---
     $(document).ready(function () {
-        $('#appointments-table').DataTable({
+        // --- Initialize global variables once DOM is ready ---
+        newAppointmentForm = document.getElementById('newAppointmentForm');
+        doctorSelect = document.getElementById('new-doctor-select');
+        dateInput = document.getElementById('appointment-date');
+        timeSelect = document.getElementById('time-select');
+        dayAvailableIdInput = document.getElementById('day_available_id');
+        newAppointmentModal = document.getElementById('newAppointmentModal');
+        viewModal = document.getElementById('viewModal');
+        editModal = document.getElementById('editModal');
+
+
+        // --- DataTables Initialization ---
+        appointmentsTable = $('#appointments-table').DataTable({ // Assign to global variable
             pageLength: 10,
             lengthMenu: [5, 10, 25, 50, 100],
             language: {
@@ -368,15 +528,126 @@ Appointments
                     previous: "Previous"
                 },
                 zeroRecords: "No matching appointments found"
-            }
+            },  
         });
 
-         $('#appointments-table tbody').on('submit', '.cancel-form', function (event) {
-            event.preventDefault(); 
-            
+        // --- Select2 Initialization ---
+        $('#new-patient-select').select2({
+            dropdownParent: $('#newAppointmentModal'), // Attach dropdown to the modal
+            width: '100%'
+        });
+
+        // --- Event Listener for Doctor Selection ---
+        if (doctorSelect) {
+            doctorSelect.addEventListener('change', function() {
+                const doctorId = this.value;
+                resetDateAndTime(); 
+
+                if (!doctorId) return;
+                const doctorAvailabilityBaseUrl = "{{ route('admin.doctors.availability', ['doctor' => '__DOCTOR_ID__']) }}";
+
+                const url = doctorAvailabilityBaseUrl.replace('__DOCTOR_ID__', doctorId);
+
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(availableDays => {
+                        // Initialize Flatpickr (the date picker)
+                        if (dateInput) {
+                            datePicker = flatpickr(dateInput, {
+                                dateFormat: "Y-m-d",
+                                minDate: "today",
+                                // CRITICAL: Only enable the days of the week the doctor works
+                                "enable": [
+                                    function(date) {
+                                        // `date.getDay()` returns 0 for Sun, 1 for Mon...
+                                        // The API returns 0 for Sun, 1 for Mon...
+                                        return availableDays.includes(date.getDay());
+                                    }
+                                ],
+                                // When a user selects a date, trigger the time fetch
+                                onChange: function(selectedDates, dateStr, instance) {
+                                    fetchAvailableTimes(doctorId, dateStr);
+                                }
+                            });
+
+                            dateInput.placeholder = 'Select an available date';
+                            dateInput.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching doctor availability:', error);
+                        if (dateInput) dateInput.placeholder = 'Could not load schedule';
+                    });
+            });
+        }
+
+
+        // --- Form Submission using AJAX ---
+        if (newAppointmentForm) {
+            newAppointmentForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(this);
+                const actionUrl = this.action;
+                const csrfTokenElement = document.querySelector('input[name="_token"]');
+                const csrfToken = csrfTokenElement ? csrfTokenElement.value : '';
+
+                fetch(actionUrl, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        closeNewAppointmentModal(); // Call the globally defined function
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: data.message,
+                            timer: 2000,
+                            showConfirmButton: false,
+                        }).then(() => {
+                            window.location.href = data.redirect_url;
+                        });
+                    } else {
+                        let errorHtml = data.message;
+                        if (data.errors) {
+                            errorHtml += '<ul class="text-left text-sm list-disc list-inside mt-2">';
+                            Object.values(data.errors).forEach(err => {
+                                errorHtml += `<li>${err[0]}</li>`;
+                            });
+                            errorHtml += '</ul>';
+                        }
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Creation Failed',
+                            html: errorHtml,
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Submission Error:', error);
+                    Swal.fire('Request Failed!', 'An unexpected error occurred.', 'error');
+                });
+            });
+        }
+
+
+        // --- Cancel Form Submission using AJAX (Delegated Event) ---
+        // Use event delegation for dynamically loaded or existing elements
+        $('#appointments-table tbody').on('submit', '.cancel-form', function (event) {
+            event.preventDefault();
+
             const form = this;
             const actionUrl = form.action;
-            const csrfToken = form.querySelector('input[name="_token"]').value;
+            const csrfTokenElement = form.querySelector('input[name="_token"]');
+            const csrfToken = csrfTokenElement ? csrfTokenElement.value : '';
+
 
             Swal.fire({
                 title: 'Are you sure?',
@@ -393,7 +664,7 @@ Appointments
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': csrfToken,
-                            'Accept': 'application/json', 
+                            'Accept': 'application/json',
                         },
                     })
                     .then(response => response.json())
@@ -401,23 +672,22 @@ Appointments
                         if (data.success) {
                             Swal.fire({
                                 title: 'Cancelled!',
-                                text: data.message, 
+                                text: data.message,
                                 icon: 'success',
-                                timer: 2000, 
+                                timer: 2000,
                                 showConfirmButton: false,
                             }).then(() => {
-                                location.reload();
+                                location.reload(); // Reload page on success
                             });
                         } else {
                             Swal.fire({
                                 title: 'Error!',
-                                text: data.message, 
+                                text: data.message,
                                 icon: 'error',
                             });
                         }
                     })
                     .catch(error => {
-                        // Handle network errors
                         console.error('Error:', error);
                         Swal.fire({
                             title: 'Request Failed!',
@@ -428,187 +698,48 @@ Appointments
                 }
             });
         });
-    });
 
-    // Get modal elements
-    const newAppointmentModal = document.getElementById('newAppointmentModal');
-    const viewModal = document.getElementById('viewModal');
-    const editModal = document.getElementById('editModal');
+        // --- Event Listener for Status Filter ---
+        // Get the filter select element
+        const statusFilterSelect = document.getElementById('appointment-status-filter');
 
-    // --- Modal Functions (No changes needed here) ---
-    function openNewAppointmentModal() {
-        document.getElementById('new-doctor-select').value = '';
-        const dateSelect = document.getElementById('new-date-select');
-        const timeSelect = document.getElementById('new-time-select');
-        dateSelect.disabled = true;
-        dateSelect.value = '';
-        timeSelect.disabled = true;
-        timeSelect.innerHTML = '<option value="">Select a doctor first</option>';
-        document.getElementById('hidden-schedule-id').value = '';
+        if (statusFilterSelect) {
+            statusFilterSelect.addEventListener('change', function() {
+                const selectedStatus = this.value; 
 
-        newAppointmentModal.classList.remove('hidden');
-        newAppointmentModal.classList.remove('hidden');
-    }
+                if (selectedStatus === "") {
+                    appointmentsTable.column(6).search('').draw();
+                } else {
+                    appointmentsTable.column(6).search(selectedStatus).draw();
 
-    function closeNewAppointmentModal() {
-        newAppointmentModal.classList.add('hidden');
-    }
-
-    function openViewModal(buttonElement) {
-        const appointmentJson = buttonElement.dataset.appointment;
-        const appointment = JSON.parse(appointmentJson);
-        
-        // ... (your existing view modal population logic) ...
-        document.getElementById('view-patient-name').innerText = appointment.patient?.name ?? 'N/A';
-        const scheduleDate = new Date(appointment.schedule?.Datetime).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-        document.getElementById('view-schedule').innerText = `${appointment.schedule?.day_available?.doctor?.name ?? 'Unknown Doctor'} - ${scheduleDate}`;
-        document.getElementById('view-queue-type').innerHTML = `<span class="font-mono bg-gray-100 px-2 py-1 rounded">${appointment.queue_number ?? '-'}</span> / ${appointment.type ?? 'N/A'}`;
-        document.getElementById('view-insurance').innerHTML = appointment.is_bpjs ? 'BPJS <span class="text-green-600">(Yes)</span>' : 'General <span class="text-gray-600">(No)</span>';
-        document.getElementById('view-appointment-number').innerText = appointment.appointment_number ?? 'N/A';
-        document.getElementById('view-subjective').innerText = appointment.subjective ?? 'No subjective notes provided.';
-        document.getElementById('view-objective').innerText = appointment.objective ?? 'No objective notes provided.';
-        document.getElementById('view-assessment').innerText = appointment.assessment ?? 'No assessment provided.';
-        document.getElementById('view-plan').innerText = appointment.plan ?? 'No plan provided.';
-        
-        // Status logic can remain here
-        let statusDetails = { label: 'Unknown', bg: 'bg-gray-100', text: 'text-gray-800', dot: 'bg-gray-400' };
-        switch (appointment.status) {
-            case 1: statusDetails = { label: 'Ongoing', bg: 'bg-blue-100', text: 'text-blue-800', dot: 'bg-blue-500' }; break;
-            case 2: statusDetails = { label: 'Cancelled', bg: 'bg-red-100', text: 'text-red-800', dot: 'bg-red-500' }; break;
-            case 3: statusDetails = { label: 'Completed', bg: 'bg-green-100', text: 'text-green-800', dot: 'bg-green-500' }; break;
-        }
-        document.getElementById('view-status-container').innerHTML = `<p class="text-md font-semibold"><span class="inline-flex items-center ${statusDetails.bg} ${statusDetails.text} text-md font-medium px-3 py-1 rounded-full"><span class="w-2 h-2 mr-2 ${statusDetails.dot} rounded-full"></span>${statusDetails.label}</span></p>`;
-
-        const editButton = document.getElementById('view-modal-edit-button');
-        editButton.onclick = () => openEditModal(appointment);
-        viewModal.classList.remove('hidden');
-    }
-
-    function closeViewModal() {
-        viewModal.classList.add('hidden');
-    }
-
-    function openEditModal(appointment) {
-        closeViewModal(); 
-        const editForm = document.getElementById('edit-appointment-form');
-        const urlTemplate = "{{ route('admin.appointments.update', ['appointment' => ':id']) }}";
-        const actionUrl = urlTemplate.replace(':id', appointment.id);
-        editForm.action = actionUrl;
-        
-        // ... (your existing edit modal population logic) ...
-        document.getElementById('edit-patient').value = appointment.patient?.name ?? 'N/A';
-        const scheduleDate = new Date(appointment.schedule?.Datetime).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true });
-        document.getElementById('edit-schedule-display').value = `${appointment.schedule?.day_available?.doctor?.name} - ${scheduleDate}`;
-        document.getElementById('edit-type').value = appointment.type ?? '';
-        document.getElementById('edit-status').value = appointment.status;
-        document.getElementById('edit-bpjs').checked = appointment.is_bpjs;
-        document.getElementById('edit-subjective').value = appointment.soap_note?.subjective ?? '';
-        document.getElementById('edit-objective').value = appointment.soap_note?.objective ?? '';
-        document.getElementById('edit-assessment').value = appointment.soap_note?.assessment ?? '';
-        document.getElementById('edit-plan').value = appointment.soap_note?.plan ?? '';
-
-        editModal.classList.remove('hidden');
-    }
-
-    function closeEditModal() {
-        editModal.classList.add('hidden');
-    }
-
-    // --- Event Listeners to close modals ---
-    document.addEventListener('click', function(event) {
-        if (event.target === viewModal) closeViewModal();
-        if (event.target === editModal) closeEditModal();
-        if (event.target === newAppointmentModal) closeNewAppointmentModal();
-    });
-    
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape') {
-            closeViewModal();
-            closeEditModal();
-            closeNewAppointmentModal();
-        }
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const doctorSelect = document.getElementById('new-doctor-select');
-        const dateSelect = document.getElementById('new-date-select');
-        const timeSelect = document.getElementById('new-time-select');
-        const hiddenScheduleInput = document.getElementById('hidden-schedule-id');
-
-        let availableSchedules = []; // To store schedules for the selected doctor
-
-        // Step 1: Doctor selection fetches all available schedules
-        doctorSelect.addEventListener('change', function() {
-            const doctorId = this.value;
-
-            // Reset date and time fields
-            dateSelect.disabled = true;
-            dateSelect.value = '';
-            timeSelect.innerHTML = '<option value="">Select a date first</option>';
-            timeSelect.disabled = true;
-            hiddenScheduleInput.value = '';
-
-            if (!doctorId) {
-                return;
-            }
-
-            // Fetch all schedules for the selected doctor
-            const urlTemplate = "{{ route('admin.appointments.schedules', ['doctor' => ':doctorId']) }}";
-            const url = urlTemplate.replace(':doctorId', doctorId);
-            
-            fetch(url)
-                .then(response => response.json())
-                .then(schedules => {
-                    if (schedules.length > 0) {
-                        availableSchedules = schedules;
-                        dateSelect.disabled = false;
-                        // Set min date to today
-                        dateSelect.min = new Date().toISOString().split("T")[0];
-                        timeSelect.innerHTML = '<option value="">Select a date</option>';
-                    } else {
-                        availableSchedules = [];
-                        timeSelect.innerHTML = '<option value="">No schedules found for this doctor</option>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching schedules:', error);
-                    timeSelect.innerHTML = '<option value="">Could not load schedules</option>';
-                });
-        });
-
-        // Step 2: Date selection filters available times
-        dateSelect.addEventListener('change', function() {
-            const selectedDate = this.value; // Format: YYYY-MM-DD
-            timeSelect.innerHTML = '';
-            timeSelect.disabled = true;
-            hiddenScheduleInput.value = '';
-
-            const timesForDate = availableSchedules.filter(schedule => {
-                // Assuming schedule.text is in a format like 'YYYY-MM-DD HH:MM...'
-                return schedule.text.startsWith(selectedDate);
+                }
             });
+        }
+        // --- Event Listeners to close modals (delegated from document) ---
+        // Ensuring modals are defined before adding listeners
+        if (newAppointmentModal) {
+            document.addEventListener('click', function(event) {
+                if (event.target === newAppointmentModal) closeNewAppointmentModal();
+            });
+        }
+        if (viewModal) {
+            document.addEventListener('click', function(event) {
+                if (event.target === viewModal) closeViewModal();
+            });
+        }
+        if (editModal) {
+            document.addEventListener('click', function(event) {
+                if (event.target === editModal) closeEditModal();
+            });
+        }
 
-            if (timesForDate.length > 0) {
-                timeSelect.innerHTML = '<option value="">Select an available time</option>';
-                timesForDate.forEach(schedule => {
-                    const option = document.createElement('option');
-                    // The value is the schedule ID
-                    option.value = schedule.value; 
-                    // The text is the formatted time
-                    const dateTime = new Date(schedule.text);
-                    option.textContent = dateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
-                    timeSelect.appendChild(option);
-                });
-                timeSelect.disabled = false;
-            } else {
-                timeSelect.innerHTML = '<option value="">No available times for this date</option>';
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeViewModal();
+                closeEditModal();
+                closeNewAppointmentModal();
             }
         });
-
-        // Step 3: Time selection sets the hidden input value
-        timeSelect.addEventListener('change', function() {
-            hiddenScheduleInput.value = this.value;
-        });
-    });
+    }); // End of $(document).ready
 </script>
 @endsection

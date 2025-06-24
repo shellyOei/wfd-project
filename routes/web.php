@@ -127,9 +127,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // appointments routes
         Route::get('/appointments', [AppointmentController::class, 'show'])->name('appointments.index');
         Route::get('/appointments/schedules-for-doctor/{doctor}', [AppointmentController::class, 'getSchedulesForDoctor'])->name('appointments.schedules');
-        Route::post('/appointments', [AppointmentController::class, 'store'])->name('appointments.store');
+        Route::post('/appointments', [AppointmentController::class, 'storeAdmin'])->name('appointments.store');
         Route::put('/admin/appointments/{appointment}', [AppointmentController::class, 'update'])->name('appointments.update');
         Route::post('/admin/appointments/{appointment}/cancel', [AppointmentController::class, 'destroy'])->name('appointments.cancel');
+
+        // fetch doctor availability and available times
+        Route::get('/appointments/doctors/{doctor}/availability', [AppointmentController::class, 'getDoctorAvailability'])->name('doctors.availability');
+        Route::get('/appointments/doctors/{doctor}/available-times', [AppointmentController::class, 'getAvailableTimes'])->name('doctors.available-times');
 
         Route::get('/users', [UserController::class, 'users'])->name('users');
         Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
