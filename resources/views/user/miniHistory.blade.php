@@ -271,5 +271,5 @@
                 });
             }
         });
-    </script>Add commentMore actions
+    </script>
 @endpush
