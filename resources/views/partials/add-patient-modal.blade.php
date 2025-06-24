@@ -1,84 +1,80 @@
-<div id="patient-modal" class="fixed inset-0 z-[99] flex items-end justify-center pointer-events-none">
-  <!-- BACKDROP  -->
-  <div id="patient-backdrop" class="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 ease-in-out">
-  </div>
+<div id="patient-modal" class="fixed inset-0 z-[99] flex items-end md:items-center justify-center pointer-events-none">
+    <div id="patient-backdrop" class="absolute inset-0 bg-black opacity-0 transition-opacity duration-300 ease-in-out">
+    </div>
 
-  <div id="patient-content"
-    class="relative w-full max-w-md bg-gray-200 rounded-t-[32px] py-10 px-5 shadow-md transform translate-y-full transition-transform duration-300 ease-in-out">
-    <!-- Garis hitam atas -->
-    <div class="w-40 h-3 bg-neutral-700 rounded-full mx-auto mb-6"></div>
+    <div id="patient-content"
+        class="relative w-full max-w-md bg-gray-200 rounded-t-[32px] md:rounded-2xl py-10 px-5 md:py-8 md:px-6 shadow-lg transform transition-all duration-300 ease-in-out 
+               translate-y-full md:translate-y-0 md:scale-95 md:opacity-0">
+        
+        <div class="w-40 h-2 bg-neutral-600 rounded-full mx-auto mb-6 md:hidden"></div>
 
-    <!-- Pertanyaan -->
-    <p class="text-center text-base font-bold text-black leading-snug mb-8">
-      Apakah Anda memiliki nomor<br />
-      rekam medis <span class="bg-yellow-300 rounded px-1">MRN</span> di Rumah<br />
-      Sakit Endang Widayat?
-    </p>
+        <p class="text-center text-lg font-bold text-black leading-snug mb-8">
+            Apakah Anda memiliki nomor rekam medis <span class="bg-yellow-300 rounded px-1.5">MRN</span> di Rumah Sakit Endang Widayat?
+        </p>
 
-    <!-- Box Pasien Lama -->
-    <a href="{{ route('user.link-patient') }}"
-      class="block bg-white rounded-2xl shadow-md px-4 py-5 mb-5 cursor-pointer">
-      <p class="text-center text-black font-semibold text-sm">Ya, saya pasien lama</p>
-      <p class="text-center text-gray-500 text-xs mt-1">
-        Saya sudah terdaftar dan sudah<br />
-        memiliki nomor rekam medis MRN sebelumnya
-      </p>
-    </a>
+        <a href="{{ route('user.link-patient') }}"
+            class="block bg-white rounded-2xl shadow-md px-4 py-5 mb-5 cursor-pointer hover:bg-gray-50 transition-colors duration-200">
+            <p class="text-center text-black font-semibold text-base">Ya, saya pasien lama</p>
+            <p class="text-center text-gray-500 text-sm mt-1">
+                Saya sudah terdaftar dan memiliki nomor rekam medis (MRN).
+            </p>
+        </a>
 
-    <!-- Box Pasien Baru -->
-    <a href="{{ route('user.register.patient') }}"
-      class="block bg-white rounded-2xl shadow-md px-4 py-5 cursor-pointer">
-      <p class="text-center text-black font-semibold text-sm">Tidak, saya pasien baru</p>
-      <p class="text-center text-gray-500 text-xs mt-1">
-        Saya belum terdaftar dan belum<br />
-        memiliki nomor rekam medis
-      </p>
-    </a>
-
-
-  </div>
+        <a href="{{ route('user.register.patient') }}"
+            class="block bg-white rounded-2xl shadow-md px-4 py-5 cursor-pointer hover:bg-gray-50 transition-colors duration-200">
+            <p class="text-center text-black font-semibold text-base">Tidak, saya pasien baru</p>
+            <p class="text-center text-gray-500 text-sm mt-1">
+                Saya belum pernah terdaftar dan belum memiliki nomor rekam medis.
+            </p>
+        </a>
+    </div>
 </div>
 
 @push('script')
 <script>
 document.addEventListener("DOMContentLoaded", function () {
+    // Ensure you have a button with id="patient-modal-btn" somewhere on your page to trigger this modal.
+    const modalBtn = document.getElementById("patient-modal-btn");
+    const modal = document.getElementById("patient-modal");
     
-  const modalBtn = document.getElementById("patient-modal-btn");
-  const modal = document.getElementById("patient-modal");
+    // Check if the trigger button exists to avoid errors
+    if (!modalBtn) {
+        console.warn('Modal trigger button with id="patient-modal-btn" not found.');
+        return;
+    }
 
-  console.log(modalBtn, modal);
-  const backdrop = document.getElementById("patient-backdrop");
-  const content = document.getElementById("patient-content");
+    const backdrop = document.getElementById("patient-backdrop");
+    const content = document.getElementById("patient-content");
 
-  modalBtn.addEventListener("click", () => {
-    modal.classList.remove("pointer-events-none");
+    const openModal = () => {
+        modal.classList.remove("pointer-events-none");
 
-    // show backdrop
-    backdrop.classList.remove("opacity-0");
-    backdrop.classList.add("opacity-50");
+        // Show backdrop
+        backdrop.classList.remove("opacity-0");
+        backdrop.classList.add("opacity-50");
 
-    // slide-up modal
-    content.classList.remove("translate-y-full");
-    content.classList.add("translate-y-0");
-  });
+        // Animate content in
+        // This handles both mobile (slide-up) and desktop (scale-up/fade-in)
+        content.classList.remove("translate-y-full", "md:scale-95", "md:opacity-0");
+    };
 
-  backdrop.addEventListener("click", () => {
-    // hide backdrop
-    backdrop.classList.add("opacity-0");
-    backdrop.classList.remove("opacity-50");
+    const closeModal = () => {
+        // Hide backdrop
+        backdrop.classList.add("opacity-0");
+        backdrop.classList.remove("opacity-50");
 
-    // slide-down modal
-    content.classList.add("translate-y-full");
-    content.classList.remove("translate-y-0");
+        // Animate content out
+        // This handles both mobile (slide-down) and desktop (scale-down/fade-out)
+        content.classList.add("translate-y-full", "md:scale-95", "md:opacity-0");
 
-    // disable pointer event ketika sudah animasi selesai
-    setTimeout(() => {
-      modal.classList.add("pointer-events-none");
-    }, 300);
-  });
-});   
+        // Disable pointer events after the animation finishes
+        setTimeout(() => {
+            modal.classList.add("pointer-events-none");
+        }, 300); // Should match the transition duration
+    };
 
-  
+    modalBtn.addEventListener("click", openModal);
+    backdrop.addEventListener("click", closeModal);
+});
 </script>
 @endpush
-

@@ -3,7 +3,7 @@
 @section('title', 'Riwayat Janji Temu')
 
 @section('content')
-<div class="min-h-screen px-4">
+<div class="min-h-screen w-3/4 mx-auto px-4">
     {{-- Header --}}
     <div class="flex items-center justify-between mb-6 mt-4">
         <a href="{{ url()->previous() }}" class="text-gray-600 hover:text-gray-800 p-1 -ml-1">
@@ -16,7 +16,6 @@
         </h1>
         <div class="w-7"></div> {{-- Spacer untuk menyeimbangkan header --}}
     </div>
-    @dd($activeAppointments)
 
     {{-- PERBAIKAN: Pastikan $userPatients didefinisikan sebelum digunakan --}}
     {{-- Filter Status Buttons --}}

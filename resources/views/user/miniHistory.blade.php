@@ -172,3 +172,104 @@
         </main>
     </div>
 @endsection
+
+@push('scripts')
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const avatars = document.querySelectorAll('.avatar-circle');
+
+            // Load janji temu untuk pasien pertama
+            const firstAvatar = avatars[0];
+            if (firstAvatar) {
+                const firstId = firstAvatar.getAttribute('data-id');
+                fetchData(firstId);
+            }
+
+            avatars.forEach(avatar => {
+                avatar.addEventListener('click', function () {
+                    avatars.forEach(a => a.classList.remove('selected'));
+                    this.classList.add('selected');
+
+
+                    const patientId = this.getAttribute('data-id');
+                    fetchData(patientId);
+                });
+            });
+
+            function fetchData(patientId) {
+                fetch(`/user/mini-history/data/${patientId}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        updateSection('active-appointments', data.activeAppointments, true);
+                        updateSection('history-appointments', data.historyAppointments, false);
+                    })
+                    .catch(err => console.error(err));
+            }
+            function toggleFade(containerId, itemCount) {
+                const wrapper = document.getElementById(containerId).parentElement;
+                let fade = wrapper.querySelector('.fade-right');
+
+                if (fade) fade.remove();
+
+                if (itemCount >= 2) {
+                    const div = document.createElement('div');
+                    div.className = 'absolute top-0 right-0 h-full w-12 pointer-events-none bg-gradient-to-r from-transparent to-[rgba(229,231,235,0.5)] bg-opacity-5 fade-right';
+                    wrapper.appendChild(div);
+                }
+            }
+
+
+            function updateSection(containerId, items, isActive) {
+                toggleFade(containerId, items.length);
+                const container = document.getElementById(containerId);
+                // console.log('container ID:', containerId);
+                // console.log('container element:', container);
+                // console.log('items:', items);
+                container.innerHTML = '';
+
+                if (!items.length) {
+                    container.innerHTML = `<div class="text-center text-[#a9a9a9] italic py-4 min-w-[260px] w-full bg-white rounded-2xl p-4 shadow-sm flex-shrink-0">
+                                                                                        ${isActive ? 'Belum ada janji temu.' : 'Belum ada riwayat janji temu.'}
+                                                                                    </div>`;
+                    return;
+                }
+
+                items.forEach(item => {
+                    const dateObj = new Date(item.date);
+                    const now = new Date();
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    const tomorrow = new Date();
+                    tomorrow.setDate(today.getDate() + 1);
+                    tomorrow.setHours(0, 0, 0, 0);
+
+                    let dateText = dateObj.toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+                    let textColor = 'text-[#7a7a7a]';
+
+                    if (dateObj >= today && dateObj < tomorrow) {
+                        dateText = 'Hari ini';
+                        textColor = 'text-green-500';
+                    } else if (dateObj >= tomorrow && dateObj < new Date(tomorrow.getTime() + 86400000)) {
+                        dateText = 'Besok';
+                        textColor = 'text-yellow-500';
+                    }
+                    const card = document.createElement('div');
+                    card.className = 'min-w-[260px] bg-white rounded-2xl p-4 shadow-sm flex-shrink-0';
+
+                    card.innerHTML = `
+                                                                                        <div class="flex justify-between items-center mb-1">
+                                                                                            <span class="text-sm font-semibold ${textColor}">${dateText}</span>
+                                                                                            <span class="text-[#7a7a7a] font-bold text-sm">${item.time}</span>
+                                                                                        </div>
+                                                                                        <h3 class="text-lg font-bold mb-1">${item.title}</h3>
+                                                                                        <p class="text-sm font-semibold mb-0.5">${item.doctor_name}</p>
+                                                                                        <p class="text-[#a9a9a9] text-sm">Dokter ${item.specialization}</p>
+                                                                                    `;
+                    container.appendChild(card);
+                    // console.log('Card ditambahkan:', card);
+                });
+            }
+        });
+    </script>Add commentMore actions
+@endpush

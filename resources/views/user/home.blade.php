@@ -3,7 +3,7 @@
 @section('content')
 <!-- Selamat Datang -->
 {{-- Content for authenticated users --}}
-<div class="text-black flex justify-between items-center mb-6 w-full bg-white p-4 shadow-md overflow-hidden">
+<div class="text-black flex justify-between items-center mb-6 bg-white p-4 shadow-md">
     <div class="flex items-center space-x-3">
         <div class="w-20 h-20 rounded-full mx-auto flex items-center justify-center">
             <img src="{{ asset('assets/ewaps-logo.png') }}" alt="Logo" class="w-full h-full mx-auto rounded-full ">
@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<div class="max-w-7xl mx-auto p-4 pb-20">
+<div class="max-w-7xl md:w-3/4 mx-auto p-4 pb-20">
         <!-- Layanan -->
         <div class="relative bg-gradient-to-r from-[var(--blueGradient1)] to-[var(--blueGradient2)] rounded-3xl p-6 flex flex-col md:flex-row items-center text-white mb-8">
             <div class="relative md:w-1/2 md:mb-0 z-[20]">
